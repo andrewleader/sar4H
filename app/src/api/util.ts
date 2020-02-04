@@ -1,3 +1,5 @@
+import { IErrorResponse } from "./responses";
+
 const baseUrl = "https://api.d4h.org/v2";
 
 export default class Util {
@@ -22,7 +24,19 @@ export default class Util {
     });
 
     if (!response.ok) {
-      throw new Error("Network response was " + response.status);
+      try {
+        var errorObj = await response.json() as IErrorResponse;
+        errorObj.toString = () => errorObj.message;
+        throw errorObj;
+      } catch {
+        var errorResp: IErrorResponse = {
+          statusCode: response.status,
+          error: response.statusText,
+          message: "Unknown error. Check internet connection."
+        };
+        errorResp.toString = () => errorObj.message;
+        throw errorResp;
+      }
     }
 
     var obj = await response.json();

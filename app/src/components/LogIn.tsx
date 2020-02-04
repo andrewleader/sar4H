@@ -4,8 +4,27 @@ import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Api from '../api';
 import * as Responses from '../api/responses';
+import { createStyles, Theme, withStyles, WithStyles } from '@material-ui/core/styles';
 
-export interface LogInProps {
+const styles = (theme: Theme) => createStyles({
+  root: {
+    padding: "24px",
+    maxWidth: "500px",
+    marginLeft: "auto",
+    marginRight: "auto"
+  },
+  title: {
+    textAlign: "center"
+  },
+  error: {
+    color: "red"
+  },
+  logInButton: {
+    width: "100%"
+  }
+});
+
+export interface LogInProps extends WithStyles<typeof styles> {
   onSuccess: (response: Responses.IAuthenticateResponse) => void;
 }
 
@@ -13,25 +32,27 @@ interface LogInState {
   username: string,
   password: string,
   signingIn: boolean,
-  signedIn: boolean,
   error: string | null
 }
 
 class LogIn extends React.Component<LogInProps, LogInState> {
+  
   state: LogInState = {
     username: "",
     password: "",
     signingIn: false,
-    signedIn: false,
     error: null
   };
 
   render() {
+    const { classes } = this.props;
+
     return (
-      <div>
-        <p>Error: {this.state.error}</p>
+      <div className={classes.root}>
+        <Typography variant="h2" className={classes.title}>
+          SAR4H
+        </Typography>
         <TextField
-          required
           id="username"
           label="Username"
           margin="normal"
@@ -40,7 +61,6 @@ class LogIn extends React.Component<LogInProps, LogInState> {
           onChange={(e) => this.setState({ username: e.target.value })}
         />
         <TextField
-          required
           id="password"
           label="Password"
           type="password"
@@ -50,24 +70,42 @@ class LogIn extends React.Component<LogInProps, LogInState> {
           disabled={this.state.signingIn}
           onChange={(e) => this.setState({ password: e.target.value })}
         />
-        <Button onClick={this.logIn}>Log In</Button>
+
+        <p className={classes.error}>{this.state.error}</p>
+        <Button
+          className={classes.logInButton}
+          variant="contained"
+          color="primary"
+          disabled={this.state.signingIn}
+          onClick={this.logIn}>
+            Log In
+        </Button>
       </div>
     );
   }
 
   logIn = async () => {
 
+    if (this.state.username.length === 0) {
+      this.goToErrorState("You must enter a username!");
+      return;
+    }
+    
+    if (this.state.password.length === 0) {
+      this.goToErrorState("You must enter a password!");
+      return;
+    }
+
     this.goToSigningInState();
 
     try {
-      var username = this.state.username;
-
       var response = await Api.authenticateAsync(this.state.username, this.state.password);
 
-      this.props.onSuccess(response);
-      // Success
-      this.goToSignedInState();
-
+      if (response.data.token) {
+        this.props.onSuccess(response);
+      } else {
+        this.goToErrorState("Unknown error. Token not present.");
+      }
     } catch (err) {
       this.goToErrorState(err.toString());
     }
@@ -76,15 +114,6 @@ class LogIn extends React.Component<LogInProps, LogInState> {
   goToSigningInState() {
     this.setState({
       signingIn: true,
-      signedIn: false,
-      error: null
-    });
-  }
-
-  goToSignedInState() {
-    this.setState({
-      signingIn: false,
-      signedIn: true,
       error: null
     });
   }
@@ -92,10 +121,9 @@ class LogIn extends React.Component<LogInProps, LogInState> {
   goToErrorState(error: string) {
     this.setState({
       signingIn: false,
-      signedIn: false,
       error: error
     });
   }
 }
 
-export default LogIn;
+export default withStyles(styles)(LogIn);

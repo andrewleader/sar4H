@@ -15,3 +15,9 @@ export interface IAuthenticateResponse {
     }
   }
 }
+
+export interface IErrorResponse {
+  statusCode: number; // Like 401
+  error: string; // Basic error category, like "Unauthorized"
+  message: string; // Informative message, like "The account could not be found."
+}
