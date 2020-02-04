@@ -3,9 +3,10 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Api from '../api';
+import * as Responses from '../api/responses';
 
 export interface LogInProps {
-
+  onSuccess: (response: Responses.IAuthenticateResponse) => void;
 }
 
 interface LogInState {
@@ -63,6 +64,7 @@ class LogIn extends React.Component<LogInProps, LogInState> {
 
       var response = await Api.authenticateAsync(this.state.username, this.state.password);
 
+      this.props.onSuccess(response);
       // Success
       this.goToSignedInState();
 
