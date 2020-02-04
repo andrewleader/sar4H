@@ -41,4 +41,8 @@ export default class Authorized extends React.Component<AuthorizedProps, Authori
     CookiesHelper.deleteCookie("token");
     window.location.reload();
   }
+
+  static getToken() {
+    return CookiesHelper.getCookie("token");
+  }
 }

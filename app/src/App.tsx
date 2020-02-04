@@ -7,6 +7,8 @@ import AppBar from '@material-ui/core/AppBar';
 import { makeStyles } from '@material-ui/core/styles';
 import { Toolbar, IconButton, Typography, Button } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
+import LatestMissions from './components/LatestMissions';
+import Memberships from './components/Memberships';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -42,6 +44,7 @@ const App = () => {
             <Button color="inherit" onClick={logOut}>Logout</Button>
           </Toolbar>
         </AppBar>
+        <Memberships />
       </div>
     </Authorized>
   );
