@@ -36,4 +36,9 @@ export default class Authorized extends React.Component<AuthorizedProps, Authori
       token: response.data.token
     });
   }
+
+  static logOut() {
+    CookiesHelper.deleteCookie("token");
+    window.location.reload();
+  }
 }
