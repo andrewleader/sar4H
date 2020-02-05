@@ -1,8 +1,9 @@
 import * as React from 'react';
 import { Link as RouterLink, useRouteMatch } from 'react-router-dom';
 import { IIncidentListItem } from '../api/responses';
-import { Link, Card, CardActionArea, CardContent, Typography } from '@material-ui/core';
+import { Link, Card, CardActionArea, CardContent, Typography, Badge, Grid } from '@material-ui/core';
 import MissionListItemModel from '../models/missionListItemModel';
+import PersonIcon from '@material-ui/icons/Person';
 
 const ListItemMission = (props: {
   mission: MissionListItemModel
@@ -14,12 +15,24 @@ const ListItemMission = (props: {
       <Card>
         <CardActionArea>
           <CardContent>
-            <Typography variant="h5">
-              {props.mission.title}
-            </Typography>
-            <Typography color="textSecondary">
-              {props.mission.getFriendlyDate()}
-            </Typography>
+            <Grid container spacing={2}>
+
+              <Grid item xs>
+                <Typography variant="h6">
+                  {props.mission.title}
+                </Typography>
+                <Typography color="textSecondary">
+                  {props.mission.getFriendlyDate()}
+                </Typography>
+              </Grid>
+
+              <Grid item>
+                <Badge badgeContent={props.mission.count_attendance} color="primary">
+                  <PersonIcon/>
+                </Badge>
+              </Grid>
+
+            </Grid>
           </CardContent>
         </CardActionArea>
       </Card>
