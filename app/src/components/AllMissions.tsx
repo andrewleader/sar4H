@@ -1,31 +1,30 @@
 import * as React from 'react';
-import Api from '../api';
-import Authorized from './Authorized';
 import MembershipModel from '../models/membershipModel';
 import { IIncidentListItem } from '../api/responses';
 import ListItemMission from './ListItemMission';
+import MissionListItemModel from '../models/missionListItemModel';
 
 const AllMissions = (props: {
   membership: MembershipModel
 }) => {
-  const [missions, setMissions] = React.useState<IIncidentListItem[] | undefined>(undefined);
+  const [missions, setMissions] = React.useState<MissionListItemModel[] | undefined>(undefined);
 
   React.useEffect(() => {
 
     async function loadAsync() {
-      var draftMissions = await props.membership.getIncidentsAsync({
-        published: 0
+      var draftMissions = await props.membership.getMissionsAsync({
+        published: false
       });
 
-      var publishedMissions = await props.membership.getIncidentsAsync({
-        published: 1
+      var publishedMissions = await props.membership.getMissionsAsync({
+        published: true
       });
 
-      var missions: IIncidentListItem[] = [];
-      publishedMissions.data.forEach((mission) => {
+      var missions: MissionListItemModel[] = [];
+      publishedMissions.forEach((mission) => {
         missions.splice(0, 0, mission);
       });
-      draftMissions.data.forEach((mission) => {
+      draftMissions.forEach((mission) => {
         if (mission.date) {
           missions.splice(0, 0, mission);
         }
@@ -35,7 +34,7 @@ const AllMissions = (props: {
     }
 
     loadAsync();
-  }, []);
+  }, [props.membership]);
 
   if (missions === undefined) {
     return <p>Loading...</p>
@@ -43,7 +42,7 @@ const AllMissions = (props: {
 
   return (
     <div>
-      {missions.map((mission: IIncidentListItem) => {
+      {missions.map((mission) => {
         return <ListItemMission indident={mission}/>
       })}
     </div>

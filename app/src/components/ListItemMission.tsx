@@ -2,9 +2,10 @@ import * as React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { IIncidentListItem } from '../api/responses';
 import { Link, Card, CardActionArea, CardContent, Typography } from '@material-ui/core';
+import MissionListItemModel from '../models/missionListItemModel';
 
 const ListItemMission = (props: {
-  indident: IIncidentListItem
+  indident: MissionListItemModel
 }) => {
 
   return (
@@ -13,10 +14,10 @@ const ListItemMission = (props: {
         <CardActionArea>
           <CardContent>
             <Typography variant="h5">
-              {props.indident.ref_desc}
+              {props.indident.title}
             </Typography>
             <Typography>
-              {props.indident.date}
+              {props.indident.date?.toString()}
             </Typography>
           </CardContent>
         </CardActionArea>

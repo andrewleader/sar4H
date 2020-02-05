@@ -10,6 +10,8 @@ import ActiveMissionsCard from './ActiveMissionsCard';
 import { IIncidentListItem } from '../api/responses';
 import TopLevelCard from './TopLevelCard';
 import AllMissions from './AllMissions';
+import MissionListItemModel from '../models/missionListItemModel';
+import MissionsList from './MissionsList';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -38,36 +40,26 @@ const MembershipHome = (props: {
   let { path, url } = useRouteMatch();
 
   const [activeMissions, setActiveMissions] = React.useState<{
-    count: number;
+    list?: MissionListItemModel[];
     href: string;
   }>({
-    count: -1,
     href: '/activeMissions'
   });
 
   React.useEffect(() => {
 
     async function loadAsync() {
-      var draftIncidents = await props.membership.getIncidentsAsync({
-        published: 0
-      });
+      var activeMissions = await props.membership.getActiveMissionsAsync();
 
-      var activeMissions:IIncidentListItem[] = [];
-      draftIncidents.data.forEach((incident) => {
-        if (incident.enddate === undefined) {
-          activeMissions.push(incident);
-        }
-      });
-
-      var href = "/missions";
+      var href = `${url}/missions`;
       if (activeMissions.length === 1) {
-        href = activeMissions[0].id.toString();
+        href = url + '/missions/' + activeMissions[0].id.toString();
       } else if (activeMissions.length > 1) {
-        href = "/activeMissions";
+        href = `${url}/activeMissions`;
       }
 
       setActiveMissions({
-        count: activeMissions.length,
+        list: activeMissions,
         href: href
       });
     }
@@ -83,7 +75,7 @@ const MembershipHome = (props: {
     return (
       <div className={classes.cardsContainer}>
         <div className={classes.card}>
-          <ActiveMissionsCard count={activeMissions.count} href={activeMissions.href}/>
+          <ActiveMissionsCard count={activeMissions.list === undefined ? -1 : activeMissions.list.length} href={activeMissions.href}/>
         </div>
         <div className={classes.card}>
           <TopLevelCard text="Upcoming meetings/events" href="/meetings/upcoming"/>
@@ -110,6 +102,9 @@ const MembershipHome = (props: {
       </AppBar>
 
       <Switch>
+        <Route path={`${path}/activeMissions`}>
+          <MissionsList missions={activeMissions.list}/>
+        </Route>
         <Route path={`${path}/missions`}>
           <AllMissions membership={props.membership}/>
         </Route>

@@ -4,20 +4,21 @@ import Authorized from './Authorized';
 import MembershipModel from '../models/membershipModel';
 import { IIncidentListItem } from '../api/responses';
 import ListItemMission from './ListItemMission';
+import MissionListItemModel from '../models/missionListItemModel';
 
 const LatestMissions = (props: {
   membership: MembershipModel
 }) => {
-  const [missions, setMissions] = React.useState<IIncidentListItem[] | undefined>(undefined);
+  const [missions, setMissions] = React.useState<MissionListItemModel[] | undefined>(undefined);
 
   React.useEffect(() => {
 
     async function loadAsync() {
-      var result = await props.membership.getIncidentsAsync({
-        published: 0
+      var result = await props.membership.getMissionsAsync({
+        published: false
       });
 
-      setMissions(result.data);
+      setMissions(result);
     }
 
     loadAsync();
@@ -29,7 +30,7 @@ const LatestMissions = (props: {
 
   return (
     <div>
-      {missions.map((mission: IIncidentListItem) => {
+      {missions.map((mission) => {
         return <ListItemMission indident={mission}/>
       })}
     </div>

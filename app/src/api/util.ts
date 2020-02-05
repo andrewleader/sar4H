@@ -72,7 +72,10 @@ export default class Util {
     var url = new URL(baseUrl + relativeUrl);
 
     if (method === HttpMethod.GET && data) {
-      Object.keys(data).forEach(key => url.searchParams.append(key, data[key]));
+      Object.keys(data).forEach(key => {
+        if (data[key] !== undefined)
+          url.searchParams.append(key, data[key])
+      });
     }
 
     var requestInfo:any = {
@@ -83,7 +86,9 @@ export default class Util {
       const formData = new FormData();
 
       for (const property in data) {
-        formData.append(property, data[property]);
+        if (data[property] !== undefined) {
+          formData.append(property, data[property]);
+        }
       }
 
       requestInfo.body = formData;
