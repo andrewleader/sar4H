@@ -10,6 +10,7 @@ export default class MissionListItemModel {
   lat: number;
   lng: number;
   count_attendance: number; // # of attendees, like 4
+  description: string;
 
   constructor (source: IIncidentListItem) {
     this.id = source.id;
@@ -24,6 +25,7 @@ export default class MissionListItemModel {
     this.lat = source.lat;
     this.lng = source.lng;
     this.count_attendance = source.count_attendance;
+    this.description = source.description;
   }
 
   getFriendlyDate() {

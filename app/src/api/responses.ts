@@ -35,6 +35,7 @@ export interface IIncidentListItem {
   lat: number;
   lng: number;
   count_attendance: number; // # of attendees, like 4
+  description: string;
 }
 
 export interface IAttendanceListItem {

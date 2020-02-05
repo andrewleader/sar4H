@@ -8,10 +8,16 @@ import MembershipModel from '../models/membershipModel';
 
 const useStyles = makeStyles(theme => ({
   root: {
-    margin: "24px"
+    padding: "24px",
+    background: "white",
+    height: "100%"
   },
   date: {
     marginBottom: "24px"
+  },
+  description: {
+    marginBottom: "24px",
+    whiteSpace: "pre-line"
   },
   respondingSwitch: {
     marginBottom: "24px"
@@ -65,6 +71,10 @@ const ViewMission = (props: {
           label={responding ? 'Responding' : 'Not responding'}
           className={classes.respondingSwitch}
         />
+      
+      <Typography className={classes.description}>
+        {props.mission.description}
+      </Typography>
 
       <Typography variant="h6">
         Responders
