@@ -5,7 +5,8 @@ const baseUrl = "https://api.d4h.org/v2";
 
 export enum HttpMethod {
   GET = "GET",
-  POST = "POST"
+  POST = "POST",
+  DELETE = "DELETE"
 }
 
 export default class Util {
@@ -120,8 +121,12 @@ export default class Util {
       }
     }
 
-    var obj = await response.json();
-    return obj as T;
+    if (method != HttpMethod.DELETE) {
+      var obj = await response.json();
+      return obj as T;
+    }
+
+    return {} as T;
   }
 
 }

@@ -1,7 +1,7 @@
 import Api from "../api";
 import CookiesHelper from "../helpers/cookiesHelper";
 import ActivityListItemModel from "./activityListItemModel";
-import { IMemberListItem, IActivityListItem } from "../api/responses";
+import { IMemberListItem, IActivityListItem, IAttendanceListItem } from "../api/responses";
 import moment from "moment";
 
 export default class MembershipModel {
@@ -72,23 +72,18 @@ export default class MembershipModel {
     return model;
   }
 
-  private attendeesCache:Map<number, Promise<IMemberListItem[]>> = new Map<number, Promise<IMemberListItem[]>>();
+  private attendanceCache:Map<number, Promise<IAttendanceListItem[]>> = new Map<number, Promise<IAttendanceListItem[]>>();
 
-  getAttendingMembers(activityId: number) {
-    if (this.attendeesCache.has(activityId)) {
-      return this.attendeesCache.get(activityId);
+  getAttendanceAsync(activityId: number) {
+    if (this.attendanceCache.has(activityId)) {
+      return this.attendanceCache.get(activityId);
     }
 
     var promise = (async () => {
-      var result = await Api.getAttendanceAsync(this.token, activityId, "attending");
-      var answer: IMemberListItem[] = [];
-      result.forEach(attendance => {
-        answer.push(attendance.member);
-      });
-      return answer;
+      return await Api.getAttendanceAsync(this.token, activityId, "attending");
     })();
 
-    this.attendeesCache.set(activityId, promise);
+    this.attendanceCache.set(activityId, promise);
     return promise;
   }
 
@@ -96,7 +91,15 @@ export default class MembershipModel {
     await Api.addAttendanceAsync(this.token, activityId, this.memberId);
 
     // Clear affected caches
-    this.attendeesCache.delete(activityId);
+    this.attendanceCache.delete(activityId);
+    this.requestedActivites.delete(activityId);
+  }
+
+  async removeAttendingAsync(activityId: number, attendanceId: number) {
+    await Api.deleteAttendanceAsync(this.token, attendanceId);
+    
+    // Clear affected caches
+    this.attendanceCache.delete(activityId);
     this.requestedActivites.delete(activityId);
   }
 

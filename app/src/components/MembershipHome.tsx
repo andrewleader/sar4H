@@ -7,7 +7,7 @@ import Authorized from './Authorized';
 import MembershipModel from '../models/membershipModel';
 import LatestMissions from './LatestMissions';
 import ActiveMissionsCard from './ActiveMissionsCard';
-import { IActivityListItem, IMemberListItem } from '../api/responses';
+import { IActivityListItem, IMemberListItem, IAttendanceListItem } from '../api/responses';
 import TopLevelCard from './TopLevelCard';
 import AllMissions from './AllMissions';
 import ActivityListItemModel from '../models/activityListItemModel';
@@ -93,66 +93,61 @@ const MembershipHome = (props: {
     );
   }
 
-  const ViewMissionHandler = () => {
-    let { missionId } = useParams();
-
-    const [attendees, setAttendees] = React.useState<IMemberListItem[] | undefined>(undefined);
-
-    React.useEffect(() => {
-
-      async function loadAsync() {
-        setAttendees(await props.membership.getAttendingMembers(parseInt(missionId!)));
-      }
-  
-      loadAsync();
-    }, [missionId]);
-
-    var mission = activeMissions.list?.find(i => i.id.toString() === missionId);
-    if (mission) {
-      return <ViewActivity
-      activity={mission}
-      attendees={attendees}
-      isAttending={attendees !== undefined ? attendees.find(i => i.id == props.membership.getMemberId()) !== undefined : undefined}
-      actions={{
-        setAttending: () => {
-          // TODO
-        },
-        removeAttending: () => {
-          // TODO
-        }
-      }} />
-    } else {
-      return <p>Loading...</p>
-    }
-  }
-
   const ViewActivityHandler = () => {
     let { activityId } = useParams();
+    const activityIntNum = parseInt(activityId!);
 
     const [activity, setActivity] = React.useState<ActivityListItemModel | undefined>(undefined);
-    const [attendees, setAttendees] = React.useState<IMemberListItem[] | undefined>(undefined);
+    const [attendance, setAttendance] = React.useState<IAttendanceListItem[] | undefined>(undefined);
+    const [isAttending, setIsAttending] = React.useState<boolean>(false);
+    const [isLoadingIsAttending, setIsLoadingIsAttending] = React.useState<boolean>(true);
+
+    const loadAttendees = async () => {
+      var attendance = await props.membership.getAttendanceAsync(activityIntNum);
+      setIsAttending(attendance!.find(i => i.member.id === props.membership.getMemberId()) !== undefined);
+      setIsLoadingIsAttending(false);
+      setAttendance(attendance);
+    }
+
+    const reloadAttendees = () => {
+      setAttendance(undefined);
+      loadAttendees();
+    }
 
     React.useEffect(() => {
 
       async function loadAsync() {
-        setActivity(await props.membership.getActivityAsync(parseInt(activityId!)));
+        setActivity(await props.membership.getActivityAsync(activityIntNum));
 
-        setAttendees(await props.membership.getAttendingMembers(parseInt(activityId!)));
+        loadAttendees();
       }
   
       loadAsync();
     }, [activityId]);
 
+    var attendingMembers:IMemberListItem[] | undefined;
+    if (attendance) {
+      attendingMembers = [];
+      attendance.forEach(i => attendingMembers!.push(i.member));
+    }
+
     return <ViewActivity
       activity={activity}
-      attendees={attendees}
-      isAttending={attendees !== undefined ? attendees.find(i => i.id == props.membership.getMemberId()) !== undefined : undefined}
+      attendees={attendingMembers}
+      isAttending={isAttending}
+      isLoadingIsAttending={isLoadingIsAttending}
       actions={{
-        setAttending: () => {
-          // TODO
+        setAttending: async () => {
+          setIsLoadingIsAttending(true);
+          setIsAttending(true);
+          await props.membership.setAttendingAsync(activityIntNum);
+          reloadAttendees();
         },
-        removeAttending: () => {
-          // TODO
+        removeAttending: async () => {
+          setIsLoadingIsAttending(true);
+          setIsAttending(false);
+          await props.membership.removeAttendingAsync(activityIntNum, attendance!.find(i => i.member.id == props.membership.getMemberId())!.id);
+          reloadAttendees();
         }
       }} />
   }
@@ -183,7 +178,7 @@ const MembershipHome = (props: {
         <Route path={`${path}/missions/active`}>
           <ActivitiesList activities={activeMissions.list}/>
         </Route>
-        <Route path={`${path}/missions/:missionId`} children={<ViewMissionHandler/>}/>
+        <Route path={`${path}/missions/:missionId`} children={<ViewActivityHandler/>}/>
         <Route path={`${path}/missions`}>
           <AllMissions membership={props.membership}/>
         </Route>

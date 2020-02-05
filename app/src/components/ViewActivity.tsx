@@ -31,6 +31,7 @@ const useStyles = makeStyles(theme => ({
 const ViewActivity = (props: {
   activity: ActivityListItemModel | undefined,
   isAttending: boolean | undefined,
+  isLoadingIsAttending: boolean,
   attendees: IMemberListItem[] | undefined,
   actions?: {
     setAttending: Function,
@@ -61,7 +62,7 @@ const ViewActivity = (props: {
 
       <FormLabel component="legend">Are you {isMission ? 'responding' : 'attending'}?</FormLabel>
       <FormControlLabel
-          control={<Switch checked={props.isAttending} onChange={handleRespondingChange} value="responding" />}
+          control={<Switch checked={props.isAttending} onChange={handleRespondingChange} value="responding" disabled={props.isLoadingIsAttending} />}
           label={props.isAttending ? (isMission ? 'Responding' : 'Attending') : (isMission ? 'Not responding' : 'Not attending')}
           className={classes.respondingSwitch}
         />

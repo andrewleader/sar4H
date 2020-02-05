@@ -42,6 +42,10 @@ export default class Api {
     });
   }
 
+  static async deleteAttendanceAsync(memberToken: string, attendanceId: number) {
+    await Util.fetchAsync<any>(HttpMethod.DELETE, `/team/attendance/${attendanceId}`, memberToken);
+  }
+
   static async getEventsAsync(memberToken: string, parameters: {
     published: number, // 0-1, whether activity has been published
     limit?: number, // 1-251, number of records to return
