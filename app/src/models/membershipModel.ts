@@ -94,6 +94,10 @@ export default class MembershipModel {
 
   async setAttendingAsync(activityId: number) {
     await Api.addAttendanceAsync(this.token, activityId, this.memberId);
+
+    // Clear affected caches
+    this.attendeesCache.delete(activityId);
+    this.requestedActivites.delete(activityId);
   }
 
   private requestedActivites:Map<number, Promise<ActivityListItemModel>> = new Map<number, Promise<ActivityListItemModel>>();
