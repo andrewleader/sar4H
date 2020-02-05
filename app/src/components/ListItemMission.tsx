@@ -15,6 +15,9 @@ const ListItemMission = (props: {
             <Typography variant="h5">
               {props.indident.ref_desc}
             </Typography>
+            <Typography>
+              {props.indident.date}
+            </Typography>
           </CardContent>
         </CardActionArea>
       </Card>

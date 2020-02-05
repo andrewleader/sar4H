@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Switch, Route, useRouteMatch } from 'react-router-dom';
 import { AppBar, Toolbar, IconButton, Typography, Button, makeStyles } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import classes from '*.module.css';
@@ -8,6 +8,8 @@ import MembershipModel from '../models/membershipModel';
 import LatestMissions from './LatestMissions';
 import ActiveMissionsCard from './ActiveMissionsCard';
 import { IIncidentListItem } from '../api/responses';
+import TopLevelCard from './TopLevelCard';
+import AllMissions from './AllMissions';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -33,6 +35,7 @@ const MembershipHome = (props: {
   membership: MembershipModel
 }) => {
   const classes = useStyles();
+  let { path, url } = useRouteMatch();
 
   const [activeMissions, setActiveMissions] = React.useState<{
     count: number;
@@ -76,6 +79,22 @@ const MembershipHome = (props: {
     Authorized.logOut();
   }
 
+  const Home = () => {
+    return (
+      <div className={classes.cardsContainer}>
+        <div className={classes.card}>
+          <ActiveMissionsCard count={activeMissions.count} href={activeMissions.href}/>
+        </div>
+        <div className={classes.card}>
+          <TopLevelCard text="Upcoming meetings/events" href="/meetings/upcoming"/>
+        </div>
+        <div className={classes.card}>
+          <TopLevelCard text="Upcoming trainings" href="/trainings/upcoming"/>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={classes.root}>
       <AppBar position="static">
@@ -90,11 +109,14 @@ const MembershipHome = (props: {
         </Toolbar>
       </AppBar>
 
-      <div className={classes.cardsContainer}>
-        <div className={classes.card}>
-          <ActiveMissionsCard count={activeMissions.count} href={activeMissions.href}/>
-        </div>
-      </div>
+      <Switch>
+        <Route path={`${path}/missions`}>
+          <AllMissions membership={props.membership}/>
+        </Route>
+        <Route exact path={path}>
+          <Home/>
+        </Route>
+      </Switch>
       {/* <LatestMissions membership={props.membership}/> */}
     </div>
   );
