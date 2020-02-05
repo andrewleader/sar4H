@@ -7,7 +7,9 @@ import { makeStyles } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
   cardsContainer: {
-    margin: "24px"
+    padding: "24px",
+    height: "100%",
+    overflow: "auto"
   },
   card: {
     marginBottom: "24px"
