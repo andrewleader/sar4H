@@ -19,12 +19,13 @@ const Memberships = () => {
         result.data.documents.forEach((doc: any) => {
           memberships.push({
             name: doc.unit.name,
-            id: doc.id,
+            id: doc.unit.id,
             image: doc.unit.urls.image,
             token: doc.token
           });
 
-          CookiesHelper.setCookie("membership" + doc.id, doc.token, 365);
+          CookiesHelper.setCookie("membership" + doc.unit.id, doc.token, 365);
+          CookiesHelper.setCookie("membership" + doc.unit.id + "_memberId", doc.id, 365);
         });
 
         setData({

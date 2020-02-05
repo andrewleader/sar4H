@@ -3,11 +3,14 @@ import MembershipModel from '../models/membershipModel';
 import { IIncidentListItem } from '../api/responses';
 import ListItemMission from './ListItemMission';
 import MissionListItemModel from '../models/missionListItemModel';
+import { useParams, Switch, Route, useRouteMatch } from 'react-router-dom';
+import ViewMission from './ViewMission';
 
 const AllMissions = (props: {
   membership: MembershipModel
 }) => {
   const [missions, setMissions] = React.useState<MissionListItemModel[] | undefined>(undefined);
+  let { path, url } = useRouteMatch();
 
   React.useEffect(() => {
 
@@ -40,12 +43,28 @@ const AllMissions = (props: {
     return <p>Loading...</p>
   }
 
+  const ViewMissionHandler = () => {
+    let { missionId } = useParams();
+
+    var mission = missions.find(i => i.id.toString() === missionId);
+    if (mission) {
+      return <ViewMission membership={props.membership} mission={mission}/>
+    } else {
+      return <p>Loading...</p>
+    }
+  }
+
   return (
-    <div>
-      {missions.map((mission) => {
-        return <ListItemMission mission={mission}/>
-      })}
-    </div>
+    <Switch>
+      <Route path={`${path}/:missionId`} children={<ViewMissionHandler/>}/>
+      <Route path={path}>
+        <div>
+          {missions.map((mission) => {
+            return <ListItemMission mission={mission}/>
+          })}
+        </div>
+      </Route>
+    </Switch>
   );
 }
 

@@ -37,20 +37,29 @@ const ViewMission = (props: {
 
   const [respondingMembers, setRespondingMembers] = React.useState<IMemberListItem[] | undefined>(undefined);
   const [responding, setResponding] = React.useState<boolean>(false);
+  const [updatingResponding, setUpdatingResponding] = React.useState<boolean>(true);
+
+  const loadAsync = async () => {
+    var members = await props.membership.getAttendingMembers(props.mission.id);
+    if (members.find(i => i.id == 6)) {
+      setResponding(true);
+    } else {
+      setResponding(false);
+    }
+    setUpdatingResponding(false);
+    setRespondingMembers(members);
+  }
 
   React.useEffect(() => {
-
-    async function loadAsync() {
-      var members = await props.membership.getAttendingMembers(props.mission.id);
-      setRespondingMembers(members);
-    }
-
     loadAsync();
   }, [props.membership, props.mission]);
 
-  const handleRespondingChange = (event:any) => {
+  const handleRespondingChange = async (event:any) => {
+    setUpdatingResponding(true);
     if (event.target.checked) {
+      // await props.membership.setAttendingAsync(props.mission.id);
       setResponding(true);
+      loadAsync();
     } else {
       setResponding(false);
     }

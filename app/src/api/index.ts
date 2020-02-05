@@ -27,6 +27,15 @@ export default class Api {
     return response.data as Responses.IAttendanceListItem[];
   }
 
+  static async addAttendanceAsync(memberToken: string, activityId: number, memberId: number) {
+    await Util.fetchAsync<any>(HttpMethod.POST, "/team/attendance", memberToken, {
+      activity_id: activityId,
+      member: memberId,
+      status: "attending",
+      // date: new Date().toISOString() // Maybe we need dates?
+    });
+  }
+
   static async getAccountMembershipsAsync() {
     return await Util.fetchAuthenticatedAsync<any>(HttpMethod.GET, "/account/memberships");
   }

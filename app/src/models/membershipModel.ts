@@ -4,10 +4,16 @@ import MissionListItemModel from "./missionListItemModel";
 import { IMemberListItem } from "../api/responses";
 
 export default class MembershipModel {
+  private memberId: number;
   private token: string;
 
-  constructor(token: string) {
+  constructor(memberId: number, token: string) {
+    this.memberId = memberId;
     this.token = token;
+  }
+
+  getMemberId() {
+    return this.memberId;
   }
 
   async getActiveMissionsAsync() {
@@ -53,10 +59,15 @@ export default class MembershipModel {
     return answer;
   }
 
+  async setAttendingAsync(activityId: number) {
+    await Api.addAttendanceAsync(this.token, activityId, this.memberId);
+  }
+
   static get(membershipId: string) {
     var token = CookiesHelper.getCookie("membership" + membershipId);
-    if (token !== null) {
-      return new MembershipModel(token);
+    var memberId = CookiesHelper.getCookie("membership" + membershipId + "_memberId");
+    if (token !== null && memberId !== null) {
+      return new MembershipModel(parseInt(memberId), token);
     } else {
       return null;
     }
