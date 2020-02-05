@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { Link as RouterLink, useRouteMatch } from 'react-router-dom';
-import { IIncidentListItem } from '../api/responses';
+import { IActivityListItem } from '../api/responses';
 import { Link, Card, CardActionArea, CardContent, Typography, Badge, Grid } from '@material-ui/core';
-import MissionListItemModel from '../models/missionListItemModel';
+import ActivityListItemModel from '../models/activityListItemModel';
 import PersonIcon from '@material-ui/icons/Person';
 
 const ListItemMission = (props: {
-  mission: MissionListItemModel
+  mission: ActivityListItemModel
 }) => {
   let { path, url } = useRouteMatch();
 

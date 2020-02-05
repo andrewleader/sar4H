@@ -1,8 +1,8 @@
 import * as React from 'react';
 import MembershipModel from '../models/membershipModel';
-import { IIncidentListItem } from '../api/responses';
+import { IActivityListItem } from '../api/responses';
 import ListItemMission from './ListItemMission';
-import MissionListItemModel from '../models/missionListItemModel';
+import ActivityListItemModel from '../models/activityListItemModel';
 import { makeStyles } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
@@ -14,8 +14,8 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const MissionsList = (props: {
-  missions?: MissionListItemModel[]
+const MeetingsList = (props: {
+  missions?: ActivityListItemModel[]
 }) => {
 
   const classes = useStyles();
@@ -37,4 +37,4 @@ const MissionsList = (props: {
   );
 }
 
-export default MissionsList;
+export default MeetingsList;

@@ -2,14 +2,14 @@ import * as React from 'react';
 import Api from '../api';
 import Authorized from './Authorized';
 import MembershipModel from '../models/membershipModel';
-import { IIncidentListItem } from '../api/responses';
+import { IActivityListItem } from '../api/responses';
 import ListItemMission from './ListItemMission';
-import MissionListItemModel from '../models/missionListItemModel';
+import ActivityListItemModel from '../models/activityListItemModel';
 
 const LatestMissions = (props: {
   membership: MembershipModel
 }) => {
-  const [missions, setMissions] = React.useState<MissionListItemModel[] | undefined>(undefined);
+  const [missions, setMissions] = React.useState<ActivityListItemModel[] | undefined>(undefined);
 
   React.useEffect(() => {
 

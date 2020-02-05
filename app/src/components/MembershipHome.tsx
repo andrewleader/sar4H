@@ -7,12 +7,12 @@ import Authorized from './Authorized';
 import MembershipModel from '../models/membershipModel';
 import LatestMissions from './LatestMissions';
 import ActiveMissionsCard from './ActiveMissionsCard';
-import { IIncidentListItem } from '../api/responses';
+import { IActivityListItem } from '../api/responses';
 import TopLevelCard from './TopLevelCard';
 import AllMissions from './AllMissions';
-import MissionListItemModel from '../models/missionListItemModel';
-import MissionsList from './MissionsList';
-import ViewMission from './ViewMission';
+import ActivityListItemModel from '../models/activityListItemModel';
+import ActivitiesList from './ActivitiesList';
+import ViewActivity from './ViewActivity';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -40,8 +40,10 @@ const MembershipHome = (props: {
   const classes = useStyles();
   let { path, url } = useRouteMatch();
 
+  const [upcomingMeetings, setUpcomingMeetings] = React.useState<ActivityListItemModel[] | undefined>(undefined);
+
   const [activeMissions, setActiveMissions] = React.useState<{
-    list?: MissionListItemModel[];
+    list?: ActivityListItemModel[];
     href: string;
   }>({
     href: '/activeMissions'
@@ -63,6 +65,8 @@ const MembershipHome = (props: {
         list: activeMissions,
         href: href
       });
+
+      setUpcomingMeetings(await props.membership.getUpcomingMeetingsAsync());
     }
 
     loadAsync();
@@ -79,10 +83,10 @@ const MembershipHome = (props: {
           <ActiveMissionsCard count={activeMissions.list === undefined ? -1 : activeMissions.list.length} href={activeMissions.href}/>
         </div>
         <div className={classes.card}>
-          <TopLevelCard text="Upcoming meetings/events" href="/meetings/upcoming"/>
+          <TopLevelCard text="Upcoming meetings/events" href={`${url}/meetings/upcoming`}/>
         </div>
         <div className={classes.card}>
-          <TopLevelCard text="Upcoming trainings" href="/trainings/upcoming"/>
+          <TopLevelCard text="Upcoming trainings" href={`${url}/trainings/upcoming`}/>
         </div>
       </div>
     );
@@ -93,10 +97,18 @@ const MembershipHome = (props: {
 
     var mission = activeMissions.list?.find(i => i.id.toString() === missionId);
     if (mission) {
-      return <ViewMission membership={props.membership} mission={mission}/>
+      return <ViewActivity membership={props.membership} activity={mission}/>
     } else {
       return <p>Loading...</p>
     }
+  }
+
+  const UpcomingMeetings = () => {
+    if (upcomingMeetings === undefined) {
+      return <p>Loading...</p>
+    }
+
+    return <ActivitiesList activities={upcomingMeetings}/>
   }
 
   return (
@@ -115,12 +127,14 @@ const MembershipHome = (props: {
 
       <Switch>
         <Route path={`${path}/activeMissions/:missionId`} children={<ViewMissionHandler/>}/>
-        <Route path={`${path}/missions/:missionId`} children={<ViewMissionHandler/>}/>
         <Route path={`${path}/activeMissions`}>
-          <MissionsList missions={activeMissions.list}/>
+          <ActivitiesList activities={activeMissions.list}/>
         </Route>
         <Route path={`${path}/missions`}>
           <AllMissions membership={props.membership}/>
+        </Route>
+        <Route path={`${path}/meetings/upcoming`}>
+          <UpcomingMeetings/>
         </Route>
         <Route exact path={path}>
           <Home/>

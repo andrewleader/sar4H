@@ -23,10 +23,10 @@ export interface IErrorResponse {
 }
 
 export interface IIncidentsResponse {
-  data: IIncidentListItem[];
+  data: IActivityListItem[];
 }
 
-export interface IIncidentListItem {
+export interface IActivityListItem {
   id: number;
   published: number; // 0 or 1
   date: string; // "2018-10-06T18:30:00.000Z"

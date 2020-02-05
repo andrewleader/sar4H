@@ -1,7 +1,8 @@
 import Api from "../api";
 import CookiesHelper from "../helpers/cookiesHelper";
-import MissionListItemModel from "./missionListItemModel";
+import ActivityListItemModel from "./activityListItemModel";
 import { IMemberListItem } from "../api/responses";
+import moment from "moment";
 
 export default class MembershipModel {
   private memberId: number;
@@ -21,7 +22,7 @@ export default class MembershipModel {
       published: false
     });
 
-    var activeMissions:MissionListItemModel[] = [];
+    var activeMissions:ActivityListItemModel[] = [];
     draftMissions.forEach((mission) => {
       if (mission.enddate === undefined || mission.enddate > new Date()) {
         activeMissions.push(mission);
@@ -40,12 +41,27 @@ export default class MembershipModel {
       limit: parameters.limit,
       offset: parameters.offset
     });
-    var answer: MissionListItemModel[] = [];
-    result.data.forEach((incident) => {
+    var answer: ActivityListItemModel[] = [];
+    result.data.forEach((activity) => {
       // Ignore missions that don't have a date
-      if (incident.date) {
-        answer.push(new MissionListItemModel(incident));
+      if (activity.date) {
+        answer.push(new ActivityListItemModel(activity));
       }
+    });
+    return answer;
+  }
+
+  async getUpcomingMeetingsAsync() {
+    var result = await Api.getEventsAsync(this.token, {
+      published: 0,
+      after: moment().startOf('day').toISOString()
+    });
+    var answer: ActivityListItemModel[] = [];
+    result.data.forEach((activity) => {
+      // Ignore missions that don't have a date
+      // if (activity.date) {
+        answer.push(new ActivityListItemModel(activity));
+      // }
     });
     return answer;
   }

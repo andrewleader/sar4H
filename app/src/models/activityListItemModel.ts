@@ -1,7 +1,7 @@
-import { IIncidentListItem } from "../api/responses";
+import { IActivityListItem } from "../api/responses";
 import moment from 'moment';
 
-export default class MissionListItemModel {
+export default class ActivityListItemModel {
   id: number;
   published: boolean;
   date?: Date; // "2018-10-06T18:30:00.000Z"
@@ -12,7 +12,7 @@ export default class MissionListItemModel {
   count_attendance: number; // # of attendees, like 4
   description: string;
 
-  constructor (source: IIncidentListItem) {
+  constructor (source: IActivityListItem) {
     this.id = source.id;
     this.published = source.published === 1;
     if (source.date) {

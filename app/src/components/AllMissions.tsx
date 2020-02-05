@@ -1,15 +1,15 @@
 import * as React from 'react';
 import MembershipModel from '../models/membershipModel';
-import { IIncidentListItem } from '../api/responses';
+import { IActivityListItem } from '../api/responses';
 import ListItemMission from './ListItemMission';
-import MissionListItemModel from '../models/missionListItemModel';
+import ActivityListItemModel from '../models/activityListItemModel';
 import { useParams, Switch, Route, useRouteMatch } from 'react-router-dom';
-import ViewMission from './ViewMission';
+import ViewActivity from './ViewActivity';
 
 const AllMissions = (props: {
   membership: MembershipModel
 }) => {
-  const [missions, setMissions] = React.useState<MissionListItemModel[] | undefined>(undefined);
+  const [missions, setMissions] = React.useState<ActivityListItemModel[] | undefined>(undefined);
   let { path, url } = useRouteMatch();
 
   React.useEffect(() => {
@@ -23,7 +23,7 @@ const AllMissions = (props: {
         published: true
       });
 
-      var missions: MissionListItemModel[] = [];
+      var missions: ActivityListItemModel[] = [];
       publishedMissions.forEach((mission) => {
         missions.splice(0, 0, mission);
       });
@@ -48,7 +48,7 @@ const AllMissions = (props: {
 
     var mission = missions.find(i => i.id.toString() === missionId);
     if (mission) {
-      return <ViewMission membership={props.membership} mission={mission}/>
+      return <ViewActivity membership={props.membership} activity={mission}/>
     } else {
       return <p>Loading...</p>
     }

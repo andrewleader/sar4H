@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { Link as RouterLink, useRouteMatch } from 'react-router-dom';
-import { IIncidentListItem, IMemberListItem } from '../api/responses';
+import { IActivityListItem, IMemberListItem } from '../api/responses';
 import { Link, Card, CardActionArea, CardContent, Typography, FormLabel, FormControlLabel, Switch } from '@material-ui/core';
-import MissionListItemModel from '../models/missionListItemModel';
+import ActivityListItemModel from '../models/activityListItemModel';
 import { makeStyles } from '@material-ui/core';
 import MembershipModel from '../models/membershipModel';
 
@@ -27,9 +27,9 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const ViewMission = (props: {
+const ViewActivity = (props: {
   membership: MembershipModel,
-  mission: MissionListItemModel
+  activity: ActivityListItemModel
 }) => {
   let { path, url } = useRouteMatch();
 
@@ -40,7 +40,7 @@ const ViewMission = (props: {
   const [updatingResponding, setUpdatingResponding] = React.useState<boolean>(true);
 
   const loadAsync = async () => {
-    var members = await props.membership.getAttendingMembers(props.mission.id);
+    var members = await props.membership.getAttendingMembers(props.activity.id);
     if (members.find(i => i.id == 6)) {
       setResponding(true);
     } else {
@@ -52,7 +52,7 @@ const ViewMission = (props: {
 
   React.useEffect(() => {
     loadAsync();
-  }, [props.membership, props.mission]);
+  }, [props.membership, props.activity]);
 
   const handleRespondingChange = async (event:any) => {
     setUpdatingResponding(true);
@@ -68,10 +68,10 @@ const ViewMission = (props: {
   return (
     <div className={classes.root}>
       <Typography variant="h5">
-        {props.mission.title}
+        {props.activity.title}
       </Typography>
       <Typography color="textSecondary" className={classes.date}>
-        {props.mission.getFriendlyDate()}
+        {props.activity.getFriendlyDate()}
       </Typography>
 
       <FormLabel component="legend">Are you responding?</FormLabel>
@@ -82,7 +82,7 @@ const ViewMission = (props: {
         />
       
       <Typography className={classes.description}>
-        {props.mission.description}
+        {props.activity.description}
       </Typography>
 
       <Typography variant="h6">
@@ -101,4 +101,4 @@ const ViewMission = (props: {
   );
 }
 
-export default ViewMission;
+export default ViewActivity;
