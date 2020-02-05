@@ -178,7 +178,7 @@ const MembershipHome = (props: {
         <Route path={`${path}/missions/active`}>
           <ActivitiesList activities={activeMissions.list}/>
         </Route>
-        <Route path={`${path}/missions/:missionId`} children={<ViewActivityHandler/>}/>
+        <Route path={`${path}/missions/:activityId`} children={<ViewActivityHandler/>}/>
         <Route path={`${path}/missions`}>
           <AllMissions membership={props.membership}/>
         </Route>
