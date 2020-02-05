@@ -7,12 +7,13 @@ import Authorized from './Authorized';
 import MembershipModel from '../models/membershipModel';
 import LatestMissions from './LatestMissions';
 import ActiveMissionsCard from './ActiveMissionsCard';
-import { IActivityListItem } from '../api/responses';
+import { IActivityListItem, IMemberListItem } from '../api/responses';
 import TopLevelCard from './TopLevelCard';
 import AllMissions from './AllMissions';
 import ActivityListItemModel from '../models/activityListItemModel';
 import ActivitiesList from './ActivitiesList';
 import ViewActivity from './ViewActivity';
+import MembershipController from '../controllers/membershipController';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -46,7 +47,7 @@ const MembershipHome = (props: {
     list?: ActivityListItemModel[];
     href: string;
   }>({
-    href: '/activeMissions'
+    href: `${url}/missions/active`
   });
 
   React.useEffect(() => {
@@ -58,7 +59,7 @@ const MembershipHome = (props: {
       if (activeMissions.length === 1) {
         href = url + '/missions/' + activeMissions[0].id.toString();
       } else if (activeMissions.length > 1) {
-        href = `${url}/activeMissions`;
+        href = `${url}/missions/active`;
       }
 
       setActiveMissions({
@@ -95,12 +96,65 @@ const MembershipHome = (props: {
   const ViewMissionHandler = () => {
     let { missionId } = useParams();
 
+    const [attendees, setAttendees] = React.useState<IMemberListItem[] | undefined>(undefined);
+
+    React.useEffect(() => {
+
+      async function loadAsync() {
+        setAttendees(await props.membership.getAttendingMembers(parseInt(missionId!)));
+      }
+  
+      loadAsync();
+    }, [missionId]);
+
     var mission = activeMissions.list?.find(i => i.id.toString() === missionId);
     if (mission) {
-      return <ViewActivity membership={props.membership} activity={mission}/>
+      return <ViewActivity
+      activity={mission}
+      attendees={attendees}
+      isAttending={attendees !== undefined ? attendees.find(i => i.id == props.membership.getMemberId()) !== undefined : undefined}
+      actions={{
+        setAttending: () => {
+          // TODO
+        },
+        removeAttending: () => {
+          // TODO
+        }
+      }} />
     } else {
       return <p>Loading...</p>
     }
+  }
+
+  const ViewActivityHandler = () => {
+    let { activityId } = useParams();
+
+    const [activity, setActivity] = React.useState<ActivityListItemModel | undefined>(undefined);
+    const [attendees, setAttendees] = React.useState<IMemberListItem[] | undefined>(undefined);
+
+    React.useEffect(() => {
+
+      async function loadAsync() {
+        setActivity(await props.membership.getActivityAsync(parseInt(activityId!)));
+
+        setAttendees(await props.membership.getAttendingMembers(parseInt(activityId!)));
+      }
+  
+      loadAsync();
+    }, [activityId]);
+
+    return <ViewActivity
+      activity={activity}
+      attendees={attendees}
+      isAttending={attendees !== undefined ? attendees.find(i => i.id == props.membership.getMemberId()) !== undefined : undefined}
+      actions={{
+        setAttending: () => {
+          // TODO
+        },
+        removeAttending: () => {
+          // TODO
+        }
+      }} />
   }
 
   const UpcomingMeetings = () => {
@@ -126,16 +180,17 @@ const MembershipHome = (props: {
       </AppBar>
 
       <Switch>
-        <Route path={`${path}/activeMissions/:missionId`} children={<ViewMissionHandler/>}/>
-        <Route path={`${path}/activeMissions`}>
+        <Route path={`${path}/missions/active`}>
           <ActivitiesList activities={activeMissions.list}/>
         </Route>
+        <Route path={`${path}/missions/:missionId`} children={<ViewMissionHandler/>}/>
         <Route path={`${path}/missions`}>
           <AllMissions membership={props.membership}/>
         </Route>
         <Route path={`${path}/meetings/upcoming`}>
           <UpcomingMeetings/>
         </Route>
+        <Route path={`${path}/meetings/:activityId`} children={<ViewActivityHandler/>}/>
         <Route exact path={path}>
           <Home/>
         </Route>

@@ -2,9 +2,10 @@ import * as React from 'react';
 import { Link as RouterLink, useRouteMatch } from 'react-router-dom';
 import { IActivityListItem, IMemberListItem } from '../api/responses';
 import { Link, Card, CardActionArea, CardContent, Typography, FormLabel, FormControlLabel, Switch } from '@material-ui/core';
-import ActivityListItemModel from '../models/activityListItemModel';
+import ActivityListItemModel, { ActivityType } from '../models/activityListItemModel';
 import { makeStyles } from '@material-ui/core';
 import MembershipModel from '../models/membershipModel';
+import MembershipController from '../controllers/membershipController';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -28,69 +29,53 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const ViewActivity = (props: {
-  membership: MembershipModel,
-  activity: ActivityListItemModel
+  activity: ActivityListItemModel | undefined,
+  isAttending: boolean | undefined,
+  attendees: IMemberListItem[] | undefined,
+  actions?: {
+    setAttending: Function,
+    removeAttending: Function
+  }
 }) => {
-  let { path, url } = useRouteMatch();
+  const isMission = props.activity?.isMission();
 
   const classes = useStyles();
 
-  const [respondingMembers, setRespondingMembers] = React.useState<IMemberListItem[] | undefined>(undefined);
-  const [responding, setResponding] = React.useState<boolean>(false);
-  const [updatingResponding, setUpdatingResponding] = React.useState<boolean>(true);
-
-  const loadAsync = async () => {
-    var members = await props.membership.getAttendingMembers(props.activity.id);
-    if (members.find(i => i.id == 6)) {
-      setResponding(true);
-    } else {
-      setResponding(false);
-    }
-    setUpdatingResponding(false);
-    setRespondingMembers(members);
-  }
-
-  React.useEffect(() => {
-    loadAsync();
-  }, [props.membership, props.activity]);
-
   const handleRespondingChange = async (event:any) => {
-    setUpdatingResponding(true);
+    // setUpdatingResponding(true);
     if (event.target.checked) {
-      // await props.membership.setAttendingAsync(props.mission.id);
-      setResponding(true);
-      loadAsync();
+      props.actions?.setAttending();
     } else {
-      setResponding(false);
+      props.actions?.removeAttending();
     }
   }
 
   return (
     <div className={classes.root}>
       <Typography variant="h5">
-        {props.activity.title}
+        {props.activity?.title || "Loading..."}
       </Typography>
       <Typography color="textSecondary" className={classes.date}>
-        {props.activity.getFriendlyDate()}
+        {props.activity?.getFriendlyDate()}
       </Typography>
 
-      <FormLabel component="legend">Are you responding?</FormLabel>
+      <FormLabel component="legend">Are you {isMission ? 'responding' : 'attending'}?</FormLabel>
       <FormControlLabel
-          control={<Switch checked={responding} onChange={handleRespondingChange} value="responding" />}
-          label={responding ? 'Responding' : 'Not responding'}
+          control={<Switch checked={props.isAttending} onChange={handleRespondingChange} value="responding" />}
+          label={props.isAttending ? (isMission ? 'Responding' : 'Attending') : (isMission ? 'Not responding' : 'Not attending')}
           className={classes.respondingSwitch}
         />
       
       <Typography className={classes.description}>
-        {props.activity.description}
+        {props.activity?.description}
       </Typography>
 
       <Typography variant="h6">
-        Responders
+        {isMission ? 'Responders' : 'Attendees'}
       </Typography>
 
-      {respondingMembers ? (
-        respondingMembers.map(member => {
+      {props.attendees ? (
+        props.attendees.map(member => {
           return <p key={member.id}>{member.name}</p>
         })
       ) : (

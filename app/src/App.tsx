@@ -48,7 +48,7 @@ const App = () => {
         <div className={classes.root}>
           <Switch>
 
-            <Route path="/:membershipId">
+            <Route path="/:unitId">
               <Membership/>
             </Route>
 
@@ -80,7 +80,7 @@ export default App;
 
 
 const Membership = () => {
-  let { membershipId } = useParams();
-  var membershipModel = MembershipModel.get(membershipId!);
+  let { unitId } = useParams();
+  var membershipModel = MembershipModel.get(unitId!);
   return <MembershipHome membership={membershipModel!}/>
 }

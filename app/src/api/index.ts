@@ -20,9 +20,15 @@ export default class Api {
     return await Util.fetchAsync<IIncidentsResponse>(HttpMethod.GET, "/team/incidents", memberToken, parameters);
   }
 
-  static async getAttendanceAsync(memberToken: string, activityId: number) {
+  static async getActivityAsync(memberToken: string, activityId: number) {
+    var response = await Util.fetchAsync<any>(HttpMethod.GET, `/team/activities/${activityId}`, memberToken);
+    return response.data as Responses.IActivityListItem;
+  }
+
+  static async getAttendanceAsync(memberToken: string, activityId: number, status?: string) {
     var response = await Util.fetchAsync<any>(HttpMethod.GET, "/team/attendance", memberToken, {
-      activity_id: activityId
+      activity_id: activityId,
+      status: status
     });
     return response.data as Responses.IAttendanceListItem[];
   }

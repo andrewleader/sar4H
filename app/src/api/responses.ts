@@ -36,11 +36,13 @@ export interface IActivityListItem {
   lng: number;
   count_attendance: number; // # of attendees, like 4
   description: string;
+  activity: string; // "incident", "event", etc
 }
 
 export interface IAttendanceListItem {
   id: number,
-  member: IMemberListItem
+  member: IMemberListItem,
+  status: string // "attending", "requested", or "absent"
 }
 
 export interface IMemberListItem {

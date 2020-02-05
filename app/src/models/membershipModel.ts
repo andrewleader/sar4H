@@ -1,7 +1,7 @@
 import Api from "../api";
 import CookiesHelper from "../helpers/cookiesHelper";
 import ActivityListItemModel from "./activityListItemModel";
-import { IMemberListItem } from "../api/responses";
+import { IMemberListItem, IActivityListItem } from "../api/responses";
 import moment from "moment";
 
 export default class MembershipModel {
@@ -45,7 +45,7 @@ export default class MembershipModel {
     result.data.forEach((activity) => {
       // Ignore missions that don't have a date
       if (activity.date) {
-        answer.push(new ActivityListItemModel(activity));
+        answer.push(this.createActivityListItemModel(activity));
       }
     });
     return answer;
@@ -60,14 +60,20 @@ export default class MembershipModel {
     result.data.forEach((activity) => {
       // Ignore missions that don't have a date
       // if (activity.date) {
-        answer.push(new ActivityListItemModel(activity));
+        answer.push(this.createActivityListItemModel(activity));
       // }
     });
     return answer;
   }
 
+  private createActivityListItemModel(activity: IActivityListItem) {
+    var model = new ActivityListItemModel(activity);
+    this.requestedActivites.set(model.id, Promise.resolve(model));
+    return model;
+  }
+
   async getAttendingMembers(activityId: number) {
-    var result = await Api.getAttendanceAsync(this.token, activityId);
+    var result = await Api.getAttendanceAsync(this.token, activityId, "attending");
     var answer: IMemberListItem[] = [];
     result.forEach(attendance => {
       answer.push(attendance.member);
@@ -79,11 +85,35 @@ export default class MembershipModel {
     await Api.addAttendanceAsync(this.token, activityId, this.memberId);
   }
 
+  private requestedActivites:Map<number, Promise<ActivityListItemModel>> = new Map<number, Promise<ActivityListItemModel>>();
+
+  getActivityAsync(activityId: number) {
+    if (this.requestedActivites.has(activityId)) {
+      return this.requestedActivites.get(activityId);
+    } else {
+      var promise = this.getActivityHelperAsync(activityId);
+      this.requestedActivites.set(activityId, promise);
+      return promise;
+    }
+  }
+
+  private async getActivityHelperAsync(activityId: number) {
+    return new ActivityListItemModel(await Api.getActivityAsync(this.token, activityId));
+  }
+
+  static membershipModels:Map<string, MembershipModel> = new Map<string, MembershipModel>();
+
   static get(membershipId: string) {
+    if (this.membershipModels.has(membershipId)) {
+      return this.membershipModels.get(membershipId);
+    }
+
     var token = CookiesHelper.getCookie("membership" + membershipId);
     var memberId = CookiesHelper.getCookie("membership" + membershipId + "_memberId");
     if (token !== null && memberId !== null) {
-      return new MembershipModel(parseInt(memberId), token);
+      var model = new MembershipModel(parseInt(memberId), token);
+      this.membershipModels.set(membershipId, model);
+      return model;
     } else {
       return null;
     }

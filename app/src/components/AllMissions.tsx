@@ -48,7 +48,8 @@ const AllMissions = (props: {
 
     var mission = missions.find(i => i.id.toString() === missionId);
     if (mission) {
-      return <ViewActivity membership={props.membership} activity={mission}/>
+      return <p>Not implemented</p>
+      // return <ViewActivity membership={props.membership} activity={mission}/>
     } else {
       return <p>Loading...</p>
     }

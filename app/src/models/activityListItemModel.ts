@@ -1,6 +1,12 @@
 import { IActivityListItem } from "../api/responses";
 import moment from 'moment';
 
+export enum ActivityType {
+  mission,
+  meeting,
+  training
+}
+
 export default class ActivityListItemModel {
   id: number;
   published: boolean;
@@ -11,6 +17,7 @@ export default class ActivityListItemModel {
   lng: number;
   count_attendance: number; // # of attendees, like 4
   description: string;
+  type: ActivityType;
 
   constructor (source: IActivityListItem) {
     this.id = source.id;
@@ -26,6 +33,17 @@ export default class ActivityListItemModel {
     this.lng = source.lng;
     this.count_attendance = source.count_attendance;
     this.description = source.description;
+    switch (source.activity) {
+      case "incident":
+        this.type = ActivityType.mission;
+        break;
+      case "event":
+        this.type = ActivityType.meeting;
+        break;
+      default:
+        this.type = ActivityType.training;
+        break;
+    }
   }
 
   getFriendlyDate() {
@@ -40,5 +58,22 @@ export default class ActivityListItemModel {
       });
     }
     return "Not scheduled";
+  }
+
+  isMission() {
+    return this.type === ActivityType.mission;
+  }
+
+  getPathType() {
+    switch (this.type) {
+      case ActivityType.mission:
+        return "missions";
+      case ActivityType.meeting:
+        return "meetings";
+      case ActivityType.training:
+        return "trainings";
+      default:
+        return "unknown";
+    }
   }
 }
