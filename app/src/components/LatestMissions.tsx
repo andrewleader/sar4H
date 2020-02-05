@@ -13,7 +13,9 @@ const LatestMissions = (props: {
   React.useEffect(() => {
 
     async function loadAsync() {
-      var result = await props.membership.getIncidentsAsync();
+      var result = await props.membership.getIncidentsAsync({
+        published: 0
+      });
 
       setMissions(result.data);
     }

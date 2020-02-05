@@ -23,7 +23,8 @@ import MembershipModel from './models/membershipModel';
 
 const useStyles = makeStyles(theme => ({
   root: {
-    flexGrow: 1,
+    height: "100%",
+    flexGrow: 1
   },
   menuButton: {
     marginRight: theme.spacing(2),

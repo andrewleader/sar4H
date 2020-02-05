@@ -8,10 +8,12 @@ export default class MembershipModel {
     this.token = token;
   }
 
-  async getIncidentsAsync() {
-    return await Api.getIncidentsAsync(this.token, {
-      published: 1
-    });
+  async getIncidentsAsync(parameters: {
+    published: number, // 0-1, whether activity has been published
+    limit?: number, // 1-251, number of records to return
+    offset?: number // >=0, number of records to skip from the start
+  }) {
+    return await Api.getIncidentsAsync(this.token, parameters);
   }
 
   static get(membershipId: string) {
