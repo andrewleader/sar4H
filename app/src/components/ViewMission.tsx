@@ -13,7 +13,7 @@ const useStyles = makeStyles(theme => ({
   date: {
     marginBottom: "24px"
   },
-  attendingSwitch: {
+  respondingSwitch: {
     marginBottom: "24px"
   },
   card: {
@@ -29,24 +29,24 @@ const ViewMission = (props: {
 
   const classes = useStyles();
 
-  const [attendingMembers, setAttendingMembers] = React.useState<IMemberListItem[] | undefined>(undefined);
-  const [attending, setAttending] = React.useState<boolean>(false);
+  const [respondingMembers, setRespondingMembers] = React.useState<IMemberListItem[] | undefined>(undefined);
+  const [responding, setResponding] = React.useState<boolean>(false);
 
   React.useEffect(() => {
 
     async function loadAsync() {
       var members = await props.membership.getAttendingMembers(props.mission.id);
-      setAttendingMembers(members);
+      setRespondingMembers(members);
     }
 
     loadAsync();
   }, [props.membership, props.mission]);
 
-  const handleAttendingChange = (event:any) => {
+  const handleRespondingChange = (event:any) => {
     if (event.target.checked) {
-      setAttending(true);
+      setResponding(true);
     } else {
-      setAttending(false);
+      setResponding(false);
     }
   }
 
@@ -59,19 +59,19 @@ const ViewMission = (props: {
         {props.mission.getFriendlyDate()}
       </Typography>
 
-      <FormLabel component="legend">Are you attending?</FormLabel>
+      <FormLabel component="legend">Are you responding?</FormLabel>
       <FormControlLabel
-          control={<Switch checked={attending} onChange={handleAttendingChange} value="attending" />}
-          label={attending ? 'Attending' : 'Not attending'}
-          className={classes.attendingSwitch}
+          control={<Switch checked={responding} onChange={handleRespondingChange} value="responding" />}
+          label={responding ? 'Responding' : 'Not responding'}
+          className={classes.respondingSwitch}
         />
 
       <Typography variant="h6">
-        Attendees
+        Responders
       </Typography>
 
-      {attendingMembers ? (
-        attendingMembers.map(member => {
+      {respondingMembers ? (
+        respondingMembers.map(member => {
           return <p key={member.id}>{member.name}</p>
         })
       ) : (
