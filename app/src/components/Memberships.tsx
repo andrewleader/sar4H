@@ -1,5 +1,7 @@
 import * as React from 'react';
 import Api from '../api';
+import ListItemMembership from './ListItemMembership';
+import CookiesHelper from '../helpers/cookiesHelper';
 
 const Memberships = () => {
   const [data, setData] = React.useState<{
@@ -17,9 +19,12 @@ const Memberships = () => {
         result.data.documents.forEach((doc: any) => {
           memberships.push({
             name: doc.unit.name,
+            id: doc.id,
             image: doc.unit.urls.image,
             token: doc.token
           });
+
+          CookiesHelper.setCookie("membership" + doc.id, doc.token, 365);
         });
 
         setData({
@@ -44,7 +49,11 @@ const Memberships = () => {
     }
 
     return (
-      <p>{JSON.stringify(data.memberships)}</p>
+      <div>
+        {data.memberships.map((membership: any) => {
+          return <ListItemMembership name={membership.name} id={membership.id}/>
+        })}
+      </div>
     )
   }
 

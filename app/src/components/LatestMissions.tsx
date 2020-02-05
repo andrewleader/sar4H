@@ -1,26 +1,36 @@
 import * as React from 'react';
 import Api from '../api';
 import Authorized from './Authorized';
+import MembershipModel from '../models/membershipModel';
+import { IIncidentListItem } from '../api/responses';
+import ListItemMission from './ListItemMission';
 
-const LatestMissions = () => {
-  const [missions, setMissions] = React.useState<string | undefined>(undefined);
+const LatestMissions = (props: {
+  membership: MembershipModel
+}) => {
+  const [missions, setMissions] = React.useState<IIncidentListItem[] | undefined>(undefined);
 
   React.useEffect(() => {
 
     async function loadAsync() {
-      var result = await Api.getIncedentsAsync({
-        published: 1
-      });
+      var result = await props.membership.getIncidentsAsync();
 
-      setMissions(JSON.stringify(result));
+      setMissions(result.data);
     }
 
-    // loadAsync();
-    setMissions(Authorized.getToken()!);
+    loadAsync();
   }, []);
 
+  if (missions === undefined) {
+    return <p>Loading...</p>
+  }
+
   return (
-    <p>Missions: {missions}</p>
+    <div>
+      {missions.map((mission: IIncidentListItem) => {
+        return <ListItemMission indident={mission}/>
+      })}
+    </div>
   );
 }
 

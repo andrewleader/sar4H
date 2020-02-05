@@ -60,6 +60,15 @@ export default class Util {
   }
 
   static async fetchAuthenticatedAsync<T>(method: HttpMethod, relativeUrl: string, data?: any): Promise<T> {
+    var token = Authorized.getToken();
+    if (token) {
+      return await Util.fetchAsync(method, relativeUrl, token, data);
+    } else {
+      throw new Error("Token was null");
+    }
+  }
+
+  static async fetchAsync<T>(method: HttpMethod, relativeUrl: string, token: string, data?: any): Promise<T> {
     var url = new URL(baseUrl + relativeUrl);
 
     if (method === HttpMethod.GET && data) {
@@ -80,7 +89,6 @@ export default class Util {
       requestInfo.body = formData;
     }
 
-    var token = Authorized.getToken();
     if (token) {
       requestInfo.headers = {
         'Authorization': 'Bearer ' + token
@@ -88,8 +96,6 @@ export default class Util {
     } else {
       throw new Error("Token was null");
     }
-
-    alert(JSON.stringify(requestInfo));
 
     var response = await fetch(url.href, requestInfo);
 
