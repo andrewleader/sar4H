@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Link as RouterLink, useRouteMatch } from 'react-router-dom';
 import { IIncidentListItem, IMemberListItem } from '../api/responses';
-import { Link, Card, CardActionArea, CardContent, Typography } from '@material-ui/core';
+import { Link, Card, CardActionArea, CardContent, Typography, FormLabel, FormControlLabel, Switch } from '@material-ui/core';
 import MissionListItemModel from '../models/missionListItemModel';
 import { makeStyles } from '@material-ui/core';
 import MembershipModel from '../models/membershipModel';
@@ -9,6 +9,12 @@ import MembershipModel from '../models/membershipModel';
 const useStyles = makeStyles(theme => ({
   root: {
     margin: "24px"
+  },
+  date: {
+    marginBottom: "24px"
+  },
+  attendingSwitch: {
+    marginBottom: "24px"
   },
   card: {
     marginBottom: "24px"
@@ -24,6 +30,7 @@ const ViewMission = (props: {
   const classes = useStyles();
 
   const [attendingMembers, setAttendingMembers] = React.useState<IMemberListItem[] | undefined>(undefined);
+  const [attending, setAttending] = React.useState<boolean>(false);
 
   React.useEffect(() => {
 
@@ -35,14 +42,29 @@ const ViewMission = (props: {
     loadAsync();
   }, [props.membership, props.mission]);
 
+  const handleAttendingChange = (event:any) => {
+    if (event.target.checked) {
+      setAttending(true);
+    } else {
+      setAttending(false);
+    }
+  }
+
   return (
     <div className={classes.root}>
       <Typography variant="h5">
         {props.mission.title}
       </Typography>
-      <Typography color="textSecondary">
+      <Typography color="textSecondary" className={classes.date}>
         {props.mission.date?.toString()}
       </Typography>
+
+      <FormLabel component="legend">Are you attending?</FormLabel>
+      <FormControlLabel
+          control={<Switch checked={attending} onChange={handleAttendingChange} value="attending" />}
+          label={attending ? 'Attending' : 'Not attending'}
+          className={classes.attendingSwitch}
+        />
 
       <Typography variant="h6">
         Attendees
