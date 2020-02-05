@@ -17,8 +17,8 @@ const ListItemMission = (props: {
             <Typography variant="h5">
               {props.mission.title}
             </Typography>
-            <Typography>
-              {props.mission.date?.toString()}
+            <Typography color="textSecondary">
+              {props.mission.getFriendlyDate()}
             </Typography>
           </CardContent>
         </CardActionArea>

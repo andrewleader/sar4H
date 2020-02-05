@@ -56,7 +56,7 @@ const ViewMission = (props: {
         {props.mission.title}
       </Typography>
       <Typography color="textSecondary" className={classes.date}>
-        {props.mission.date?.toString()}
+        {props.mission.getFriendlyDate()}
       </Typography>
 
       <FormLabel component="legend">Are you attending?</FormLabel>

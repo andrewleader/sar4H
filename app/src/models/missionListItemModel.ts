@@ -1,4 +1,5 @@
 import { IIncidentListItem } from "../api/responses";
+import moment from 'moment';
 
 export default class MissionListItemModel {
   id: number;
@@ -23,5 +24,19 @@ export default class MissionListItemModel {
     this.lat = source.lat;
     this.lng = source.lng;
     this.count_attendance = source.count_attendance;
+  }
+
+  getFriendlyDate() {
+    if (this.date) {
+      return moment(this.date).calendar(undefined, {
+        sameDay: '[Today], h:mm a',
+        nextDay: '[Tomorrow], h:mm a',
+        nextWeek: '[This] dddd, h:mm a',
+        lastDay: '[Yesterday], h:mm a',
+        lastWeek: '[Last] dddd, h:mm a',
+        sameElse: 'dddd, MMM Do, h:mm a'
+      });
+    }
+    return "Not scheduled";
   }
 }
