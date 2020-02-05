@@ -20,6 +20,13 @@ export default class Api {
     return await Util.fetchAsync<IIncidentsResponse>(HttpMethod.GET, "/team/incidents", memberToken, parameters);
   }
 
+  static async getAttendanceAsync(memberToken: string, activityId: number) {
+    var response = await Util.fetchAsync<any>(HttpMethod.GET, "/team/attendance", memberToken, {
+      activity_id: activityId
+    });
+    return response.data as Responses.IAttendanceListItem[];
+  }
+
   static async getAccountMembershipsAsync() {
     return await Util.fetchAuthenticatedAsync<any>(HttpMethod.GET, "/account/memberships");
   }

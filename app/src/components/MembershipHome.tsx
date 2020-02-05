@@ -12,6 +12,7 @@ import TopLevelCard from './TopLevelCard';
 import AllMissions from './AllMissions';
 import MissionListItemModel from '../models/missionListItemModel';
 import MissionsList from './MissionsList';
+import ViewMission from './ViewMission';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -87,6 +88,17 @@ const MembershipHome = (props: {
     );
   }
 
+  const ViewMissionHandler = () => {
+    let { missionId } = useParams();
+
+    var mission = activeMissions.list?.find(i => i.id.toString() === missionId);
+    if (mission) {
+      return <ViewMission membership={props.membership} mission={mission}/>
+    } else {
+      return <p>Loading...</p>
+    }
+  }
+
   return (
     <div className={classes.root}>
       <AppBar position="static">
@@ -102,6 +114,8 @@ const MembershipHome = (props: {
       </AppBar>
 
       <Switch>
+        <Route path={`${path}/activeMissions/:missionId`} children={<ViewMissionHandler/>}/>
+        <Route path={`${path}/missions/:missionId`} children={<ViewMissionHandler/>}/>
         <Route path={`${path}/activeMissions`}>
           <MissionsList missions={activeMissions.list}/>
         </Route>

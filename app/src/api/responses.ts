@@ -36,3 +36,13 @@ export interface IIncidentListItem {
   lng: number;
   count_attendance: number; // # of attendees, like 4
 }
+
+export interface IAttendanceListItem {
+  id: number,
+  member: IMemberListItem
+}
+
+export interface IMemberListItem {
+  id: number,
+  name: string
+}

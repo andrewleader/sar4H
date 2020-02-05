@@ -31,7 +31,7 @@ const LatestMissions = (props: {
   return (
     <div>
       {missions.map((mission) => {
-        return <ListItemMission indident={mission}/>
+        return <ListItemMission mission={mission}/>
       })}
     </div>
   );

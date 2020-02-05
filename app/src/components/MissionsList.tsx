@@ -29,7 +29,7 @@ const MissionsList = (props: {
       {props.missions.map((mission) => {
         return (
           <div className={classes.card} key={mission.id}>
-            <ListItemMission indident={mission}/>
+            <ListItemMission mission={mission}/>
           </div>
         )
       })}

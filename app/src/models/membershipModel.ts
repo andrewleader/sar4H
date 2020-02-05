@@ -1,6 +1,7 @@
 import Api from "../api";
 import CookiesHelper from "../helpers/cookiesHelper";
 import MissionListItemModel from "./missionListItemModel";
+import { IMemberListItem } from "../api/responses";
 
 export default class MembershipModel {
   private token: string;
@@ -39,6 +40,15 @@ export default class MembershipModel {
       if (incident.date) {
         answer.push(new MissionListItemModel(incident));
       }
+    });
+    return answer;
+  }
+
+  async getAttendingMembers(activityId: number) {
+    var result = await Api.getAttendanceAsync(this.token, activityId);
+    var answer: IMemberListItem[] = [];
+    result.forEach(attendance => {
+      answer.push(attendance.member);
     });
     return answer;
   }

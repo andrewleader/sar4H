@@ -1,23 +1,24 @@
 import * as React from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useRouteMatch } from 'react-router-dom';
 import { IIncidentListItem } from '../api/responses';
 import { Link, Card, CardActionArea, CardContent, Typography } from '@material-ui/core';
 import MissionListItemModel from '../models/missionListItemModel';
 
 const ListItemMission = (props: {
-  indident: MissionListItemModel
+  mission: MissionListItemModel
 }) => {
+  let { path, url } = useRouteMatch();
 
   return (
-    <Link underline="none" to={'/' + props.indident.id} component={RouterLink}>
+    <Link underline="none" to={`${url}/${props.mission.id}`} component={RouterLink}>
       <Card>
         <CardActionArea>
           <CardContent>
             <Typography variant="h5">
-              {props.indident.title}
+              {props.mission.title}
             </Typography>
             <Typography>
-              {props.indident.date?.toString()}
+              {props.mission.date?.toString()}
             </Typography>
           </CardContent>
         </CardActionArea>
