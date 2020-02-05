@@ -72,13 +72,24 @@ export default class MembershipModel {
     return model;
   }
 
-  async getAttendingMembers(activityId: number) {
-    var result = await Api.getAttendanceAsync(this.token, activityId, "attending");
-    var answer: IMemberListItem[] = [];
-    result.forEach(attendance => {
-      answer.push(attendance.member);
-    });
-    return answer;
+  private attendeesCache:Map<number, Promise<IMemberListItem[]>> = new Map<number, Promise<IMemberListItem[]>>();
+
+  getAttendingMembers(activityId: number) {
+    if (this.attendeesCache.has(activityId)) {
+      return this.attendeesCache.get(activityId);
+    }
+
+    var promise = (async () => {
+      var result = await Api.getAttendanceAsync(this.token, activityId, "attending");
+      var answer: IMemberListItem[] = [];
+      result.forEach(attendance => {
+        answer.push(attendance.member);
+      });
+      return answer;
+    })();
+
+    this.attendeesCache.set(activityId, promise);
+    return promise;
   }
 
   async setAttendingAsync(activityId: number) {
