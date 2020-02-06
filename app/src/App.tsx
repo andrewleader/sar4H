@@ -20,6 +20,7 @@ import MembershipHome from './components/MembershipHome';
 import Util from './api/util';
 import CookiesHelper from './helpers/cookiesHelper';
 import MembershipModel from './models/membershipModel';
+import { Provider } from 'mobx-react';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -90,5 +91,7 @@ const Membership = () => {
   if (membershipModel) {
     CookiesHelper.setCookie("lastMembership", unitId!, 365);
   }
-  return <MembershipHome membership={membershipModel!}/>
+  return (
+      <MembershipHome membershipModel={membershipModel!}/>
+  );
 }

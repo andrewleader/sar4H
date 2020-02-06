@@ -4,8 +4,9 @@ import { IActivityListItem } from '../api/responses';
 import { Link, Card, CardActionArea, CardContent, Typography, Badge, Grid } from '@material-ui/core';
 import ActivityListItemModel from '../models/activityListItemModel';
 import PersonIcon from '@material-ui/icons/Person';
+import { observer } from 'mobx-react';
 
-const ListItemMission = (props: {
+const ListItemMission = observer((props: {
   mission: ActivityListItemModel
 }) => {
   let { path, url } = useRouteMatch();
@@ -39,6 +40,6 @@ const ListItemMission = (props: {
       </Card>
     </Link>
   );
-}
+});
 
 export default ListItemMission;

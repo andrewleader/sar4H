@@ -14,6 +14,7 @@ import ActivityListItemModel from '../models/activityListItemModel';
 import ActivitiesList from './ActivitiesList';
 import ViewActivity from './ViewActivity';
 import MembershipController from '../controllers/membershipController';
+import { observer, inject, PropTypes } from 'mobx-react';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -35,9 +36,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const MembershipHome = (props: {
-  membership: MembershipModel
-}) => {
+const MembershipHome = observer((props:{membershipModel:MembershipModel}) => {
   const classes = useStyles();
   let { path, url } = useRouteMatch();
 
@@ -53,7 +52,7 @@ const MembershipHome = (props: {
   React.useEffect(() => {
 
     async function loadAsync() {
-      var activeMissions = await props.membership.getActiveMissionsAsync();
+      var activeMissions = await props.membershipModel.getActiveMissionsAsync();
 
       var href = `${url}/missions`;
       if (activeMissions.length === 1) {
@@ -67,11 +66,11 @@ const MembershipHome = (props: {
         href: href
       });
 
-      setUpcomingMeetings(await props.membership.getUpcomingMeetingsAsync());
+      setUpcomingMeetings(await props.membershipModel.getUpcomingMeetingsAsync());
     }
 
     loadAsync();
-  }, [props.membership]);
+  }, [props.membershipModel]);
 
   const logOut = () => {
     Authorized.logOut();
@@ -103,8 +102,8 @@ const MembershipHome = (props: {
     const [isLoadingIsAttending, setIsLoadingIsAttending] = React.useState<boolean>(true);
 
     const loadAttendees = async () => {
-      var attendance = await props.membership.getAttendanceAsync(activityIntNum);
-      setIsAttending(attendance!.find(i => i.member.id === props.membership.getMemberId()) !== undefined);
+      var attendance = await props.membershipModel.getAttendanceAsync(activityIntNum);
+      setIsAttending(attendance!.find(i => i.member.id === props.membershipModel.getMemberId()) !== undefined);
       setIsLoadingIsAttending(false);
       setAttendance(attendance);
     }
@@ -117,7 +116,7 @@ const MembershipHome = (props: {
     React.useEffect(() => {
 
       async function loadAsync() {
-        setActivity(await props.membership.getActivityAsync(activityIntNum));
+        setActivity(await props.membershipModel.getActivityAsync(activityIntNum));
 
         loadAttendees();
       }
@@ -140,13 +139,13 @@ const MembershipHome = (props: {
         setAttending: async () => {
           setIsLoadingIsAttending(true);
           setIsAttending(true);
-          await props.membership.setAttendingAsync(activityIntNum);
+          await props.membershipModel.setAttendingAsync(activityIntNum);
           reloadAttendees();
         },
         removeAttending: async () => {
           setIsLoadingIsAttending(true);
           setIsAttending(false);
-          await props.membership.removeAttendingAsync(activityIntNum, attendance!.find(i => i.member.id == props.membership.getMemberId())!.id);
+          await props.membershipModel.removeAttendingAsync(activityIntNum, attendance!.find(i => i.member.id == props.membershipModel.getMemberId())!.id);
           reloadAttendees();
         }
       }} />
@@ -180,7 +179,7 @@ const MembershipHome = (props: {
         </Route>
         <Route path={`${path}/missions/:activityId`} children={<ViewActivityHandler/>}/>
         <Route path={`${path}/missions`}>
-          <AllMissions membership={props.membership}/>
+          <AllMissions membership={props.membershipModel}/>
         </Route>
         <Route path={`${path}/meetings/upcoming`}>
           <UpcomingMeetings/>
@@ -193,6 +192,6 @@ const MembershipHome = (props: {
       {/* <LatestMissions membership={props.membership}/> */}
     </div>
   );
-}
+});
 
 export default MembershipHome;

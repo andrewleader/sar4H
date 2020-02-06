@@ -1,5 +1,6 @@
 import { IActivityListItem } from "../api/responses";
 import moment from 'moment';
+import { observable } from 'mobx';
 
 export enum ActivityType {
   mission,
@@ -15,7 +16,7 @@ export default class ActivityListItemModel {
   title: string; // The title
   lat: number;
   lng: number;
-  count_attendance: number; // # of attendees, like 4
+  @observable count_attendance: number; // # of attendees, like 4
   description: string;
   type: ActivityType;
 
@@ -44,6 +45,10 @@ export default class ActivityListItemModel {
         this.type = ActivityType.training;
         break;
     }
+
+    setInterval(() => {
+      this.count_attendance++;
+    }, 1000);
   }
 
   getFriendlyDate() {
