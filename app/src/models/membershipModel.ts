@@ -67,7 +67,7 @@ export default class MembershipModel {
   }
 
   private createActivityListItemModel(activity: IActivityListItem) {
-    var model = new ActivityListItemModel(activity);
+    var model = new ActivityListItemModel(activity, this);
     this.requestedActivites.set(model.id, Promise.resolve(model));
     return model;
   }
@@ -116,7 +116,7 @@ export default class MembershipModel {
   }
 
   private async getActivityHelperAsync(activityId: number) {
-    return new ActivityListItemModel(await Api.getActivityAsync(this.token, activityId));
+    return new ActivityListItemModel(await Api.getActivityAsync(this.token, activityId), this);
   }
 
   static membershipModels:Map<string, MembershipModel> = new Map<string, MembershipModel>();

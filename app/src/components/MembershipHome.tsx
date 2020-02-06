@@ -97,58 +97,18 @@ const MembershipHome = observer((props:{membershipModel:MembershipModel}) => {
     const activityIntNum = parseInt(activityId!);
 
     const [activity, setActivity] = React.useState<ActivityListItemModel | undefined>(undefined);
-    const [attendance, setAttendance] = React.useState<IAttendanceListItem[] | undefined>(undefined);
-    const [isAttending, setIsAttending] = React.useState<boolean>(false);
-    const [isLoadingIsAttending, setIsLoadingIsAttending] = React.useState<boolean>(true);
-
-    const loadAttendees = async () => {
-      var attendance = await props.membershipModel.getAttendanceAsync(activityIntNum);
-      setIsAttending(attendance!.find(i => i.member.id === props.membershipModel.getMemberId()) !== undefined);
-      setIsLoadingIsAttending(false);
-      setAttendance(attendance);
-    }
-
-    const reloadAttendees = () => {
-      setAttendance(undefined);
-      loadAttendees();
-    }
-
+    
     React.useEffect(() => {
 
       async function loadAsync() {
         setActivity(await props.membershipModel.getActivityAsync(activityIntNum));
-
-        loadAttendees();
       }
   
       loadAsync();
     }, [activityId]);
 
-    var attendingMembers:IMemberListItem[] | undefined;
-    if (attendance) {
-      attendingMembers = [];
-      attendance.forEach(i => attendingMembers!.push(i.member));
-    }
-
     return <ViewActivity
-      activity={activity}
-      attendees={attendingMembers}
-      isAttending={isAttending}
-      isLoadingIsAttending={isLoadingIsAttending}
-      actions={{
-        setAttending: async () => {
-          setIsLoadingIsAttending(true);
-          setIsAttending(true);
-          await props.membershipModel.setAttendingAsync(activityIntNum);
-          reloadAttendees();
-        },
-        removeAttending: async () => {
-          setIsLoadingIsAttending(true);
-          setIsAttending(false);
-          await props.membershipModel.removeAttendingAsync(activityIntNum, attendance!.find(i => i.member.id == props.membershipModel.getMemberId())!.id);
-          reloadAttendees();
-        }
-      }} />
+      activity={activity} />
   }
 
   const UpcomingMeetings = () => {

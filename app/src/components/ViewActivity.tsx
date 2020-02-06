@@ -6,6 +6,7 @@ import ActivityListItemModel, { ActivityType } from '../models/activityListItemM
 import { makeStyles } from '@material-ui/core';
 import MembershipModel from '../models/membershipModel';
 import MembershipController from '../controllers/membershipController';
+import { observer } from 'mobx-react';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -28,56 +29,54 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const ViewActivity = (props: {
-  activity: ActivityListItemModel | undefined,
-  isAttending: boolean | undefined,
-  isLoadingIsAttending: boolean,
-  attendees: IMemberListItem[] | undefined,
-  actions?: {
-    setAttending: Function,
-    removeAttending: Function
-  }
+const ViewActivity = observer((props: {
+  activity: ActivityListItemModel | undefined
 }) => {
-  const isMission = props.activity?.isMission();
+  const activity = props.activity;
+  const isMission = activity?.isMission();
+  const attending = activity?.attending || false;
 
   const classes = useStyles();
 
+  activity?.loadAttendanceIfNeededAsync();
+
+
+
   const handleRespondingChange = async (event:any) => {
-    // setUpdatingResponding(true);
     if (event.target.checked) {
-      props.actions?.setAttending();
+      await activity?.setAttendingAsync();
     } else {
-      props.actions?.removeAttending();
+      await activity?.removeAttendingAsync();
     }
   }
 
   return (
     <div className={classes.root}>
       <Typography variant="h5">
-        {props.activity?.title || "Loading..."}
+        {activity?.title || "Loading..."}
       </Typography>
       <Typography color="textSecondary" className={classes.date}>
-        {props.activity?.getFriendlyDate()}
+        {activity?.getFriendlyDate()}
       </Typography>
 
       <FormLabel component="legend">Are you {isMission ? 'responding' : 'attending'}?</FormLabel>
       <FormControlLabel
-          control={<Switch checked={props.isAttending} onChange={handleRespondingChange} value="responding" disabled={props.isLoadingIsAttending} />}
-          label={props.isAttending ? (isMission ? 'Responding' : 'Attending') : (isMission ? 'Not responding' : 'Not attending')}
+          control={<Switch checked={attending} onChange={handleRespondingChange} value="responding" disabled={activity?.loadingAttending} />}
+          label={attending ? (isMission ? 'Responding' : 'Attending') : (isMission ? 'Not responding' : 'Not attending')}
           className={classes.respondingSwitch}
         />
       
       <Typography className={classes.description}>
-        {props.activity?.description}
+        {activity?.description}
       </Typography>
 
       <Typography variant="h6">
         {isMission ? 'Responders' : 'Attendees'}
       </Typography>
 
-      {props.attendees ? (
-        props.attendees.map(member => {
-          return <p key={member.id}>{member.name}</p>
+      {activity?.attendance ? (
+        activity?.attendance.map(i => {
+          return <p key={i.member.id}>{i.member.name}</p>
         })
       ) : (
         <p>Loading...</p>
@@ -85,6 +84,6 @@ const ViewActivity = (props: {
       
     </div>
   );
-}
+});
 
 export default ViewActivity;
