@@ -11,7 +11,9 @@ const useStyles = makeStyles(theme => ({
   root: {
     padding: "24px",
     background: "white",
-    height: "100%"
+    // height: "100%",
+    boxSizing: "border-box",
+    overflowY: "auto",
   },
   date: {
     marginBottom: "24px"
