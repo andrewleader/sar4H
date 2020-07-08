@@ -142,7 +142,7 @@ const MembershipHome = (props: {
         setAttending: async () => {
           setIsLoadingIsAttending(true);
           setIsAttending(true);
-          await props.membership.setAttendingAsync(activityIntNum);
+          await props.membership.setAttendingAsync(activityIntNum, activity?.date, activity?.enddate);
           reloadAttendees();
         },
         removeAttending: async () => {

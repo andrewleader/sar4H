@@ -33,12 +33,13 @@ export default class Api {
     return response.data as Responses.IAttendanceListItem[];
   }
 
-  static async addAttendanceAsync(memberToken: string, activityId: number, memberId: number) {
+  static async addAttendanceAsync(memberToken: string, activityId: number, memberId: number, activityStartDate?: Date, activityEndDate?: Date) {
     await Util.fetchAsync<any>(HttpMethod.POST, "/team/attendance", memberToken, {
       activity_id: activityId,
       member: memberId,
       status: "attending",
-      // date: new Date().toISOString() // Maybe we need dates?
+      date: activityStartDate?.toISOString(),
+      enddate: activityEndDate?.toISOString()
     });
   }
 

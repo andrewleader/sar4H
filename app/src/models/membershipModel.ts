@@ -87,8 +87,8 @@ export default class MembershipModel {
     return promise;
   }
 
-  async setAttendingAsync(activityId: number) {
-    await Api.addAttendanceAsync(this.token, activityId, this.memberId);
+  async setAttendingAsync(activityId: number, activityStartDate?: Date, activityEndDate?: Date) {
+    await Api.addAttendanceAsync(this.token, activityId, this.memberId, activityStartDate, activityEndDate);
 
     // Clear affected caches
     this.attendanceCache.delete(activityId);
