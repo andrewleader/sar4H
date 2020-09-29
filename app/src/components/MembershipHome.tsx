@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useParams, Switch, Route, useRouteMatch } from 'react-router-dom';
+import { useParams, Switch, Route, useRouteMatch, useHistory } from 'react-router-dom';
 import { AppBar, Toolbar, IconButton, Typography, Button, makeStyles } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import classes from '*.module.css';
@@ -14,6 +14,7 @@ import ActivityListItemModel from '../models/activityListItemModel';
 import ActivitiesList from './ActivitiesList';
 import ViewActivity from './ViewActivity';
 import MembershipController from '../controllers/membershipController';
+import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -45,6 +46,7 @@ const MembershipHome = (props: {
 }) => {
   const classes = useStyles();
   let { path, url } = useRouteMatch();
+  let history = useHistory();
 
   const [upcomingMeetings, setUpcomingMeetings] = React.useState<ActivityListItemModel[] | undefined>(undefined);
 
@@ -171,13 +173,19 @@ const MembershipHome = (props: {
     return <ActivitiesList activities={upcomingMeetings}/>
   }
 
+  const goBack = () => {
+    history.goBack();
+  }
+
   return (
     <div className={classes.root}>
       <AppBar position="static">
         <Toolbar>
-          <IconButton edge="start" className={classes.menuButton} color="inherit">
-            <MenuIcon/>
-          </IconButton>
+          <Route path={`${path}/:subitem`}>
+            <IconButton edge="start" className={classes.menuButton} color="inherit" onClick={goBack}>
+              <ArrowBackIosIcon/>
+            </IconButton>
+          </Route>
           <Typography variant="h6" className={classes.title}>
             SAR4H
           </Typography>
