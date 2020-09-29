@@ -88,9 +88,10 @@ const MembershipHome = (props: {
         <div className={classes.card}>
           <TopLevelCard text="Upcoming meetings/events" href={`${url}/meetings/upcoming`}/>
         </div>
-        <div className={classes.card}>
+        {/* We don't seem to use trainings... */}
+        {/* <div className={classes.card}>
           <TopLevelCard text="Upcoming trainings" href={`${url}/trainings/upcoming`}/>
-        </div>
+        </div> */}
       </div>
     );
   }
