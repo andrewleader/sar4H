@@ -33,7 +33,10 @@ const useStyles = makeStyles(theme => ({
     margin: "24px"
   },
   card: {
-    marginBottom: "24px"
+    marginBottom: "12px"
+  },
+  sectionHeader: {
+    marginBottom: "12px"
   }
 }));
 
@@ -82,11 +85,16 @@ const MembershipHome = (props: {
   const Home = () => {
     return (
       <div className={classes.cardsContainer}>
+        <Typography variant="h4" className={classes.sectionHeader}>Missions</Typography>
         <div className={classes.card}>
           <ActiveMissionsCard count={activeMissions.list === undefined ? -1 : activeMissions.list.length} href={activeMissions.href}/>
         </div>
         <div className={classes.card}>
-          <TopLevelCard text="Upcoming meetings/events" href={`${url}/meetings/upcoming`}/>
+          <TopLevelCard text="View past missions" href={`${url}/missions`}/>
+        </div>
+        <Typography variant="h4" className={classes.sectionHeader} style={{marginTop: '24px'}}>Meetings/trainings</Typography>
+        <div className={classes.card}>
+          <TopLevelCard text="Upcoming meetings/trainings" href={`${url}/meetings/upcoming`}/>
         </div>
         {/* We don't seem to use trainings... */}
         {/* <div className={classes.card}>
