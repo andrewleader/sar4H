@@ -5,10 +5,21 @@ import ListItemMission from './ListItemMission';
 import ActivityListItemModel from '../models/activityListItemModel';
 import { useParams, Switch, Route, useRouteMatch } from 'react-router-dom';
 import ViewActivity from './ViewActivity';
+import { makeStyles } from '@material-ui/core';
+
+const useStyles = makeStyles(theme => ({
+  cardsContainer: {
+    margin: "24px"
+  },
+  card: {
+    marginBottom: "24px"
+  }
+}));
 
 const AllMissions = (props: {
   membership: MembershipModel
 }) => {
+  const classes = useStyles();
   const [missions, setMissions] = React.useState<ActivityListItemModel[] | undefined>(undefined);
   let { path, url } = useRouteMatch();
 
@@ -59,10 +70,12 @@ const AllMissions = (props: {
     <Switch>
       <Route path={`${path}/:missionId`} children={<ViewMissionHandler/>}/>
       <Route path={path}>
-        <div>
-          {missions.map((mission) => {
-            return <ListItemMission mission={mission}/>
-          })}
+        <div className={classes.cardsContainer}>
+          {missions.map((mission) => (
+            <div className={classes.card} key={mission.id}>
+              <ListItemMission mission={mission}/>
+            </div>
+          ))}
         </div>
       </Route>
     </Switch>
