@@ -34,7 +34,9 @@ export default class MembershipModel {
   async getMissionsAsync(parameters: {
     published: boolean, // Whether activity has been published or is a draft
     limit?: number, // 1-251, number of records to return
-    offset?: number // >=0, number of records to skip from the start
+    offset?: number, // >=0, number of records to skip from the start
+    before?: string,
+    after?: string
   }) {
     var result = await Api.getIncidentsAsync(this.token, {
       published: parameters.published ? 1 : 0,
@@ -46,8 +48,10 @@ export default class MembershipModel {
       // Ignore missions that don't have a date
       if (activity.date) {
         answer.push(this.createActivityListItemModel(activity));
+        // debugger
       }
     });
+    // debugger
     return answer;
   }
 

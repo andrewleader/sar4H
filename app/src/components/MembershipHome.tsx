@@ -76,7 +76,7 @@ const MembershipHome = (props: {
 
       setUpcomingMeetings(await props.membership.getUpcomingMeetingsAsync());
     }
-
+ 
     loadAsync();
   }, [props.membership]);
 

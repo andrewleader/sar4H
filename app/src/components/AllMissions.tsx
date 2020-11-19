@@ -29,13 +29,16 @@ const AllMissions = (props: {
     async function loadAsync() {
       
       var draftMissions = await props.membership.getMissionsAsync({
-        published: false
+        published: false,
       });
       
       var publishedMissions = await props.membership.getMissionsAsync({
-        published: true
+        published: true,
+        // offset: 200,
+        limit: 10,
+        before: "2020-10-06"
       });
-
+debugger
       var missions: ActivityListItemModel[] = [];
       
       publishedMissions.forEach((mission) => {
