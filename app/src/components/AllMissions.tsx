@@ -19,32 +19,40 @@ const useStyles = makeStyles(theme => ({
 const AllMissions = (props: {
   membership: MembershipModel
 }) => {
+  
   const classes = useStyles();
   const [missions, setMissions] = React.useState<ActivityListItemModel[] | undefined>(undefined);
   let { path, url } = useRouteMatch();
-
+  
   React.useEffect(() => {
 
     async function loadAsync() {
+      
       var draftMissions = await props.membership.getMissionsAsync({
         published: false
       });
-
+      
       var publishedMissions = await props.membership.getMissionsAsync({
         published: true
       });
 
       var missions: ActivityListItemModel[] = [];
+      
       publishedMissions.forEach((mission) => {
         missions.splice(0, 0, mission);
+        
       });
+      
       draftMissions.forEach((mission) => {
         if (mission.date) {
           missions.splice(0, 0, mission);
         }
+        
       });
+        
 
       setMissions(missions);
+      
     }
 
     loadAsync();
@@ -74,6 +82,7 @@ const AllMissions = (props: {
           {missions.map((mission) => (
             <div className={classes.card} key={mission.id}>
               <ListItemMission mission={mission}/>
+              
             </div>
           ))}
         </div>

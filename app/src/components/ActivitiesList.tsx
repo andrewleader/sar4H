@@ -18,14 +18,15 @@ const useStyles = makeStyles(theme => ({
 
 const ActivitiesList = (props: {
   activities?: ActivityListItemModel[]
+  
 }) => {
 
   const classes = useStyles();
-
+  
   if (props.activities === undefined) {
     return <p>Loading...</p>
   }
-
+ 
   return (
     <div className={classes.cardsContainer}>
       {props.activities.map((activity) => {
