@@ -6,6 +6,7 @@ import ActivityListItemModel from '../models/activityListItemModel';
 import { useParams, Switch, Route, useRouteMatch } from 'react-router-dom';
 import ViewActivity from './ViewActivity';
 import { makeStyles } from '@material-ui/core';
+import moment from "moment";
 
 const useStyles = makeStyles(theme => ({
   cardsContainer: {
@@ -27,16 +28,16 @@ const AllMissions = (props: {
   React.useEffect(() => {
 
     async function loadAsync() {
-      
+
       var draftMissions = await props.membership.getMissionsAsync({
         published: false,
       });
       
       var publishedMissions = await props.membership.getMissionsAsync({
         published: true,
-        after: "2020-10-01"
+        after: moment().subtract(2,'months').toISOString() // 2 months from today
       });
-// debugger
+
       var missions: ActivityListItemModel[] = [];
       
       publishedMissions.forEach((mission) => {
