@@ -35,13 +35,15 @@ export default class MembershipModel {
     published: boolean, // Whether activity has been published or is a draft
     limit?: number, // 1-251, number of records to return
     offset?: number, // >=0, number of records to skip from the start
-    before?: string,
-    after?: string
+    after?: string, // string date format "2020-10-01T20:35:00.000Z"
+    before?: string, // string date format "2020-10-01T20:35:00.000Z"
   }) {
     var result = await Api.getIncidentsAsync(this.token, {
       published: parameters.published ? 1 : 0,
       limit: parameters.limit,
-      offset: parameters.offset
+      offset: parameters.offset,
+      after: parameters.after
+
     });
     var answer: ActivityListItemModel[] = [];
     result.data.forEach((activity) => {

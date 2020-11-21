@@ -16,6 +16,8 @@ export default class Api {
     published: number, // 0-1, whether activity has been published
     limit?: number, // 1-251, number of records to return
     offset?: number // >=0, number of records to skip from the start
+    after?: string, // string date format "2020-10-01T20:35:00.000Z" 
+    before?: string,// string date format "2020-10-01T20:35:00.000Z"
   }) {
     return await Util.fetchAsync<IIncidentsResponse>(HttpMethod.GET, "/team/incidents", memberToken, parameters);
   }

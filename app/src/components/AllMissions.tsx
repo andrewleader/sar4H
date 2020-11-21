@@ -34,11 +34,9 @@ const AllMissions = (props: {
       
       var publishedMissions = await props.membership.getMissionsAsync({
         published: true,
-        // offset: 200,
-        limit: 10,
-        before: "2020-10-06"
+        after: "2020-10-01"
       });
-debugger
+// debugger
       var missions: ActivityListItemModel[] = [];
       
       publishedMissions.forEach((mission) => {
