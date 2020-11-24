@@ -10,8 +10,9 @@ const ListItemMission = (props: {
 }) => {
   let { path, url } = useRouteMatch();
   let { unitId } = useParams();
-
+  
   return (
+    
     <Link underline="none" to={`/${unitId}/${props.mission.getPathType()}/${props.mission.id}`} component={RouterLink}>
       <Card>
         <CardActionArea>

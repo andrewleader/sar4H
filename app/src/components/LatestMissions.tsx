@@ -21,14 +21,14 @@ const LatestMissions = (props: {
 }) => {
   const classes = useStyles();
   const [missions, setMissions] = React.useState<ActivityListItemModel[] | undefined>(undefined);
-
+  
   React.useEffect(() => {
 
     async function loadAsync() {
       var result = await props.membership.getMissionsAsync({
         published: false
       });
-
+       
       setMissions(result);
     }
 

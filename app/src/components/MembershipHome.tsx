@@ -58,7 +58,7 @@ const MembershipHome = (props: {
   });
 
   React.useEffect(() => {
-
+    
     async function loadAsync() {
       var activeMissions = await props.membership.getActiveMissionsAsync();
 
@@ -76,7 +76,7 @@ const MembershipHome = (props: {
 
       setUpcomingMeetings(await props.membership.getUpcomingMeetingsAsync());
     }
-
+ 
     loadAsync();
   }, [props.membership]);
 
@@ -85,6 +85,7 @@ const MembershipHome = (props: {
   }
 
   const Home = () => {
+    
     return (
       <div className={classes.cardsContainer}>
         <Typography variant="h4" className={classes.sectionHeader}>Missions</Typography>
@@ -92,11 +93,11 @@ const MembershipHome = (props: {
           <ActiveMissionsCard count={activeMissions.list === undefined ? -1 : activeMissions.list.length} href={activeMissions.href}/>
         </div>
         <div className={classes.card}>
-          <TopLevelCard text="View past missions" href={`${url}/missions`}/>
+          <TopLevelCard text="View Past Missions" href={`${url}/missions`}/>
         </div>
         <Typography variant="h4" className={classes.sectionHeader} style={{marginTop: '24px'}}>Meetings/trainings</Typography>
         <div className={classes.card}>
-          <TopLevelCard text="Upcoming meetings/trainings" href={`${url}/meetings/upcoming`}/>
+          <TopLevelCard text="Upcoming Meetings/Trainings" href={`${url}/meetings/upcoming`}/>
         </div>
         {/* We don't seem to use trainings... */}
         {/* <div className={classes.card}>

@@ -6,6 +6,7 @@ import ActivityListItemModel from '../models/activityListItemModel';
 import { useParams, Switch, Route, useRouteMatch } from 'react-router-dom';
 import ViewActivity from './ViewActivity';
 import { makeStyles } from '@material-ui/core';
+import moment from "moment";
 
 const useStyles = makeStyles(theme => ({
   cardsContainer: {
@@ -19,32 +20,41 @@ const useStyles = makeStyles(theme => ({
 const AllMissions = (props: {
   membership: MembershipModel
 }) => {
+  
   const classes = useStyles();
   const [missions, setMissions] = React.useState<ActivityListItemModel[] | undefined>(undefined);
   let { path, url } = useRouteMatch();
-
+  
   React.useEffect(() => {
 
     async function loadAsync() {
-      var draftMissions = await props.membership.getMissionsAsync({
-        published: false
-      });
 
+      var draftMissions = await props.membership.getMissionsAsync({
+        published: false,
+      });
+      
       var publishedMissions = await props.membership.getMissionsAsync({
-        published: true
+        published: true,
+        after: moment().subtract(2,'months').toISOString() // 2 months from today
       });
 
       var missions: ActivityListItemModel[] = [];
+      
       publishedMissions.forEach((mission) => {
         missions.splice(0, 0, mission);
+        
       });
+      
       draftMissions.forEach((mission) => {
         if (mission.date) {
           missions.splice(0, 0, mission);
         }
+        
       });
+        
 
       setMissions(missions);
+      
     }
 
     loadAsync();
@@ -74,6 +84,7 @@ const AllMissions = (props: {
           {missions.map((mission) => (
             <div className={classes.card} key={mission.id}>
               <ListItemMission mission={mission}/>
+              
             </div>
           ))}
         </div>
