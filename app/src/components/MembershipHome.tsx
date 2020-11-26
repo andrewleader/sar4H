@@ -102,7 +102,7 @@ const MembershipHome = (props: {
         </div>
         <Typography variant="h4" className={classes.sectionHeader} style={{marginTop: '24px'}}>New Incident</Typography>
         <div className={classes.card}>
-          <TopLevelCard text="Add the new incident/mission" href={`${url}/incident`}/>
+          <TopLevelCard text="Add New Incident/Mission" href={`${url}/incident`}/>
         </div>
         {/* We don't seem to use trainings... */}
         {/* <div className={classes.card}>
