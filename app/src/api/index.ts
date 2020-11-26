@@ -76,4 +76,4 @@ export default class Api {
   static async getAccountMembershipsAsync() {
     return await Util.fetchAuthenticatedAsync<any>(HttpMethod.GET, "/account/memberships");
   }
-}
+} 
