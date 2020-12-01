@@ -7,15 +7,19 @@ import MomentUtils from '@date-io/moment';
 
 const IncidentForm = () => {
   const [value, setValue] = React.useState('Incident');
-  const [selectedDate, setDate] = React.useState(new Date());
+  const [startDate, setDate] = React.useState(new Date());
+  const [endDate, setEndDate] = React.useState(new Date());
 
 
   const handleChange = (event: any) => {
     setValue(event.target.value);
   };
 
-  const handleDateChange = (event: any)=>{
+  const handleStartDateChange = (event: any)=>{
     setDate(event.format())
+  }
+  const handleEndDateChange = (event: any)=>{
+    setEndDate(event.format())
   }
   
 
@@ -39,18 +43,16 @@ return(
           disableToolbar
           variant="inline"
           label="Start Date"
-          value= {selectedDate}
-          onChange={handleDateChange}
+          value= {startDate}
+          onChange={handleStartDateChange}
         />
-      </MuiPickersUtilsProvider>
       
-      <MuiPickersUtilsProvider utils={MomentUtils}>
       <DatePicker  
           disableToolbar
           variant="inline"
           label="End Date"
-          value= {selectedDate}
-          onChange={handleDateChange}
+          value= {endDate}
+          onChange={handleEndDateChange}
         />
     </MuiPickersUtilsProvider>
     
