@@ -6,23 +6,24 @@ import MomentUtils from '@date-io/moment';
 
 
 const handleChange = () =>{
-
+console.log("do something")
 }
 
-const handleDateChange = ()=>{
-
-}
 
 
 const NewIncident = () => {
   const [value, setValue] = React.useState('Incident');
-  const [selectedDate, handleDateChange] = React.useState(new Date());
+  const [selectedDate] = React.useState(new Date());
 
 
   const handleChange = (event: any) => {
     setValue(event.target.value);
   };
 
+  const handleDateChange = ()=>{
+    console.log("do something")
+  }
+  
 
 
 return(
@@ -38,15 +39,15 @@ return(
         <FormControlLabel value="Event" control={<Radio />} label="Event/Meeting" />
       </RadioGroup>
 
-      {/* <MuiPickersUtilsProvider utils={MomentUtils}>
+      <MuiPickersUtilsProvider utils={MomentUtils}>
       <DatePicker  
           disableToolbar
           variant="inline"
           label="Start Date"
-          value={selectedDate}
+          value= {selectedDate}
           onChange={handleDateChange}
         />
-    </MuiPickersUtilsProvider> */}
+    </MuiPickersUtilsProvider>
 
   </form>  
 
