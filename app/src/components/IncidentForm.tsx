@@ -5,12 +5,6 @@ import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import MomentUtils from '@date-io/moment';
 
 
-const handleChange = () =>{
-console.log("do something")
-}
-
-
-
 const IncidentForm = () => {
   const [value, setValue] = React.useState('Incident');
   const [selectedDate, setDate] = React.useState(new Date());
@@ -21,9 +15,7 @@ const IncidentForm = () => {
   };
 
   const handleDateChange = (event: any)=>{
-    console.log(event.format())
     setDate(event.format())
-    debugger
   }
   
 
@@ -32,6 +24,7 @@ return(
   <div>
 {/*className={classes.root}*/}
   <form   noValidate autoComplete="off"> 
+
     <TextField id="standard-basic" label="Incident Name" />
 
     <FormLabel component="legend">Event Type</FormLabel>
@@ -49,7 +42,20 @@ return(
           value= {selectedDate}
           onChange={handleDateChange}
         />
+      </MuiPickersUtilsProvider>
+      
+      <MuiPickersUtilsProvider utils={MomentUtils}>
+      <DatePicker  
+          disableToolbar
+          variant="inline"
+          label="End Date"
+          value= {selectedDate}
+          onChange={handleDateChange}
+        />
     </MuiPickersUtilsProvider>
+    
+
+
 
   </form>  
 
