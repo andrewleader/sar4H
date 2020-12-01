@@ -15,7 +15,7 @@ import ActivitiesList from './ActivitiesList';
 import ViewActivity from './ViewActivity';
 import MembershipController from '../controllers/membershipController';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
-import NewIncident from './NewIncident';
+import NewIncident from './IncidentForm';
 
 const useStyles = makeStyles(theme => ({
   root: {

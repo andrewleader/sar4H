@@ -11,17 +11,19 @@ console.log("do something")
 
 
 
-const NewIncident = () => {
+const IncidentForm = () => {
   const [value, setValue] = React.useState('Incident');
-  const [selectedDate] = React.useState(new Date());
+  const [selectedDate, setDate] = React.useState(new Date());
 
 
   const handleChange = (event: any) => {
     setValue(event.target.value);
   };
 
-  const handleDateChange = ()=>{
-    console.log("do something")
+  const handleDateChange = (event: any)=>{
+    console.log(event.format())
+    setDate(event.format())
+    debugger
   }
   
 
@@ -57,5 +59,5 @@ return(
 )
 
 }
-export default NewIncident
+export default IncidentForm
 
