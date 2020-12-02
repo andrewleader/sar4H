@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Api from '../api';
-import {makeStyles, TextField, FormLabel, FormControlLabel, RadioGroup, Radio,} from '@material-ui/core';
+import {makeStyles, TextField, FormLabel, FormControlLabel, RadioGroup, Radio, Button} from '@material-ui/core';
 import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import MomentUtils from '@date-io/moment';
 
@@ -22,7 +22,9 @@ const IncidentForm = () => {
     setEndDate(event.format())
   }
   
-
+  const handleSubmit = () => {
+    alert("test")
+  }
 
 return(
   <div>
@@ -56,7 +58,13 @@ return(
         />
     </MuiPickersUtilsProvider>
     
-
+    <Button 
+      onClick={()=> handleSubmit()}
+      variant="contained"
+      size="large" 
+      color="primary" >
+        Submit 
+    </Button>
 
 
   </form>  
