@@ -25,16 +25,16 @@ export default class Api {
   static async addIncidentAsync(memberToken: string, 
     title: string, // greater then 3 characters
     activity: string, //"incident", "exercise" , or "event"
-    date: Date, // 2020-11-24 format
-    enddate: Date //same as above
+    date: string, // 2020-11-24 format
+    enddate: string //same as above
   ){
+    debugger
      await Util.fetchAsync<any>(HttpMethod.POST, "/team/incidents", memberToken, {title: title, // create then 3 characters
       activity: activity, //"incident", "exercise" , or "event"
-      date: date.toISOString(), // 2020-11-24 format
-      enddate: enddate.toISOString()})
+      date: date, // 2020-11-24 format
+      enddate: enddate})
+      
   }
-
-
 
   static async getActivityAsync(memberToken: string, activityId: number) {
     var response = await Util.fetchAsync<any>(HttpMethod.GET, `/team/activities/${activityId}`, memberToken);

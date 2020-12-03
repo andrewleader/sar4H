@@ -1,20 +1,29 @@
-import * as React from 'react';
+import React, {useState} from 'react';
 import Api from '../api';
 import {makeStyles, TextField, FormLabel, FormControlLabel, RadioGroup, Radio, Button} from '@material-ui/core';
-import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
+import { KeyboardDatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import MomentUtils from '@date-io/moment';
+import CookiesHelper from "../helpers/cookiesHelper";
+
+
+let initialValues = {
+  activity: ""  , // "incident", "exercise", or "event"
+  title: "", // activity name
+}
 
 
 const IncidentForm = () => {
-  const [value, setValue] = React.useState('Incident');
-  const [startDate, setDate] = React.useState(new Date());
-  const [endDate, setEndDate] = React.useState(new Date());
+  const [values, setValues] = useState(initialValues);
+  const [startDate, setDate] = useState(new Date());
+  const [enddate, setEndDate] = useState(new Date());
 
-
-  const handleChange = (event: any) => {
-    setValue(event.target.value);
-  };
-
+  const handleInputChange = (event: any)=>{ 
+   const {name, value} = event.target
+    setValues({ 
+      ...values,
+      [name]:value 
+    })
+  }
   const handleStartDateChange = (event: any)=>{
     setDate(event.format())
   }
@@ -22,44 +31,82 @@ const IncidentForm = () => {
     setEndDate(event.format())
   }
   
-  const handleSubmit = () => {
-    alert("test")
+  const handleSubmit = (event: any) => {
+    event.preventDefault()
+    let token = CookiesHelper.getCookie("membership" + "1516")!;
+    
+    let result =  Api.addIncidentAsync(
+      token,
+      event.target.title.value, 
+      event.target.activity.value, 
+      event.target.date.value, 
+      event.target.enddate.value)
+      
+
+      console.log(result)
   }
 
 return(
   <div>
 {/*className={classes.root}*/}
-  <form   noValidate autoComplete="off"> 
+  <form   noValidate autoComplete="off" onSubmit={handleSubmit}> 
 
-    <TextField id="standard-basic" label="Incident Name" />
+    <TextField 
+      id="standard-basic" 
+      label="Incident Name"
+      name="title"
+      value={values.title}
+      onChange={handleInputChange}
+  
+    />
 
     <FormLabel component="legend">Event Type</FormLabel>
-      <RadioGroup aria-label="EventType" name="type" value={value} onChange={handleChange}>
-        <FormControlLabel value="Incident" control={<Radio />} label="Incident/Mission" />
-        <FormControlLabel value="Exercise" control={<Radio />} label="Exercise/Training" />
-        <FormControlLabel value="Event" control={<Radio />} label="Event/Meeting" />
+      <RadioGroup 
+        aria-label="EventType" 
+        name="activity"
+        onChange={handleInputChange}
+      >
+        <FormControlLabel 
+          value="incident"
+          control={<Radio />} 
+          label="Incident/Mission"
+        />
+        <FormControlLabel 
+          value="exercise" 
+          control={<Radio />} 
+          label="Exercise/Training" 
+        />
+        <FormControlLabel 
+          value="event"
+          control={<Radio />} 
+          label="Event/Meeting"
+        />
       </RadioGroup>
 
       <MuiPickersUtilsProvider utils={MomentUtils}>
-      <DatePicker  
+      <KeyboardDatePicker  
           disableToolbar
           variant="inline"
-          label="Start Date"
-          value= {startDate}
-          onChange={handleStartDateChange}
+          label="Start Date" 
+          name="date"
+          format="yyyy-MM-DD"
+          value={startDate}
+          onChange={handleStartDateChange} 
         />
       
-      <DatePicker  
+      <KeyboardDatePicker  
           disableToolbar
           variant="inline"
           label="End Date"
-          value= {endDate}
+          name="enddate"
+          format="yyyy-MM-DD"
+          value= {enddate}
           onChange={handleEndDateChange}
         />
     </MuiPickersUtilsProvider>
     
     <Button 
-      onClick={()=> handleSubmit()}
+      type="submit"
       variant="contained"
       size="large" 
       color="primary" >
