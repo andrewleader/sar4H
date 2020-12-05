@@ -6,6 +6,23 @@ import MomentUtils from '@date-io/moment';
 import CookiesHelper from "../helpers/cookiesHelper";
 
 
+const useStyles = makeStyles(theme => ({
+  form: {
+    padding: "14px",
+    display: "block",
+  },
+  card: {
+    marginBottom: "24px"
+  },
+  root: {
+    border: 0,
+    borderRadius: 3,
+    height: 48,
+    padding: '0 30px',
+  },
+}));
+
+
 let initialValues = {
   activity: ""  , // "incident", "exercise", or "event"
   title: "", // activity name
@@ -16,6 +33,8 @@ const IncidentForm = () => {
   const [values, setValues] = useState(initialValues);
   const [startDate, setDate] = useState(new Date());
   const [enddate, setEndDate] = useState(new Date());
+
+  const classes = useStyles();
 
   const handleInputChange = (event: any)=>{ 
    const {name, value} = event.target
@@ -47,8 +66,8 @@ const IncidentForm = () => {
   }
 
 return(
-  <div>
-{/*className={classes.root}*/}
+  <div className={classes.root}>
+
   <form   noValidate autoComplete="off" onSubmit={handleSubmit}> 
 
     <TextField 
@@ -57,6 +76,7 @@ return(
       name="title"
       value={values.title}
       onChange={handleInputChange}
+      className={classes.form}
   
     />
 
@@ -65,6 +85,7 @@ return(
         aria-label="EventType" 
         name="activity"
         onChange={handleInputChange}
+        
       >
         <FormControlLabel 
           value="incident"
@@ -92,6 +113,7 @@ return(
           format="yyyy-MM-DD"
           value={startDate}
           onChange={handleStartDateChange} 
+          className={classes.form}
         />
       
       <KeyboardDatePicker  
@@ -102,6 +124,7 @@ return(
           format="yyyy-MM-DD"
           value= {enddate}
           onChange={handleEndDateChange}
+          className={classes.form}
         />
     </MuiPickersUtilsProvider>
     
