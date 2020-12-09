@@ -15,7 +15,7 @@ import ActivitiesList from './ActivitiesList';
 import ViewActivity from './ViewActivity';
 import MembershipController from '../controllers/membershipController';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
-import NewIncident from './IncidentForm';
+import NewIncidentContainer from './IncidentContainer';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -211,7 +211,7 @@ const MembershipHome = (props: {
           <UpcomingMeetings/>
         </Route>
         <Route path={`${path}/incident`}>
-          <NewIncident/>
+          <NewIncidentContainer/>
         </Route>
         <Route path={`${path}/meetings/:activityId`} children={<ViewActivityHandler/>}/>
         <Route exact path={path}>
