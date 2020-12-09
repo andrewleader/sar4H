@@ -85,10 +85,12 @@ export default App;
 
 
 const Membership = () => {
+  
   let { unitId } = useParams();
   var membershipModel = MembershipModel.get(unitId!);
   if (membershipModel) {
     CookiesHelper.setCookie("lastMembership", unitId!, 365);
   }
+  
   return <MembershipHome membership={membershipModel!}/>
 }

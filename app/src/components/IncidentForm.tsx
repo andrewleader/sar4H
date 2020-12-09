@@ -51,18 +51,19 @@ const IncidentForm = () => {
   }
   
   const handleSubmit = (event: any) => {
-    event.preventDefault()
-    let token = CookiesHelper.getCookie("membership" + "1516")!;
+    // event.preventDefault()
+    // let token = CookiesHelper.getCookie("membership" + "1516")!;
     
-    let result =  Api.addIncidentAsync(
-      token,
-      event.target.title.value, 
-      event.target.activity.value, 
-      event.target.date.value, 
-      event.target.enddate.value)
+    // let result =  Api.addIncidentAsync(
+    //   token,
+    //   event.target.title.value, 
+    //   event.target.activity.value, 
+    //   event.target.date.value, 
+    //   event.target.enddate.value)
       
 
-      console.log(result)
+    //   console.log(result)
+    console.log("handle submit called but is commented out")
   }
 
 return(

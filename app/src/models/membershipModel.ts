@@ -50,10 +50,8 @@ export default class MembershipModel {
       // Ignore missions that don't have a date
       if (activity.date) {
         answer.push(this.createActivityListItemModel(activity));
-        // debugger
       }
     });
-    // debugger
     return answer;
   }
 

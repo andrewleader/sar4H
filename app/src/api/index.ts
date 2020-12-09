@@ -28,7 +28,7 @@ export default class Api {
     date: string, // 2020-11-24 format
     enddate: string //same as above
   ){
-    debugger
+    
      await Util.fetchAsync<any>(HttpMethod.POST, "/team/incidents", memberToken, {title: title, // create then 3 characters
       activity: activity, //"incident", "exercise" , or "event"
       date: date, // 2020-11-24 format
