@@ -29,11 +29,12 @@ export default class Api {
     enddate: string //same as above
   ){
     
-     await Util.fetchAsync<any>(HttpMethod.POST, "/team/incidents", memberToken, {title: title, // create then 3 characters
+    let response = await Util.fetchAsync<any>(HttpMethod.POST, "/team/incidents", memberToken, {title: title, // create then 3 characters
       activity: activity, //"incident", "exercise" , or "event"
       date: date, // 2020-11-24 format
       enddate: enddate})
       
+      return response 
   }
 
   static async getActivityAsync(memberToken: string, activityId: number) {

@@ -57,15 +57,24 @@ function IncidentForm(){
     event.preventDefault()
   
     let token = CookiesHelper.getCookie("membership" + "1516")!;
+    let url: string 
     
-    let result =  Api.addIncidentAsync(
+    Api.addIncidentAsync(
       token,
       event.target.title.value, 
       event.target.activity.value, 
       event.target.date.value, 
-      event.target.enddate.value)
-      debugger
-      // history.push('/')
+      event.target.enddate.value).then(response =>{
+        debugger
+        url = '/1516/missions/' + response.data.id
+    
+        history.push(url)
+        
+      })
+    
+
+ 
+   
     }
   
 
