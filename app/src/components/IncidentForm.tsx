@@ -4,7 +4,7 @@ import {makeStyles, TextField, FormLabel, FormControlLabel, RadioGroup, Radio, B
 import { KeyboardDatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import MomentUtils from '@date-io/moment';
 import CookiesHelper from "../helpers/cookiesHelper";
-
+import {useHistory} from "react-router-dom"
 
 const useStyles = makeStyles(theme => ({
   form: {
@@ -29,10 +29,13 @@ let initialValues = {
 }
 
 
-const IncidentForm = () => {
+
+function IncidentForm(){
   const [values, setValues] = useState(initialValues);
   const [startDate, setDate] = useState(new Date());
   const [enddate, setEndDate] = useState(new Date());
+
+  let history = useHistory();
 
   const classes = useStyles();
 
@@ -49,22 +52,23 @@ const IncidentForm = () => {
   const handleEndDateChange = (event: any)=>{
     setEndDate(event.format())
   }
-  
-  const handleSubmit = (event: any) => {
-    // event.preventDefault()
-    // let token = CookiesHelper.getCookie("membership" + "1516")!;
-    
-    // let result =  Api.addIncidentAsync(
-    //   token,
-    //   event.target.title.value, 
-    //   event.target.activity.value, 
-    //   event.target.date.value, 
-    //   event.target.enddate.value)
-      
 
-    //   console.log(result)
-    console.log("handle submit called but is commented out")
-  }
+  function handleSubmit(event: any){
+    event.preventDefault()
+  
+    let token = CookiesHelper.getCookie("membership" + "1516")!;
+    
+    let result =  Api.addIncidentAsync(
+      token,
+      event.target.title.value, 
+      event.target.activity.value, 
+      event.target.date.value, 
+      event.target.enddate.value)
+      debugger
+      // history.push('/')
+    }
+  
+
 
 return(
   <div className={classes.root}>

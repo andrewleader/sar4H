@@ -91,6 +91,5 @@ const Membership = () => {
   if (membershipModel) {
     CookiesHelper.setCookie("lastMembership", unitId!, 365);
   }
-  
   return <MembershipHome membership={membershipModel!}/>
 }
