@@ -34,8 +34,6 @@ let initialValues = {
   formValidity: false
 }
 
-
-
 function IncidentForm(){
   const [values, setValues] = useState(initialValues)
   const [startDate, setDate] = useState(new Date());
@@ -47,15 +45,18 @@ function IncidentForm(){
 
   const handleInputChange = (event: any)=>{ 
     const {name, value} = event.target
-if (name === "activity") debugger 
 
     switch(name){
       case 'title':
-        values.errors.title = value.length < 4 ? 'Title must be longer then 4 characters' : ""
+        values.errors.title = value.length < 4  ? 'Title must be longer then 4 characters' : ""
+        let x = value.length > 3 ? false : true 
+        values.titleValidity = x
+
         break
       default:
         break
     }
+
     setValues({ 
       ...values,
       [name]:value 
@@ -70,20 +71,29 @@ if (name === "activity") debugger
     setEndDate(event.format())
   }
 
+
+
   function handleSubmit(event: any){
     event.preventDefault()
   
     let token = CookiesHelper.getCookie("membership" + "1516")!;
     let url: string 
-    
-    const {formValues, formValidity}= validateForm(values)
-    setValues(formValues)
+
+    const {formValues, formValidity} = validateForm(values)
+    const titleValidity = formValues.titleValidity
+
+    setValues({
+      ...values,
+      titleValidity
+      })
     
 
     if(formValidity){
-    // if(validateForm(values)){
       // if no errors, send to database
-      // Api.addIncidentAsync(
+
+
+
+    // Api.addIncidentAsync(
     //   token,
     //   event.target.title.value, 
     //   event.target.activity.value, 
@@ -94,8 +104,9 @@ if (name === "activity") debugger
     
     //     history.push(url)
     //   })
+
     alert("submitted")
-    debugger
+    
     }
 
     
@@ -104,10 +115,11 @@ if (name === "activity") debugger
     function validateForm(formValues: any)  {
       let formValidity = true
 
-      if (!formValues.errors.title){
+      // if (!formValues.errors.title 
+      if (formValues.title.length < 4 ){
         formValidity = false
         formValues.titleValidity = true
-        formValues.errors.title = "Please give a title."
+        formValues.errors.title = "Please complete with 4 or more characters."
       }
       
       // setValues(formValues)
