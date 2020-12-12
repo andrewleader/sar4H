@@ -1,10 +1,11 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import Api from '../api';
 import {makeStyles, TextField, FormLabel, FormControlLabel, RadioGroup, Radio, Button} from '@material-ui/core';
 import { KeyboardDatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import MomentUtils from '@date-io/moment';
+import moment from "moment";
 import CookiesHelper from "../helpers/cookiesHelper";
-import {useHistory} from "react-router-dom"
+import {useHistory} from "react-router-dom";
 
 const useStyles = makeStyles(theme => ({
   form: {
@@ -26,29 +27,45 @@ const useStyles = makeStyles(theme => ({
 let initialValues = {
   activity: ""  , // "incident", "exercise", or "event"
   title: "", // activity name
+  errors: { 
+    "title": ""
+  },
+  titleValidity: false,
+  formValidity: false
 }
 
 
 
 function IncidentForm(){
-  const [values, setValues] = useState(initialValues);
+  const [values, setValues] = useState(initialValues)
   const [startDate, setDate] = useState(new Date());
   const [enddate, setEndDate] = useState(new Date());
 
   let history = useHistory();
-
   const classes = useStyles();
 
+
   const handleInputChange = (event: any)=>{ 
-   const {name, value} = event.target
+    const {name, value} = event.target
+if (name === "activity") debugger 
+
+    switch(name){
+      case 'title':
+        values.errors.title = value.length < 4 ? 'Title must be longer then 4 characters' : ""
+        break
+      default:
+        break
+    }
     setValues({ 
       ...values,
       [name]:value 
     })
   }
+
   const handleStartDateChange = (event: any)=>{
-    setDate(event.format())
+      setDate(event.format())
   }
+
   const handleEndDateChange = (event: any)=>{
     setEndDate(event.format())
   }
@@ -59,24 +76,45 @@ function IncidentForm(){
     let token = CookiesHelper.getCookie("membership" + "1516")!;
     let url: string 
     
-    Api.addIncidentAsync(
-      token,
-      event.target.title.value, 
-      event.target.activity.value, 
-      event.target.date.value, 
-      event.target.enddate.value).then(response =>{
-        debugger
-        url = '/1516/missions/' + response.data.id
-    
-        history.push(url)
-        
-      })
+    const {formValues, formValidity}= validateForm(values)
+    setValues(formValues)
     
 
- 
-   
+    if(formValidity){
+    // if(validateForm(values)){
+      // if no errors, send to database
+      // Api.addIncidentAsync(
+    //   token,
+    //   event.target.title.value, 
+    //   event.target.activity.value, 
+    //   event.target.date.value, 
+    //   event.target.enddate.value).then(response =>{
+        
+    //     url = '/1516/missions/' + response.data.id
+    
+    //     history.push(url)
+    //   })
+    alert("submitted")
+    debugger
     }
-  
+
+    
+    }
+
+    function validateForm(formValues: any)  {
+      let formValidity = true
+
+      if (!formValues.errors.title){
+        formValidity = false
+        formValues.titleValidity = true
+        formValues.errors.title = "Please give a title."
+      }
+      
+      // setValues(formValues)
+      
+      // return formValidity
+      return {formValues, formValidity}
+    }
 
 
 return(
@@ -90,11 +128,19 @@ return(
       name="title"
       value={values.title}
       onChange={handleInputChange}
+      required
+      error={values.titleValidity}
+      helperText={values.errors.title}
+      autoFocus
       className={classes.form}
-  
     />
 
-    <FormLabel component="legend">Event Type</FormLabel>
+    <FormLabel 
+      component="legend"
+      required
+    >
+      Event Type
+    </FormLabel>
       <RadioGroup 
         aria-label="EventType" 
         name="activity"
@@ -121,17 +167,22 @@ return(
       <MuiPickersUtilsProvider utils={MomentUtils}>
       <KeyboardDatePicker  
           disableToolbar
+          minDate={new Date()}
           variant="inline"
           label="Start Date" 
           name="date"
           format="yyyy-MM-DD"
           value={startDate}
+          // inputValue={inputStartValue}
           onChange={handleStartDateChange} 
+          // onChange={(event: any) => {debugger
+          //    setDate(event._i)}} 
           className={classes.form}
         />
       
       <KeyboardDatePicker  
           disableToolbar
+          minDate={new Date()}
           variant="inline"
           label="End Date"
           name="enddate"
