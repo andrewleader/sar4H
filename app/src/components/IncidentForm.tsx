@@ -34,7 +34,9 @@ const initialErrors ={
   titleValidity: false,   // if title empty, flip to true 
   formValidity: false,    // if all form data good, flip to true
   eventValidity: false,   // if event type empty, flip to true
-  eventErrorMsg: ""
+  eventErrorMsg: "",
+  dateValidity: false,   
+  dateErrorMsg: ""
 }
 
 
@@ -50,6 +52,7 @@ function IncidentForm(){
 
   const handleInputChange = (event: any)=>{ 
     const {name, value} = event.target
+
     let titleErrorMsg: string
     let titleValidity: boolean
     let eventValidity: boolean
@@ -58,6 +61,7 @@ function IncidentForm(){
     switch(name){
       case 'title':
         const valueLengthCompare = value.length < 4 && value.length > 0
+        
         titleErrorMsg = valueLengthCompare ? 'Title must be longer then 4 characters' : ""
         titleValidity = valueLengthCompare ? true : false 
       break
@@ -66,8 +70,6 @@ function IncidentForm(){
         eventValidity = value.length > 0 ? false : true
         eventErrorMsg = ""
       break
-
-
 
       default:
         break
@@ -87,13 +89,41 @@ function IncidentForm(){
     })
   }
 
+
+ 
   const handleStartDateChange = (event: any)=>{
-      setDate(event.format())
+    setDate(event.format())
+
   }
 
   const handleEndDateChange = (event: any)=>{
+    const {dateErrorMsg, dateValidity} = checkDateValidation()
+    
+    setErrors( prevState => ({
+      ...prevState,
+      dateValidity,
+      dateErrorMsg,
+    }))
+    
     setEndDate(event.format())
   }
+
+  function checkDateValidation() {
+    let dateErrorMsg: string = ""
+    let dateValidity: boolean = false
+
+    const dateRangeCheck = (new Date(startDate) > new Date(enddate)) || (new Date(enddate) < new Date(startDate))
+
+    dateErrorMsg = dateRangeCheck ? "End date can't be before start date." : "date correct now"
+
+    dateValidity = dateRangeCheck? true : false
+      
+    return {
+      dateErrorMsg,
+      dateValidity
+      }
+  }
+
 
 
 
@@ -103,11 +133,14 @@ function IncidentForm(){
     let token = CookiesHelper.getCookie("membership" + "1516")!;
     let url: string 
 
-    const {formValidity,
+    const {
+      formValidity,
       titleValidity,
       titleErrorMsg,
       eventValidity,
-      eventErrorMsg} = validateForm(values)
+      eventErrorMsg,
+      dateErrorMsg,
+      dateValidity,} = validateForm(values, event)
     
 
     setErrors( prevState => ({
@@ -116,7 +149,9 @@ function IncidentForm(){
       titleValidity,
       titleErrorMsg,
       eventValidity,
-      eventErrorMsg
+      eventErrorMsg,
+      dateErrorMsg,
+      dateValidity
       }))
     
 
@@ -139,13 +174,17 @@ function IncidentForm(){
     }
   }
 
-  function validateForm(formValues: any)  {
+  function validateForm(formValues: any, event: any)  {
     let formValidity = true  // assume form is good/true unless error below
     let titleValidity: boolean = false
     let titleErrorMsg: string = ""
     let eventValidity: boolean = false
     let eventErrorMsg: string = ""
- 
+    let startDate: string = event.target.date.value
+    let endDate: string = event.target.enddate.value
+    let dateErrorMsg = ""
+    let dateValidity: boolean = false
+
     if (formValues.title.length < 4 ){
       formValidity = false
       titleValidity = true
@@ -158,13 +197,26 @@ function IncidentForm(){
       eventErrorMsg = "Please select a type"
     }
 
+    if ((new Date(startDate) > new Date(endDate)) || (new Date(endDate) < new Date(startDate))) {
+      // set date error validation true 
+      dateErrorMsg = "End date can't be before start date."
+      dateValidity = true
+      
+    } else {
+      // null or false date error validation 
+    }
+
+    
 
     return {
       formValidity,
       titleValidity,
       titleErrorMsg, 
       eventValidity, 
-      eventErrorMsg}
+      eventErrorMsg,
+      dateErrorMsg,
+      dateValidity
+    }
   }
 
 
@@ -231,10 +283,7 @@ return(
           name="date"
           format="yyyy-MM-DD"
           value={startDate}
-          // inputValue={inputStartValue}
           onChange={handleStartDateChange} 
-          // onChange={(event: any) => {debugger
-          //    setDate(event._i)}} 
           className={classes.form}
         />
       
@@ -247,6 +296,8 @@ return(
           format="yyyy-MM-DD"
           value= {enddate}
           onChange={handleEndDateChange}
+          helperText={errors.dateErrorMsg}
+          error={errors.dateValidity}
           className={classes.form}
         />
     </MuiPickersUtilsProvider>
