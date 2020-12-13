@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import Api from '../api';
-import {makeStyles, TextField, FormLabel, FormControlLabel, RadioGroup, Radio, Button} from '@material-ui/core';
+import {makeStyles, TextField, FormLabel, FormControlLabel, RadioGroup, Radio, Button, FormHelperText} from '@material-ui/core';
 import { KeyboardDatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import MomentUtils from '@date-io/moment';
 import moment from "moment";
@@ -24,18 +24,23 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-let initialValues = {
+const initialValues = {
   activity: ""  , // "incident", "exercise", or "event"
   title: "", // activity name
-  errors: { 
-    "title": ""
-  },
-  titleValidity: false,
-  formValidity: false
+ 
 }
+const initialErrors ={
+  titleErrorMsg: "",  
+  titleValidity: false,   // if title empty, flip to true 
+  formValidity: false,    // if all form data good, flip to true
+  eventValidity: false,   // if event type empty, flip to true
+  eventErrorMsg: ""
+}
+
 
 function IncidentForm(){
   const [values, setValues] = useState(initialValues)
+  const [errors, setErrors] = useState(initialErrors)
   const [startDate, setDate] = useState(new Date());
   const [enddate, setEndDate] = useState(new Date());
 
@@ -45,17 +50,36 @@ function IncidentForm(){
 
   const handleInputChange = (event: any)=>{ 
     const {name, value} = event.target
+    let titleErrorMsg: string
+    let titleValidity: boolean
+    let eventValidity: boolean
+    let eventErrorMsg: string
 
     switch(name){
       case 'title':
-        values.errors.title = value.length < 4  ? 'Title must be longer then 4 characters' : ""
-        let x = value.length > 3 ? false : true 
-        values.titleValidity = x
+        const valueLengthCompare = value.length < 4 && value.length > 0
+        titleErrorMsg = valueLengthCompare ? 'Title must be longer then 4 characters' : ""
+        titleValidity = valueLengthCompare ? true : false 
+      break
+      
+      case 'activity':
+        eventValidity = value.length > 0 ? false : true
+        eventErrorMsg = ""
+      break
 
-        break
+
+
       default:
         break
     }
+
+    setErrors(prevState => ({
+      ...prevState,
+      titleErrorMsg,
+      titleValidity,
+      eventValidity,
+      eventErrorMsg
+    }))
 
     setValues({ 
       ...values,
@@ -79,54 +103,69 @@ function IncidentForm(){
     let token = CookiesHelper.getCookie("membership" + "1516")!;
     let url: string 
 
-    const {formValues, formValidity} = validateForm(values)
-    const titleValidity = formValues.titleValidity
-
-    setValues({
-      ...values,
-      titleValidity
-      })
+    const {formValidity,
+      titleValidity,
+      titleErrorMsg,
+      eventValidity,
+      eventErrorMsg} = validateForm(values)
     
 
-    if(formValidity){
-      // if no errors, send to database
+    setErrors( prevState => ({
+      ...prevState,
+      formValidity,
+      titleValidity,
+      titleErrorMsg,
+      eventValidity,
+      eventErrorMsg
+      }))
+    
 
+    if(formValidity){ // if no errors (aka true), send to database
 
-
-    // Api.addIncidentAsync(
-    //   token,
-    //   event.target.title.value, 
-    //   event.target.activity.value, 
-    //   event.target.date.value, 
-    //   event.target.enddate.value).then(response =>{
+    // // Api.addIncidentAsync(
+    // //   token,
+    // //   event.target.title.value, 
+    // //   event.target.activity.value, 
+    // //   event.target.date.value, 
+    // //   event.target.enddate.value).then(response =>{
         
-    //     url = '/1516/missions/' + response.data.id
+    // //     url = '/1516/missions/' + response.data.id
     
-    //     history.push(url)
-    //   })
+    // //     history.push(url)
+    // //   })
 
     alert("submitted")
     
     }
+  }
 
-    
+  function validateForm(formValues: any)  {
+    let formValidity = true  // assume form is good/true unless error below
+    let titleValidity: boolean = false
+    let titleErrorMsg: string = ""
+    let eventValidity: boolean = false
+    let eventErrorMsg: string = ""
+ 
+    if (formValues.title.length < 4 ){
+      formValidity = false
+      titleValidity = true
+      titleErrorMsg = "Please fill out."
     }
 
-    function validateForm(formValues: any)  {
-      let formValidity = true
-
-      // if (!formValues.errors.title 
-      if (formValues.title.length < 4 ){
-        formValidity = false
-        formValues.titleValidity = true
-        formValues.errors.title = "Please complete with 4 or more characters."
-      }
-      
-      // setValues(formValues)
-      
-      // return formValidity
-      return {formValues, formValidity}
+    if (formValues.activity === ""){
+      formValidity = false
+      eventValidity = true
+      eventErrorMsg = "Please select a type"
     }
+
+
+    return {
+      formValidity,
+      titleValidity,
+      titleErrorMsg, 
+      eventValidity, 
+      eventErrorMsg}
+  }
 
 
 return(
@@ -136,13 +175,13 @@ return(
 
     <TextField 
       id="standard-basic" 
-      label="Incident Name"
+      label="Event DEM # and Name"
       name="title"
       value={values.title}
       onChange={handleInputChange}
       required
-      error={values.titleValidity}
-      helperText={values.errors.title}
+      error={errors.titleValidity}
+      helperText={errors.titleErrorMsg}
       autoFocus
       className={classes.form}
     />
@@ -157,8 +196,15 @@ return(
         aria-label="EventType" 
         name="activity"
         onChange={handleInputChange}
-        
       >
+      <FormHelperText
+      error={errors.eventValidity}
+      >
+        {errors.eventErrorMsg}
+        
+
+      </FormHelperText>
+
         <FormControlLabel 
           value="incident"
           control={<Radio />} 
