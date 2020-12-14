@@ -29,7 +29,7 @@ const initialValues = {
   title: "", // activity name
  
 }
-const initialErrors ={
+const initialErrors = {
   titleErrorMsg: "",  
   titleValidity: false,   // if title empty, flip to true 
   formValidity: false,    // if all form data good, flip to true
@@ -39,12 +39,17 @@ const initialErrors ={
   dateErrorMsg: ""
 }
 
+const initialDates = {
+  startDate: new Date(),  // object names formatted to match API requirements
+  enddate: new Date()
+}
+
 
 function IncidentForm(){
   const [values, setValues] = useState(initialValues)
   const [errors, setErrors] = useState(initialErrors)
-  const [startDate, setDate] = useState(new Date());
-  const [enddate, setEndDate] = useState(new Date());
+  const [dates, setDates] = useState(initialDates)
+  
 
   let history = useHistory();
   const classes = useStyles();
@@ -89,42 +94,31 @@ function IncidentForm(){
     })
   }
 
+const handleDateChange =  ( dateName: string, event: any) => {
+  setDates({ 
+    ...dates,
+    [dateName]: event.format()
+  })
 
- 
-  const handleStartDateChange = (event: any)=>{
-    setDate(event.format())
+  validateDates()
+}
 
-  }
+ function validateDates() {
+    let dateErrorMsg: string = ""
+    let dateValidity: boolean = false
 
-  const handleEndDateChange = (event: any)=>{
-    const {dateErrorMsg, dateValidity} = checkDateValidation()
-    
+    const dateRangeCheck = (new Date(dates.startDate) <= new Date(dates.enddate))  
+
+    dateErrorMsg = dateRangeCheck ? "" : "End date can't be before start date."
+
+    dateValidity = dateRangeCheck ? false : true  // true if error - end date before start date
+      
     setErrors( prevState => ({
       ...prevState,
       dateValidity,
       dateErrorMsg,
     }))
-    
-    setEndDate(event.format())
   }
-
-  function checkDateValidation() {
-    let dateErrorMsg: string = ""
-    let dateValidity: boolean = false
-
-    const dateRangeCheck = (new Date(startDate) > new Date(enddate)) || (new Date(enddate) < new Date(startDate))
-
-    dateErrorMsg = dateRangeCheck ? "End date can't be before start date." : "date correct now"
-
-    dateValidity = dateRangeCheck? true : false
-      
-    return {
-      dateErrorMsg,
-      dateValidity
-      }
-  }
-
-
 
 
   function handleSubmit(event: any){
@@ -157,20 +151,20 @@ function IncidentForm(){
 
     if(formValidity){ // if no errors (aka true), send to database
 
-    // // Api.addIncidentAsync(
-    // //   token,
-    // //   event.target.title.value, 
-    // //   event.target.activity.value, 
-    // //   event.target.date.value, 
-    // //   event.target.enddate.value).then(response =>{
+    // Api.addIncidentAsync(
+    //   token,
+    //   values.title,
+    //   values.activity,
+    //   dates.startDate,
+    //   dates.enddate
+    //   ).then(response =>{
         
-    // //     url = '/1516/missions/' + response.data.id
+    //     url = '/1516/missions/' + response.data.id
     
-    // //     history.push(url)
-    // //   })
+    //     history.push(url)
+    //   })
 
-    alert("submitted")
-    
+    alert( dates.startDate,  )
     }
   }
 
@@ -206,8 +200,6 @@ function IncidentForm(){
       // null or false date error validation 
     }
 
-    
-
     return {
       formValidity,
       titleValidity,
@@ -224,7 +216,6 @@ return(
   <div className={classes.root}>
 
   <form   noValidate autoComplete="off" onSubmit={handleSubmit}> 
-
     <TextField 
       id="standard-basic" 
       label="Event DEM # and Name"
@@ -253,10 +244,7 @@ return(
       error={errors.eventValidity}
       >
         {errors.eventErrorMsg}
-        
-
       </FormHelperText>
-
         <FormControlLabel 
           value="incident"
           control={<Radio />} 
@@ -275,49 +263,43 @@ return(
       </RadioGroup>
 
       <MuiPickersUtilsProvider utils={MomentUtils}>
-      <KeyboardDatePicker  
+        <KeyboardDatePicker  
           disableToolbar
           minDate={new Date()}
           variant="inline"
           label="Start Date" 
           name="date"
           format="yyyy-MM-DD"
-          value={startDate}
-          onChange={handleStartDateChange} 
+          value={dates.startDate}
+          onChange={(value) => handleDateChange("startDate", value)}
           className={classes.form}
         />
-      
-      <KeyboardDatePicker  
+        <KeyboardDatePicker  
           disableToolbar
           minDate={new Date()}
           variant="inline"
           label="End Date"
           name="enddate"
           format="yyyy-MM-DD"
-          value= {enddate}
-          onChange={handleEndDateChange}
+          value={dates.enddate}
+          onChange={(value) => handleDateChange("enddate", value)}
           helperText={errors.dateErrorMsg}
           error={errors.dateValidity}
           className={classes.form}
         />
-    </MuiPickersUtilsProvider>
+      </MuiPickersUtilsProvider>
     
-    <Button 
-      type="submit"
-      variant="contained"
-      size="large" 
-      color="primary" >
-        Submit 
-    </Button>
+      <Button 
+        type="submit"
+        variant="contained"
+        size="large" 
+        color="primary" >
+          Submit 
+      </Button>
+    </form>  
+  </div>
 
-
-  </form>  
-
-</div>
-  
-
-)
-
+  )
 }
 export default IncidentForm
 

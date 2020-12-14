@@ -25,14 +25,14 @@ export default class Api {
   static async addIncidentAsync(memberToken: string, 
     title: string, // greater then 3 characters
     activity: string, //"incident", "exercise" , or "event"
-    date: string, // 2020-11-24 format
-    enddate: string //same as above
+    date: any, // 2020-11-24 format
+    enddate: any //same as above
   ){
     
     let response = await Util.fetchAsync<any>(HttpMethod.POST, "/team/incidents", memberToken, {title: title, // create then 3 characters
       activity: activity, //"incident", "exercise" , or "event"
-      date: date, // 2020-11-24 format
-      enddate: enddate})
+      date: date.toISOString(), // 2020-12-14T07:24:00.000Z format
+      enddate: enddate.toISOString()})
       
       return response 
   }
