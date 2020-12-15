@@ -15,6 +15,7 @@ import ActivitiesList from './ActivitiesList';
 import ViewActivity from './ViewActivity';
 import MembershipController from '../controllers/membershipController';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
+import NewIncidentContainer from './IncidentContainer';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -98,6 +99,10 @@ const MembershipHome = (props: {
         <Typography variant="h4" className={classes.sectionHeader} style={{marginTop: '24px'}}>Meetings/trainings</Typography>
         <div className={classes.card}>
           <TopLevelCard text="Upcoming Meetings/Trainings" href={`${url}/meetings/upcoming`}/>
+        </div>
+        <Typography variant="h4" className={classes.sectionHeader} style={{marginTop: '24px'}}>New Incident</Typography>
+        <div className={classes.card}>
+          <TopLevelCard text="Add New Incident/Mission" href={`${url}/incident`}/>
         </div>
         {/* We don't seem to use trainings... */}
         {/* <div className={classes.card}>
@@ -204,6 +209,9 @@ const MembershipHome = (props: {
         </Route>
         <Route path={`${path}/meetings/upcoming`}>
           <UpcomingMeetings/>
+        </Route>
+        <Route path={`${path}/incident`}>
+          <NewIncidentContainer/>
         </Route>
         <Route path={`${path}/meetings/:activityId`} children={<ViewActivityHandler/>}/>
         <Route exact path={path}>

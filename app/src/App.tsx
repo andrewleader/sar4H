@@ -85,6 +85,7 @@ export default App;
 
 
 const Membership = () => {
+  
   let { unitId } = useParams();
   var membershipModel = MembershipModel.get(unitId!);
   if (membershipModel) {

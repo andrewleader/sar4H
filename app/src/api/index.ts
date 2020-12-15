@@ -22,6 +22,21 @@ export default class Api {
     return await Util.fetchAsync<IIncidentsResponse>(HttpMethod.GET, "/team/incidents", memberToken, parameters);
   }
 
+  static async addIncidentAsync(memberToken: string, 
+    title: string, // greater then 3 characters
+    activity: string, //"incident", "exercise" , or "event"
+    date: any, // 2020-11-24 format
+    enddate: any //same as above
+  ){
+    
+    let response = await Util.fetchAsync<any>(HttpMethod.POST, "/team/incidents", memberToken, {title: title, // create then 3 characters
+      activity: activity, //"incident", "exercise" , or "event"
+      date: date.toISOString(), // 2020-12-14T07:24:00.000Z format
+      enddate: enddate.toISOString()})
+      
+      return response 
+  }
+
   static async getActivityAsync(memberToken: string, activityId: number) {
     var response = await Util.fetchAsync<any>(HttpMethod.GET, `/team/activities/${activityId}`, memberToken);
     return response.data as Responses.IActivityListItem;
@@ -62,4 +77,4 @@ export default class Api {
   static async getAccountMembershipsAsync() {
     return await Util.fetchAuthenticatedAsync<any>(HttpMethod.GET, "/account/memberships");
   }
-}
+} 
