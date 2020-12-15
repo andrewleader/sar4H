@@ -50,7 +50,8 @@ function IncidentForm(){
   const [errors, setErrors] = useState(initialErrors)
   const [dates, setDates] = useState(initialDates)
   
-
+  useEffect(() => {validateDates()}, [dates]) // validate dates if dates is updated
+  
   let history = useHistory();
   const classes = useStyles();
 
@@ -69,24 +70,28 @@ function IncidentForm(){
         
         titleErrorMsg = valueLengthCompare ? 'Title must be longer then 4 characters' : ""
         titleValidity = valueLengthCompare ? true : false 
+       
+        setErrors({
+          ...errors,
+          titleErrorMsg,
+          titleValidity
+        })
       break
       
       case 'activity':
         eventValidity = value.length > 0 ? false : true
         eventErrorMsg = ""
-      break
+
+        setErrors({ 
+          ...errors,
+          eventValidity,
+          eventErrorMsg
+        })
+        break
 
       default:
         break
     }
-
-    setErrors(prevState => ({
-      ...prevState,
-      titleErrorMsg,
-      titleValidity,
-      eventValidity,
-      eventErrorMsg
-    }))
 
     setValues({ 
       ...values,
@@ -94,16 +99,16 @@ function IncidentForm(){
     })
   }
 
-const handleDateChange =  ( dateName: string, event: any) => {
-  setDates({ 
-    ...dates,
-    [dateName]: event.format()
-  })
+  const handleDateChange =  ( dateName: string, event: any) => {
+    
+    setDates(prevState => ({ 
+      ...prevState,
+      [dateName]: event.format()
+    }))
+  }
 
-  validateDates()
-}
-
- function validateDates() {
+  function validateDates() {
+    
     let dateErrorMsg: string = ""
     let dateValidity: boolean = false
 
@@ -146,7 +151,7 @@ const handleDateChange =  ( dateName: string, event: any) => {
       eventErrorMsg,
       dateErrorMsg,
       dateValidity
-      }))
+    }))
     
 
     if(formValidity){ // if no errors (aka true), send to database
@@ -188,7 +193,7 @@ const handleDateChange =  ( dateName: string, event: any) => {
     if (formValues.activity === ""){
       formValidity = false
       eventValidity = true
-      eventErrorMsg = "Please select a type"
+      eventErrorMsg = "Please select an event."
     }
 
     if ((new Date(startDate) > new Date(endDate)) || (new Date(endDate) < new Date(startDate))) {
@@ -298,7 +303,6 @@ return(
       </Button>
     </form>  
   </div>
-
   )
 }
 export default IncidentForm
