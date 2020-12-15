@@ -36,7 +36,8 @@ const initialErrors = {
   eventValidity: false,   // if event type empty, flip to true
   eventErrorMsg: "",
   dateValidity: false,   
-  dateErrorMsg: ""
+  dateErrorMsg: "",
+    
 }
 
 const initialDates = {
@@ -49,9 +50,10 @@ function IncidentForm(){
   const [values, setValues] = useState(initialValues)
   const [errors, setErrors] = useState(initialErrors)
   const [dates, setDates] = useState(initialDates)
-  
+  const [isSubmitable, setSubmit] = useState(false)
+
   useEffect(() => {validateDates()}, [dates]) // validate dates if dates is updated
-  
+
   let history = useHistory();
   const classes = useStyles();
 
@@ -99,6 +101,7 @@ function IncidentForm(){
     })
   }
 
+
   const handleDateChange =  ( dateName: string, event: any) => {
     
     setDates(prevState => ({ 
@@ -106,6 +109,7 @@ function IncidentForm(){
       [dateName]: event.format()
     }))
   }
+
 
   function validateDates() {
     
@@ -140,7 +144,6 @@ function IncidentForm(){
       eventErrorMsg,
       dateErrorMsg,
       dateValidity,} = validateForm(values, event)
-    
 
     setErrors( prevState => ({
       ...prevState,
@@ -153,28 +156,26 @@ function IncidentForm(){
       dateValidity
     }))
     
-
     if(formValidity){ // if no errors (aka true), send to database
 
-    // Api.addIncidentAsync(
-    //   token,
-    //   values.title,
-    //   values.activity,
-    //   dates.startDate,
-    //   dates.enddate
-    //   ).then(response =>{
+    Api.addIncidentAsync(
+      token,
+      values.title,
+      values.activity,
+      dates.startDate,
+      dates.enddate
+      ).then(response =>{
         
-    //     url = '/1516/missions/' + response.data.id
+        url = '/1516/missions/' + response.data.id
     
-    //     history.push(url)
-    //   })
-
-    alert( dates.startDate,  )
+        history.push(url)
+      })
     }
   }
 
   function validateForm(formValues: any, event: any)  {
-    let formValidity = true  // assume form is good/true unless error below
+    let formValidity = true  // assume form is good/true unless error below 
+    
     let titleValidity: boolean = false
     let titleErrorMsg: string = ""
     let eventValidity: boolean = false
@@ -200,10 +201,7 @@ function IncidentForm(){
       // set date error validation true 
       dateErrorMsg = "End date can't be before start date."
       dateValidity = true
-      
-    } else {
-      // null or false date error validation 
-    }
+    } 
 
     return {
       formValidity,
@@ -212,7 +210,7 @@ function IncidentForm(){
       eventValidity, 
       eventErrorMsg,
       dateErrorMsg,
-      dateValidity
+      dateValidity,
     }
   }
 
@@ -298,7 +296,8 @@ return(
         type="submit"
         variant="contained"
         size="large" 
-        color="primary" >
+        color="primary"
+        >
           Submit 
       </Button>
     </form>  
