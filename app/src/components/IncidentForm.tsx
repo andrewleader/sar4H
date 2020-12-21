@@ -1,25 +1,26 @@
 import React, {useState, useEffect} from 'react';
 import Api from '../api';
-import {makeStyles, TextField, FormLabel, FormControlLabel, RadioGroup, Radio, Button, FormHelperText} from '@material-ui/core';
+import {makeStyles, TextField, FormLabel, FormControlLabel, RadioGroup, Radio, Button, FormHelperText } from '@material-ui/core';
 import { KeyboardDatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import MomentUtils from '@date-io/moment';
 import moment from "moment";
 import CookiesHelper from "../helpers/cookiesHelper";
 import {useHistory} from "react-router-dom";
+import ListUnitMembers from './ListUnitMembers'
+import FormControl from '@material-ui/core/FormControl';
+import FormGroup from '@material-ui/core/FormGroup';
 
 const useStyles = makeStyles(theme => ({
   form: {
-    padding: "14px",
+    padding: "15px",
     display: "block",
-  },
-  card: {
-    marginBottom: "24px"
   },
   root: {
     border: 0,
     borderRadius: 3,
     height: 48,
     padding: '030px',
+
   },
 }));
 
@@ -50,13 +51,17 @@ function IncidentForm(){
   const [values, setValues] = useState(initialValues)
   const [errors, setErrors] = useState(initialErrors)
   const [dates, setDates] = useState(initialDates)
-  const [isSubmitable, setSubmit] = useState(false)
 
   useEffect(() => {validateDates()}, [dates]) // validate dates if dates is updated
 
   let history = useHistory();
   const classes = useStyles();
-
+  
+  const members: Array<any> = [
+    {name: "Alec"},
+    {name: "Pam"}, 
+    {name: "Dan"}
+  ]
 
   const handleInputChange = (event: any)=>{ 
     const {name, value} = event.target
@@ -103,13 +108,13 @@ function IncidentForm(){
 
 
   const handleDateChange =  ( dateName: string, event: any) => {
+    debugger
     
     setDates(prevState => ({ 
       ...prevState,
       [dateName]: event.format()
     }))
   }
-
 
   function validateDates() {
     
@@ -158,18 +163,19 @@ function IncidentForm(){
     
     if(formValidity){ // if no errors (aka true), send to database
 
-    Api.addIncidentAsync(
-      token,
-      values.title,
-      values.activity,
-      dates.startDate,
-      dates.enddate
-      ).then(response =>{
+    // Api.addIncidentAsync(
+    //   token,
+    //   values.title,
+    //   values.activity,
+    //   dates.startDate,
+    //   dates.enddate
+    //   ).then(response =>{
         
-        url = '/1516/missions/' + response.data.id
+    //     url = '/1516/missions/' + response.data.id
     
-        history.push(url)
-      })
+    //     history.push(url)
+    //   })
+    alert("Submitted Form")
     }
   }
 
@@ -215,10 +221,16 @@ function IncidentForm(){
   }
 
 
+
+
 return(
   <div className={classes.root}>
 
-  <form   noValidate autoComplete="off" onSubmit={handleSubmit}> 
+  <form   
+    noValidate 
+    autoComplete="off" 
+    onSubmit={handleSubmit}
+  > 
     <TextField 
       id="standard-basic" 
       label="Event DEM # and Name"
@@ -291,7 +303,21 @@ return(
           className={classes.form}
         />
       </MuiPickersUtilsProvider>
-    
+   
+    <FormControl component="fieldset">
+      <FormLabel component="legend">
+        Who Is Attending?
+      </FormLabel>
+      <FormGroup>
+        {members.map((member) => {
+            return (    
+              <ListUnitMembers name={member.name}/>
+            )
+          })}
+      </FormGroup>
+    </FormControl>
+
+    <div>
       <Button 
         type="submit"
         variant="contained"
@@ -300,6 +326,7 @@ return(
         >
           Submit 
       </Button>
+    </div>
     </form>  
   </div>
   )
