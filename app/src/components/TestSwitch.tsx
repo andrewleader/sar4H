@@ -8,8 +8,7 @@ import CookiesHelper from "../helpers/cookiesHelper";
 import {useHistory} from "react-router-dom";
 import ListUnitMembers from './ListUnitMembers'
 
-
- const members = [
+ const Members = [
   {
     name: "Alec",
     id: 9687,
@@ -25,28 +24,26 @@ import ListUnitMembers from './ListUnitMembers'
     name: "Dan",
     id: 987,
     isAttending: false
-
   }
 ]
 
 export const Test = () => {
 
-  const [state, setState] = useState(members)
+  const [attendees, setAttendees] = useState(Members)
 
   function handleSubmit(event: any){
-    event.preventDefault()
+    event.preventDefault();
     
-    alert(`Submitted Form }`)
+    alert(`Submitted Form`);
   }
  
-  const handleAttendingChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-
-  setState({ ...state, [event.target.name]: event.target.checked });
-debugger
+  const handleAttendingChange = (memberIdx: number, attendanceState: boolean) => {
+    const updatedAttendee = attendees[memberIdx];
+    updatedAttendee.isAttending = attendanceState;
+    const newAttendees = [...attendees ];
+    newAttendees[memberIdx] = updatedAttendee;
+    setAttendees(newAttendees);
   }
-
- 
-
  
   return(
     <div>
@@ -61,14 +58,13 @@ debugger
     </FormLabel>
 
       <FormGroup>
-        {members.map((member, i) => {
+        {attendees.map((member, i) => {
             return (    
               <ListUnitMembers 
-              key={i}
-              member={member.name}
-              name={i}
-              isAttending={member.isAttending}
-              handleAttendingChange={handleAttendingChange}
+                key={i}
+                member={member}
+                memberIdx={i}
+                handleAttendingChange={handleAttendingChange}
               />
             )
           })}

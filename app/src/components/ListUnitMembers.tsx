@@ -29,20 +29,17 @@ const ListUnitMembers = (props: any) => {
 
 
 
-  
-  
+  const {member, memberIdx, handleAttendingChange} = props; 
   return(
     <>
       <FormControlLabel
         control={
           <Switch
-            checked={props.isAttending}
-            onChange={props.handleAttendingChange}
+            checked={member.isAttending}
+            onChange={event => { handleAttendingChange(memberIdx, !member.isAttending) }}
             value={"attending"}
-            name={props.name["isAttending"]} // directly relates to key in member and is need to set state object 
-
           />} 
-        label={props.member }
+        label={member.name }
       />
      
     </>

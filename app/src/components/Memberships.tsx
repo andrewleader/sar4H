@@ -52,7 +52,7 @@ const Memberships = () => {
     return (
       <div>
         {data.memberships.map((membership: any) => {
-          return <ListItemMembership name={membership.name} id={membership.id}/>
+          return <ListItemMembership key={membership.id} name={membership.name} id={membership.id}/>
         })}
       </div>
     )
