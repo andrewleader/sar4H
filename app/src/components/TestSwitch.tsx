@@ -9,20 +9,20 @@ import {useHistory} from "react-router-dom";
 import ListUnitMembers from './ListUnitMembers'
 
 
- const members = [
+ const Members = [  // config constant
   {
-    name: "Alec",
+    name: "Santa",
     id: 9687,
     isAttending: false
   },
   {
-    name: "Pam",
+    name: "Grinch",
     id: 45, 
     isAttending: false
 
   }, 
   {
-    name: "Dan",
+    name: "Tooth Fairy",
     id: 987,
     isAttending: false
 
@@ -31,21 +31,27 @@ import ListUnitMembers from './ListUnitMembers'
 
 export const Test = () => {
 
-  const [state, setState] = useState(members)
+  const [attendees, setAttendees] = useState(Members)
 
   function handleSubmit(event: any){
     event.preventDefault()
+
+    let isGoing = attendees.filter(attendee => attendee.isAttending === true)
     
-    alert(`Submitted Form }`)
+    alert(`Submitted Form. List who is going: ${isGoing.map(going => going.name)}`)
   }
  
-  const handleAttendingChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAttendingChange = (memberIdx: number, attendanceState: boolean) => {
+  // setState({ ...state, [event.target.name]: event.target.checked });
 
-  setState({ ...state, [event.target.name]: event.target.checked });
-debugger
+    const updatedAttendee = attendees[memberIdx]  // set the id of the attendee to access it's properties
+    updatedAttendee.isAttending = attendanceState // update boolean of the attendee
+
+    const newAttendees = [...attendees]           // make a copy of previous state of attendees
+    newAttendees[memberIdx] = updatedAttendee     // insert/overwrite array object of the attendee in question with the new version
+    setAttendees(newAttendees)                    // update state  
+
   }
-
- 
 
  
   return(
@@ -61,13 +67,12 @@ debugger
     </FormLabel>
 
       <FormGroup>
-        {members.map((member, i) => {
+        {attendees.map((member, i) => {
             return (    
               <ListUnitMembers 
               key={i}
-              member={member.name}
-              name={i}
-              isAttending={member.isAttending}
+              member={member}
+              memberIdx={i}
               handleAttendingChange={handleAttendingChange}
               />
             )
@@ -94,14 +99,3 @@ debugger
 
 
 
-
-
-{/* <FormControlLabel
-control={
-  <Switch
-    checked={member.attending}
-    onChange={handleChange}
-    name={member.name}
-  />} 
-label={member.name }
-/> */}

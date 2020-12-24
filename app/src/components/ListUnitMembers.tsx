@@ -6,45 +6,23 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import Switch from '@material-ui/core/Switch';
 
-/////////////////////////////
-////////////////////////////////////////
-//////////////////////////////////
+
 
 const ListUnitMembers = (props: any) => {
-  
-  // const [state, setState] = useState({
-  //   attending: false,
-  // }
-  // );
- 
-  // const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-
-  //   setState(
-  //     {
-  //       ...state,
-  //       [event.target.name]: event.target.checked 
-  //     }
-  //   );
-  // };
-
-
-
-  
+  const {member, memberIdx, handleAttendingChange} = props
+    
   
   return(
     <>
       <FormControlLabel
         control={
           <Switch
-            checked={props.isAttending}
-            onChange={props.handleAttendingChange}
+            checked={member.isAttending}
+            onChange={() =>{ handleAttendingChange(memberIdx, !member.isAttending)}}
             value={"attending"}
-            name={props.name["isAttending"]} // directly relates to key in member and is need to set state object 
-
           />} 
-        label={props.member }
+        label={member.name }
       />
-     
     </>
   )
 }
@@ -53,19 +31,5 @@ const ListUnitMembers = (props: any) => {
 export default ListUnitMembers
 
 
-  // <FormLabel component="legend">Are you {isMission ? 'responding' : 'attending'}?</FormLabel>
-  //     <FormControlLabel
-  //         control={
-  //           <Switch 
-  //           checked={props.isAttending}
-  //           onChange={handleRespondingChange} 
-  //           value="responding"
-  //           disabled={props.isLoadingIsAttending} />
-  //         }
-  //         label={
-  //           props.isAttending ? (
-  //             isMission ? 'Responding' : 'Attending')
-  //               :
-  //                (isMission ? 'Not responding' : 'Not attending')}
-  //         className={classes.respondingSwitch}
-  //       />
+// if you had an input with an onChange handler, then you'd want the event.target.value.
+// event.target.value is only useful for form elements with changing values.
