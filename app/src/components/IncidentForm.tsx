@@ -1,26 +1,28 @@
 import React, {useState, useEffect} from 'react';
 import Api from '../api';
-import {makeStyles, TextField, FormLabel, FormControlLabel, RadioGroup, Radio, Button, FormHelperText } from '@material-ui/core';
+import {makeStyles, TextField, FormLabel, FormControlLabel, RadioGroup, Radio, Button, FormHelperText, FormControl, FormGroup } from '@material-ui/core';
 import { KeyboardDatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import MomentUtils from '@date-io/moment';
 import moment from "moment";
 import CookiesHelper from "../helpers/cookiesHelper";
 import {useHistory} from "react-router-dom";
 import ListUnitMembers from './ListUnitMembers'
-import FormControl from '@material-ui/core/FormControl';
-import FormGroup from '@material-ui/core/FormGroup';
+// import FormControl from '@material-ui/core/FormControl';
+// import FormGroup from '@material-ui/core/FormGroup';
 
 const useStyles = makeStyles(theme => ({
   form: {
-    padding: "15px",
+    padding: "14px",
     display: "block",
+  },
+  card: {
+    marginBottom: "24px"
   },
   root: {
     border: 0,
     borderRadius: 3,
     height: 48,
     padding: '030px',
-
   },
 }));
 
@@ -51,6 +53,7 @@ function IncidentForm(){
   const [values, setValues] = useState(initialValues)
   const [errors, setErrors] = useState(initialErrors)
   const [dates, setDates] = useState(initialDates)
+  const [isSubmitable, setSubmit] = useState(false)
 
   useEffect(() => {validateDates()}, [dates]) // validate dates if dates is updated
 
@@ -223,14 +226,12 @@ function IncidentForm(){
 
 
 
+
+
 return(
   <div className={classes.root}>
 
-  <form   
-    noValidate 
-    autoComplete="off" 
-    onSubmit={handleSubmit}
-  > 
+  <form   noValidate autoComplete="off" onSubmit={handleSubmit}> 
     <TextField 
       id="standard-basic" 
       label="Event DEM # and Name"
@@ -303,8 +304,8 @@ return(
           className={classes.form}
         />
       </MuiPickersUtilsProvider>
-   
-    <FormControl component="fieldset">
+    
+      <FormControl component="fieldset">
       <FormLabel component="legend">
         Who Is Attending?
       </FormLabel>
