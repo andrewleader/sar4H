@@ -9,7 +9,11 @@ import Switch from '@material-ui/core/Switch';
 
 
 const ListUnitMembers = (props: any) => {
-  const {member, memberIdx, handleAttendingChange} = props
+  const {
+    member, 
+    memberIdx,
+    handleAttendingChange
+  } = props
     
   
   return(
@@ -19,14 +23,13 @@ const ListUnitMembers = (props: any) => {
           <Switch
             checked={member.isAttending}
             onChange={() =>{ handleAttendingChange(memberIdx, !member.isAttending)}}
-            value={"attending"}
+            value={"attending"}   // D4H uses this string in their API to set attendance correctly 
           />} 
         label={member.name }
       />
     </>
   )
 }
-
 
 export default ListUnitMembers
 

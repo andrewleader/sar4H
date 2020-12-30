@@ -28,10 +28,10 @@ const useStyles = makeStyles(theme => ({
 
 
 const initialValues = {
-  activity: ""  , // "incident", "exercise", or "event"
+  activity: "", // "incident", "exercise", or "event"
   title: "", // activity name
- 
 }
+
 const initialErrors = {
   titleErrorMsg: "",  
   titleValidity: false,   // if title empty, flip to true 
@@ -39,8 +39,7 @@ const initialErrors = {
   eventValidity: false,   // if event type empty, flip to true
   eventErrorMsg: "",
   dateValidity: false,   
-  dateErrorMsg: "",
-    
+  dateErrorMsg: "",  
 }
 
 const initialDates = {
@@ -80,7 +79,7 @@ function IncidentForm(){
         
         titleErrorMsg = valueLengthCompare ? 'Title must be longer then 4 characters' : ""
         titleValidity = valueLengthCompare ? true : false 
-       
+
         setErrors({
           ...errors,
           titleErrorMsg,
@@ -111,13 +110,12 @@ function IncidentForm(){
 
 
   const handleDateChange =  ( dateName: string, event: any) => {
-    debugger
-    
-    setDates(prevState => ({ 
+  setDates(prevState => ({ 
       ...prevState,
       [dateName]: event.format()
     }))
   }
+
 
   function validateDates() {
     
@@ -225,9 +223,6 @@ function IncidentForm(){
 
 
 
-
-
-
 return(
   <div className={classes.root}>
 
@@ -305,7 +300,7 @@ return(
         />
       </MuiPickersUtilsProvider>
     
-      <FormControl component="fieldset">
+      {/* <FormControl component="fieldset">
       <FormLabel component="legend">
         Who Is Attending?
       </FormLabel>
@@ -316,7 +311,7 @@ return(
             )
           })}
       </FormGroup>
-    </FormControl>
+    </FormControl> */}
 
     <div>
       <Button 

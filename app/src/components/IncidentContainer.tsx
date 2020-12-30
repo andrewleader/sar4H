@@ -1,21 +1,16 @@
 import React from 'react'
 import IncidentForm from './IncidentForm'
-import ListUnitMembers from './ListUnitMembers'
-import {Test} from './TestSwitch'
+import {SelectMembers} from './SelectMembers'
+
+
 const NewIncidentContainer = () => {
 
-
-
-
-
-return (
+  return (
   <>
-  {/* <IncidentForm/> */}
-  <Test/>
-</>
-)
-
-
+    <IncidentForm/>
+    <SelectMembers/>
+  </>
+  )
 
 }
 
