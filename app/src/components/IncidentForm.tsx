@@ -1,12 +1,27 @@
 import React, {useState, useEffect} from 'react';
 import Api from '../api';
-import {makeStyles, TextField, FormLabel, FormControlLabel, RadioGroup, Radio, Button, FormHelperText, FormControl, FormGroup } from '@material-ui/core';
-import { KeyboardDatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
+import {
+  makeStyles, 
+  TextField, 
+  FormLabel, 
+  FormControlLabel, 
+  RadioGroup, 
+  Radio, 
+  Button, 
+  FormHelperText, 
+  FormControl, 
+  FormGroup 
+  } from '@material-ui/core';
+import { 
+  KeyboardDatePicker, 
+  MuiPickersUtilsProvider 
+  } from "@material-ui/pickers";
 import MomentUtils from '@date-io/moment';
 import moment from "moment";
 import CookiesHelper from "../helpers/cookiesHelper";
 import {useHistory} from "react-router-dom";
-import ListUnitMembers from './ListUnitMembers'
+import {SelectMembers} from './SelectMembers'
+
 // import FormControl from '@material-ui/core/FormControl';
 // import FormGroup from '@material-ui/core/FormGroup';
 
@@ -300,18 +315,8 @@ return(
         />
       </MuiPickersUtilsProvider>
     
-      {/* <FormControl component="fieldset">
-      <FormLabel component="legend">
-        Who Is Attending?
-      </FormLabel>
-      <FormGroup>
-        {members.map((member) => {
-            return (    
-              <ListUnitMembers name={member.name}/>
-            )
-          })}
-      </FormGroup>
-    </FormControl> */}
+      <SelectMembers/>
+
 
     <div>
       <Button 
