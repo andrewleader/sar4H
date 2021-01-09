@@ -21,7 +21,7 @@ import moment from "moment";
 import CookiesHelper from "../helpers/cookiesHelper";
 import {useHistory} from "react-router-dom";
 import {SelectMembers} from './SelectMembers'
-
+import MembershipModel from '../models/membershipModel'
 // import FormControl from '@material-ui/core/FormControl';
 // import FormGroup from '@material-ui/core/FormGroup';
 
@@ -63,24 +63,44 @@ const initialDates = {
 }
 
 
-function IncidentForm(){
+function IncidentForm(props: {
+    membership: MembershipModel
+  }
+){
   const [values, setValues] = useState(initialValues)
   const [errors, setErrors] = useState(initialErrors)
   const [dates, setDates] = useState(initialDates)
   const [isSubmitable, setSubmit] = useState(false)
+  const [members, setMembers] = useState({})
 
   useEffect(() => {validateDates()}, [dates]) // validate dates if dates is updated
+
+  React.useEffect(() => {
+    async function loadAsync() {
+      let result = await props.membership.getMembersAsync({
+        group_id: 7965,
+        include_details: false
+      });
+       
+      setMembers(result);
+      debugger
+    }
+
+    loadAsync();
+  }, []);
+
+
 
   let history = useHistory();
   const classes = useStyles();
   
-  const members: Array<any> = [
-    {name: "Alec"},
-    {name: "Pam"}, 
-    {name: "Dan"}
-  ]
+  // const members: Array<any> = [
+  //   {name: "Alec"},
+  //   {name: "Pam"}, 
+  //   {name: "Dan"}
+  // ]
 
-  const handleInputChange = (event: any)=>{ 
+  const handleInputChange = (event: any) => { 
     const {name, value} = event.target
 
     let titleErrorMsg: string

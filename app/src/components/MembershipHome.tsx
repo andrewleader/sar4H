@@ -211,7 +211,7 @@ const MembershipHome = (props: {
           <UpcomingMeetings/>
         </Route>
         <Route path={`${path}/incident`}>
-          <NewIncidentContainer/>
+          <NewIncidentContainer membership={props.membership}/>
         </Route>
         <Route path={`${path}/meetings/:activityId`} children={<ViewActivityHandler/>}/>
         <Route exact path={path}>

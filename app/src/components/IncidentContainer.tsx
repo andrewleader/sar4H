@@ -1,12 +1,15 @@
 import React from 'react'
 import IncidentForm from './IncidentForm'
+import MembershipModel from '../models/membershipModel';
 
-
-const NewIncidentContainer = () => {
+const NewIncidentContainer = (props: {
+    membership: MembershipModel
+  }
+) => {
 
   return (
   <>
-    <IncidentForm/>
+    <IncidentForm membership={props.membership}/>
   </>
   )
 

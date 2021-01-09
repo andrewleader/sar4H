@@ -1,6 +1,9 @@
 import Util, { HttpMethod } from './util';
 import * as Responses from './responses';
-import { IIncidentsResponse } from './responses';
+import {
+    IIncidentsResponse,
+    IMemberListItem 
+  } from './responses';
 
 export default class Api {
   static async authenticateAsync(username: string, password: string) {
@@ -11,6 +14,14 @@ export default class Api {
       client_id: "SAR4H"
     });
   }
+
+  static async getMembersListAsync(memberToken: string, parameters: {
+    group_id: number, // unit id number
+    include_details: boolean //include or not extra member details
+  }){
+    return await Util.fetchAsync<IMemberListItem>(HttpMethod.GET, `/team/members`, memberToken, parameters);
+  }
+
 
   static async getIncidentsAsync(memberToken: string, parameters: {
     published: number, // 0-1, whether activity has been published
@@ -28,7 +39,6 @@ export default class Api {
     date: any, // 2020-11-24 format
     enddate: any //same as above
   ){
-    
     let response = await Util.fetchAsync<any>(HttpMethod.POST, "/team/incidents", memberToken, {title: title, // create then 3 characters
       activity: activity, //"incident", "exercise" , or "event"
       date: date.toISOString(), // 2020-12-14T07:24:00.000Z format

@@ -28,7 +28,23 @@ export default class MembershipModel {
         activeMissions.push(mission);
       }
     });
+    
     return activeMissions;
+  }
+
+  async getMembersAsync(
+    parameters: {
+      group_id: number, // unit id number
+      include_details: boolean //include or not extra member details
+  }){
+    let results = await Api.getMembersListAsync(
+      this.token, 
+      {
+        group_id: parameters.group_id,
+        include_details: parameters.include_details
+      }
+    )
+    return results
   }
 
   async getMissionsAsync(parameters: {
