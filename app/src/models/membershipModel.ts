@@ -44,6 +44,12 @@ export default class MembershipModel {
         include_details: parameters.include_details
       }
     )
+    // let answer: IMemberList[] = []
+    
+    // results.data.forEach((member) => {
+    //   answer.push(member)
+    // })
+
     return results
   }
 

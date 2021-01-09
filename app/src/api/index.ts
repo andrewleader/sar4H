@@ -2,7 +2,8 @@ import Util, { HttpMethod } from './util';
 import * as Responses from './responses';
 import {
     IIncidentsResponse,
-    IMemberListItem 
+    IMemberListItem,
+    IMemberList, 
   } from './responses';
 
 export default class Api {
@@ -19,7 +20,7 @@ export default class Api {
     group_id: number, // unit id number
     include_details: boolean //include or not extra member details
   }){
-    return await Util.fetchAsync<IMemberListItem>(HttpMethod.GET, `/team/members`, memberToken, parameters);
+    return await Util.fetchAsync<IMemberList>(HttpMethod.GET, `/team/members`, memberToken, parameters);
   }
 
 

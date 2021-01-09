@@ -45,6 +45,10 @@ export interface IAttendanceListItem {
   status: string // "attending", "requested", or "absent"
 }
 
+export interface IMemberList{
+  data: IMemberListItem[]
+}
+
 export interface IMemberListItem {
   id: number,
   name: string

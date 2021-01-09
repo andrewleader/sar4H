@@ -71,7 +71,7 @@ function IncidentForm(props: {
   const [errors, setErrors] = useState(initialErrors)
   const [dates, setDates] = useState(initialDates)
   const [isSubmitable, setSubmit] = useState(false)
-  const [members, setMembers] = useState({})
+  const [members, setMembers] = useState([])
 
   useEffect(() => {validateDates()}, [dates]) // validate dates if dates is updated
 
@@ -80,13 +80,13 @@ function IncidentForm(props: {
       let result = await props.membership.getMembersAsync({
         group_id: 7965,
         include_details: false
-      });
-       
-      setMembers(result);
-      debugger
+      })
+    
+    
     }
 
     loadAsync();
+    
   }, []);
 
 
