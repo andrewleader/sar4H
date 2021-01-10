@@ -22,6 +22,7 @@ import CookiesHelper from "../helpers/cookiesHelper";
 import {useHistory} from "react-router-dom";
 import {SelectMembers} from './SelectMembers'
 import MembershipModel from '../models/membershipModel'
+import {IMemberListItem} from '../api/responses'
 // import FormControl from '@material-ui/core/FormControl';
 // import FormGroup from '@material-ui/core/FormGroup';
 
@@ -71,7 +72,7 @@ function IncidentForm(props: {
   const [errors, setErrors] = useState(initialErrors)
   const [dates, setDates] = useState(initialDates)
   const [isSubmitable, setSubmit] = useState(false)
-  const [members, setMembers] = useState([])
+  const [members, setMembers] = useState<IMemberListItem | undefined>(undefined)
 
   useEffect(() => {validateDates()}, [dates]) // validate dates if dates is updated
 
@@ -81,8 +82,15 @@ function IncidentForm(props: {
         group_id: 7965,
         include_details: false
       })
-    
-    
+      let memberTest:any = []
+
+      result.data.forEach(
+        member => memberTest.push({
+          name: member.name,
+          id: member.id
+        })
+      )
+      setMembers(memberTest)
     }
 
     loadAsync();
@@ -94,11 +102,7 @@ function IncidentForm(props: {
   let history = useHistory();
   const classes = useStyles();
   
-  // const members: Array<any> = [
-  //   {name: "Alec"},
-  //   {name: "Pam"}, 
-  //   {name: "Dan"}
-  // ]
+  
 
   const handleInputChange = (event: any) => { 
     const {name, value} = event.target
