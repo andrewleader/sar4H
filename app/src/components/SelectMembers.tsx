@@ -30,7 +30,7 @@ export const SelectMembers = (props: any) => {
 
   const handleAttendingChange = (
       memberIndex: number,
-      attendanceState: boolean
+      attendanceState: boolean,
     ) => {
 
     // from the state attendees array, get the correct member
@@ -54,11 +54,6 @@ export const SelectMembers = (props: any) => {
 
   return(
     <div>
-    <form
-      noValidate
-      autoComplete="off"
-    >
-
     <FormControl component="fieldset">
       <FormLabel component="legend">
         Who Is Attending?
@@ -78,7 +73,6 @@ export const SelectMembers = (props: any) => {
           }
         </FormGroup>
       </FormControl>
-      </form>
     </div>
   )
 }

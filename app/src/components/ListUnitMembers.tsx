@@ -1,33 +1,34 @@
 import React from 'react';
 import {
-  FormControlLabel, 
+  FormControlLabel,
   Switch
   } from '@material-ui/core'
 
 
 const ListUnitMembers = (props: any) => {
   const {
-    member, 
+    member,
     memberIdx,
-    handleAttendingChange
+    handleAttendingChange,
+    isAttending
   } = props
-  
+
   return(
     <>
       <FormControlLabel
         control={
           <Switch
-            checked={member.isAttending}
+            checked={isAttending}
             onChange={() => {
                 handleAttendingChange(
-                  memberIdx, 
+                  memberIdx,
                   !member.isAttending
                 )
               }
             }
-            value={"attending"} // API requirement to set attendance correctly 
+            value={"attending"} // API requirement to set attendance correctly
           />
-        } 
+        }
         label={member.name}
       />
     </>
