@@ -1,8 +1,8 @@
+import moment from "moment";
 import Api from "../api";
+import { IActivityListItem, IAttendanceListItem } from "../api/responses";
 import CookiesHelper from "../helpers/cookiesHelper";
 import ActivityListItemModel from "./activityListItemModel";
-import { IMemberListItem, IActivityListItem, IAttendanceListItem } from "../api/responses";
-import moment from "moment";
 
 export default class MembershipModel {
   private memberId: number;
@@ -28,7 +28,7 @@ export default class MembershipModel {
         activeMissions.push(mission);
       }
     });
-    
+
     return activeMissions;
   }
 
@@ -38,13 +38,13 @@ export default class MembershipModel {
       include_details: boolean //include or not extra member details
   }){
     let results = await Api.getMembersListAsync(
-      this.token, 
+      this.token,
       {
         group_id: parameters.group_id,
         include_details: parameters.include_details
       }
     )
-  
+
     return results
   }
 
@@ -118,7 +118,7 @@ export default class MembershipModel {
 
   async removeAttendingAsync(activityId: number, attendanceId: number) {
     await Api.deleteAttendanceAsync(this.token, attendanceId);
-    
+
     // Clear affected caches
     this.attendanceCache.delete(activityId);
     this.requestedActivites.delete(activityId);

@@ -1,14 +1,13 @@
-import React, {useState} from 'react';
+import React, {useState, FC} from 'react';
 import {
   FormLabel,
-  // Button, 
-  FormControl, 
-  FormGroup, 
+  // Button,
+  FormControl,
+  FormGroup,
  } from '@material-ui/core';
 import ListUnitMembers from './ListUnitMembers'
 
-
- const Members = [  // config constant
+const Members = [  // config constant
   {
     name: "Santa",
     id: 9687,
@@ -16,9 +15,9 @@ import ListUnitMembers from './ListUnitMembers'
   },
   {
     name: "Grinch",
-    id: 45, 
+    id: 45,
     isAttending: false
-  }, 
+  },
   {
     name: "Tooth Fairy",
     id: 987,
@@ -26,86 +25,61 @@ import ListUnitMembers from './ListUnitMembers'
   }
 ]
 
-
-export const SelectMembers = () => {
-
-  const [attendees, setAttendees] = useState(Members)
-
-  function handleSubmit(event: any){
-    event.preventDefault()
-
-    let isAttending = attendees
-      .filter(attendee => attendee.isAttending === true)
-    
-    alert(`Submitted Form. List who is going:
-      ${isAttending.map(attending => attending.name)}
-    `)
-  }
-
+export const SelectMembers = (props: any) => {
+  const [attendees, setAttendees] = useState(props.members)
 
   const handleAttendingChange = (
-      memberIdx: number, 
+      memberIndex: number,
       attendanceState: boolean
     ) => {
 
-    // from the state attendees array, get the correct object 
+    // from the state attendees array, get the correct member
     // for updatedAttendee
-    const updatedAttendee = attendees[memberIdx]  
+    const updatedAttendee = attendees[memberIndex]
 
-    // update boolean property of the attendee
-    updatedAttendee.isAttending = attendanceState 
+    // indicate if member is going;
+    updatedAttendee.isAttending = attendanceState
 
-    // bb: make a copy of previous state of attendees
-    const newAttendees = [...attendees]           
+    // copy state of attendees to have a new state to update
+    const newAttendees = [...attendees]
 
-    // insert/overwrite array object of the attendee in question 
+    // insert/overwrite array object of the attendee in question
     // with the new version
-    newAttendees[memberIdx] = updatedAttendee     
+    newAttendees[memberIndex] = updatedAttendee
 
-    // update state  
-    setAttendees(newAttendees)                    
+    // update state
+    setAttendees(newAttendees)
 
   }
 
-    return(
-      <div>
-      <form 
-        noValidate 
-        autoComplete="off"
-        onSubmit={handleSubmit}> 
+  return(
+    <div>
+    <form
+      noValidate
+      autoComplete="off"
+    >
 
-      <FormControl component="fieldset">
+    <FormControl component="fieldset">
       <FormLabel component="legend">
         Who Is Attending?
       </FormLabel>
-
         <FormGroup>
-          {attendees.map((member, i) => {
-              return (    
-
-                <ListUnitMembers 
-                  key={i}
-                  member={member}
-                  memberIdx={i}
-                  handleAttendingChange={handleAttendingChange}
-                />
-              )
-            })}
+          {attendees.map((member: any, i: number) => {
+                return (
+                  <ListUnitMembers
+                    key={i}
+                    member={member}
+                    memberIdx={i}
+                    handleAttendingChange={handleAttendingChange}
+                  />
+                )
+              }
+            )
+          }
         </FormGroup>
-              
-        </FormControl>
-      <div>
-      {/* <Button 
-        type="submit"
-        variant="contained"
-        size="large" 
-        color="primary"
-      >
-          Submit 
-      </Button> */}
+      </FormControl>
+      </form>
     </div>
-  </form>  
-</div>
   )
 }
 

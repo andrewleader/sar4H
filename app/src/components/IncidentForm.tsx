@@ -1,20 +1,20 @@
 import React, {useState, useEffect} from 'react';
 import Api from '../api';
 import {
-  makeStyles, 
-  TextField, 
-  FormLabel, 
-  FormControlLabel, 
-  RadioGroup, 
-  Radio, 
-  Button, 
-  FormHelperText, 
-  FormControl, 
-  FormGroup 
+  makeStyles,
+  TextField,
+  FormLabel,
+  FormControlLabel,
+  RadioGroup,
+  Radio,
+  Button,
+  FormHelperText,
+  FormControl,
+  FormGroup
   } from '@material-ui/core';
-import { 
-  KeyboardDatePicker, 
-  MuiPickersUtilsProvider 
+import {
+  KeyboardDatePicker,
+  MuiPickersUtilsProvider
   } from "@material-ui/pickers";
 import MomentUtils from '@date-io/moment';
 import moment from "moment";
@@ -49,13 +49,13 @@ const initialValues = {
 }
 
 const initialErrors = {
-  titleErrorMsg: "",  
-  titleValidity: false,   // if title empty, flip to true 
+  titleErrorMsg: "",
+  titleValidity: false,   // if title empty, flip to true
   formValidity: false,    // if all form data good, flip to true
   eventValidity: false,   // if event type empty, flip to true
   eventErrorMsg: "",
-  dateValidity: false,   
-  dateErrorMsg: "",  
+  dateValidity: false,
+  dateErrorMsg: "",
 }
 
 const initialDates = {
@@ -82,29 +82,27 @@ function IncidentForm(props: {
         group_id: 7965,
         include_details: false
       })
-      let memberTest:any = []
+      let teamMembers:any = []
 
       result.data.forEach(
-        member => memberTest.push({
+        member => teamMembers.push({
           name: member.name,
           id: member.id
         })
       )
-      setMembers(memberTest)
+      setMembers(teamMembers)
     }
 
     loadAsync();
-    
+
   }, []);
 
 
 
   let history = useHistory();
   const classes = useStyles();
-  
-  
 
-  const handleInputChange = (event: any) => { 
+  const handleInputChange = (event: any) => {
     const {name, value} = event.target
 
     let titleErrorMsg: string
@@ -115,9 +113,9 @@ function IncidentForm(props: {
     switch(name){
       case 'title':
         const valueLengthCompare = value.length < 4 && value.length > 0
-        
+
         titleErrorMsg = valueLengthCompare ? 'Title must be longer then 4 characters' : ""
-        titleValidity = valueLengthCompare ? true : false 
+        titleValidity = valueLengthCompare ? true : false
 
         setErrors({
           ...errors,
@@ -125,12 +123,12 @@ function IncidentForm(props: {
           titleValidity
         })
       break
-      
+
       case 'activity':
         eventValidity = value.length > 0 ? false : true
         eventErrorMsg = ""
 
-        setErrors({ 
+        setErrors({
           ...errors,
           eventValidity,
           eventErrorMsg
@@ -141,15 +139,15 @@ function IncidentForm(props: {
         break
     }
 
-    setValues({ 
+    setValues({
       ...values,
-      [name]:value 
+      [name]:value
     })
   }
 
 
   const handleDateChange =  ( dateName: string, event: any) => {
-  setDates(prevState => ({ 
+  setDates(prevState => ({
       ...prevState,
       [dateName]: event.format()
     }))
@@ -157,16 +155,16 @@ function IncidentForm(props: {
 
 
   function validateDates() {
-    
+
     let dateErrorMsg: string = ""
     let dateValidity: boolean = false
 
-    const dateRangeCheck = (new Date(dates.startDate) <= new Date(dates.enddate))  
+    const dateRangeCheck = (new Date(dates.startDate) <= new Date(dates.enddate))
 
     dateErrorMsg = dateRangeCheck ? "" : "End date can't be before start date."
 
     dateValidity = dateRangeCheck ? false : true  // true if error - end date before start date
-      
+
     setErrors( prevState => ({
       ...prevState,
       dateValidity,
@@ -177,9 +175,9 @@ function IncidentForm(props: {
 
   function handleSubmit(event: any){
     event.preventDefault()
-  
+
     let token = CookiesHelper.getCookie("membership" + "1516")!;
-    let url: string 
+    let url: string
 
     const {
       formValidity,
@@ -200,7 +198,7 @@ function IncidentForm(props: {
       dateErrorMsg,
       dateValidity
     }))
-    
+
     if(formValidity){ // if no errors (aka true), send to database
 
     // Api.addIncidentAsync(
@@ -210,9 +208,9 @@ function IncidentForm(props: {
     //   dates.startDate,
     //   dates.enddate
     //   ).then(response =>{
-        
+
     //     url = '/1516/missions/' + response.data.id
-    
+
     //     history.push(url)
     //   })
     alert("Submitted Form")
@@ -220,8 +218,8 @@ function IncidentForm(props: {
   }
 
   function validateForm(formValues: any, event: any)  {
-    let formValidity = true  // assume form is good/true unless error below 
-    
+    let formValidity = true  // assume form is good/true unless error below
+
     let titleValidity: boolean = false
     let titleErrorMsg: string = ""
     let eventValidity: boolean = false
@@ -244,16 +242,16 @@ function IncidentForm(props: {
     }
 
     if ((new Date(startDate) > new Date(endDate)) || (new Date(endDate) < new Date(startDate))) {
-      // set date error validation true 
+      // set date error validation true
       dateErrorMsg = "End date can't be before start date."
       dateValidity = true
-    } 
+    }
 
     return {
       formValidity,
       titleValidity,
-      titleErrorMsg, 
-      eventValidity, 
+      titleErrorMsg,
+      eventValidity,
       eventErrorMsg,
       dateErrorMsg,
       dateValidity,
@@ -265,9 +263,9 @@ function IncidentForm(props: {
 return(
   <div className={classes.root}>
 
-  <form   noValidate autoComplete="off" onSubmit={handleSubmit}> 
-    <TextField 
-      id="standard-basic" 
+  <form   noValidate autoComplete="off" onSubmit={handleSubmit}>
+    <TextField
+      id="standard-basic"
       label="Event DEM # and Name"
       name="title"
       value={values.title}
@@ -279,14 +277,14 @@ return(
       className={classes.form}
     />
 
-    <FormLabel 
+    <FormLabel
       component="legend"
       required
     >
       Event Type
     </FormLabel>
-      <RadioGroup 
-        aria-label="EventType" 
+      <RadioGroup
+        aria-label="EventType"
         name="activity"
         onChange={handleInputChange}
       >
@@ -295,36 +293,36 @@ return(
       >
         {errors.eventErrorMsg}
       </FormHelperText>
-        <FormControlLabel 
+        <FormControlLabel
           value="incident"
-          control={<Radio />} 
+          control={<Radio />}
           label="Incident/Mission"
         />
-        <FormControlLabel 
-          value="exercise" 
-          control={<Radio />} 
-          label="Exercise/Training" 
+        <FormControlLabel
+          value="exercise"
+          control={<Radio />}
+          label="Exercise/Training"
         />
-        <FormControlLabel 
+        <FormControlLabel
           value="event"
-          control={<Radio />} 
+          control={<Radio />}
           label="Event/Meeting"
         />
       </RadioGroup>
 
       <MuiPickersUtilsProvider utils={MomentUtils}>
-        <KeyboardDatePicker  
+        <KeyboardDatePicker
           disableToolbar
           minDate={new Date()}
           variant="inline"
-          label="Start Date" 
+          label="Start Date"
           name="date"
           format="yyyy-MM-DD"
           value={dates.startDate}
           onChange={(value) => handleDateChange("startDate", value)}
           className={classes.form}
         />
-        <KeyboardDatePicker  
+        <KeyboardDatePicker
           disableToolbar
           minDate={new Date()}
           variant="inline"
@@ -338,21 +336,25 @@ return(
           className={classes.form}
         />
       </MuiPickersUtilsProvider>
-    
-      <SelectMembers/>
 
+      {members ?
+      <SelectMembers
+        members={members}
+      />
+      : "...loading"
+      }
 
     <div>
-      <Button 
+      <Button
         type="submit"
         variant="contained"
-        size="large" 
+        size="large"
         color="primary"
         >
-          Submit 
+          Submit
       </Button>
     </div>
-    </form>  
+    </form>
   </div>
   )
 }
