@@ -63,6 +63,14 @@ const initialDates = {
   enddate: new Date()
 }
 
+const InitialMembers = [  // config constant
+    {
+      name: "loading....",
+      id: 9687,
+      isAttending: false
+    },
+  ]
+
 
 function IncidentForm(props: {
     membership: MembershipModel
@@ -72,11 +80,12 @@ function IncidentForm(props: {
   const [errors, setErrors] = useState(initialErrors)
   const [dates, setDates] = useState(initialDates)
   const [isSubmitable, setSubmit] = useState(false)
-  const [members, setMembers] = useState<IMemberListItem | undefined>(undefined)
+  const [members, setMembers] = useState(InitialMembers)
+
 
   useEffect(() => {validateDates()}, [dates]) // validate dates if dates is updated
 
-  React.useEffect(() => {
+  useEffect(() => {
     async function loadAsync() {
       let result = await props.membership.getMembersAsync({
         group_id: 7965,
@@ -97,10 +106,33 @@ function IncidentForm(props: {
 
   }, []);
 
-
-
   let history = useHistory();
   const classes = useStyles();
+
+  const handleAttendingChange = (
+      memberIndex: number,
+      attendanceState: boolean,
+    ) => {
+
+    // from the state attendees array, get the correct member
+    // for updatedAttendee
+    const updatedAttendee = members[memberIndex]
+
+    // indicate if member is going;
+    updatedAttendee.isAttending = attendanceState
+
+    // copy state of attendees to have a new state to update
+    const newAttendees = [...members]
+
+    // insert/overwrite array object of the attendee in question
+    // with the new version
+    newAttendees[memberIndex] = updatedAttendee
+
+    // update state
+    setMembers(newAttendees)
+
+  }
+
 
   const handleInputChange = (event: any) => {
     const {name, value} = event.target
@@ -263,7 +295,11 @@ function IncidentForm(props: {
 return(
   <div className={classes.root}>
 
-  <form   noValidate autoComplete="off" onSubmit={handleSubmit}>
+  <form
+    noValidate
+    autoComplete="off"
+    onSubmit={handleSubmit}
+  >
     <TextField
       id="standard-basic"
       label="Event DEM # and Name"
@@ -338,10 +374,11 @@ return(
       </MuiPickersUtilsProvider>
 
       {members ?
-      <SelectMembers
-        members={members}
-      />
-      : "...loading"
+        <SelectMembers
+          members={members}
+          handleAttendingChange={handleAttendingChange}
+        />
+        : "...loading"
       }
 
     <div>
@@ -350,7 +387,7 @@ return(
         variant="contained"
         size="large"
         color="primary"
-        >
+      >
           Submit
       </Button>
     </div>
