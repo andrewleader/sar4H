@@ -3,7 +3,7 @@ import * as Responses from './responses';
 import {
     IIncidentsResponse,
     IMemberListItem,
-    IMemberList, 
+    IMemberList,
   } from './responses';
 
 export default class Api {
@@ -28,13 +28,13 @@ export default class Api {
     published: number, // 0-1, whether activity has been published
     limit?: number, // 1-251, number of records to return
     offset?: number // >=0, number of records to skip from the start
-    after?: string, // string date format "2020-10-01T20:35:00.000Z" 
+    after?: string, // string date format "2020-10-01T20:35:00.000Z"
     before?: string,// string date format "2020-10-01T20:35:00.000Z"
   }) {
     return await Util.fetchAsync<IIncidentsResponse>(HttpMethod.GET, "/team/incidents", memberToken, parameters);
   }
 
-  static async addIncidentAsync(memberToken: string, 
+  static async addIncidentAsync(memberToken: string,
     title: string, // greater then 3 characters
     activity: string, //"incident", "exercise" , or "event"
     date: any, // 2020-11-24 format
@@ -42,10 +42,11 @@ export default class Api {
   ){
     let response = await Util.fetchAsync<any>(HttpMethod.POST, "/team/incidents", memberToken, {title: title, // create then 3 characters
       activity: activity, //"incident", "exercise" , or "event"
-      date: date.toISOString(), // 2020-12-14T07:24:00.000Z format
-      enddate: enddate.toISOString()})
-      
-      return response 
+      date: date,  // format must be 2020-12-14T07:24:00.000Z
+      enddate: enddate  // same format as above
+    })
+
+      return response
   }
 
   static async getActivityAsync(memberToken: string, activityId: number) {
@@ -67,7 +68,7 @@ export default class Api {
       member: memberId,
       status: "attending",
       date: activityStartDate?.toISOString(),
-      enddate: activityEndDate?.toISOString()
+      enddate: activityEndDate?.toISOString(),
     });
   }
 
@@ -88,4 +89,4 @@ export default class Api {
   static async getAccountMembershipsAsync() {
     return await Util.fetchAuthenticatedAsync<any>(HttpMethod.GET, "/account/memberships");
   }
-} 
+}

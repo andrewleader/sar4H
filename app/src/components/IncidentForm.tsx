@@ -23,6 +23,7 @@ import {useHistory} from "react-router-dom";
 import {SelectMembers} from './SelectMembers'
 import MembershipModel from '../models/membershipModel'
 import {IMemberListItem} from '../api/responses'
+import { isNoSubstitutionTemplateLiteral } from 'typescript';
 // import FormControl from '@material-ui/core/FormControl';
 // import FormGroup from '@material-ui/core/FormGroup';
 
@@ -42,7 +43,6 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-
 const initialValues = {
   activity: "", // "incident", "exercise", or "event"
   title: "", // activity name
@@ -59,7 +59,8 @@ const initialErrors = {
 }
 
 const initialDates = {
-  startDate: new Date(),  // object names formatted to match API requirements
+  // object names formatted to match API requirements
+  startDate: new Date(),
   enddate: new Date()
 }
 
@@ -71,7 +72,6 @@ const InitialMembers = [  // config constant
     },
   ]
 
-
 function IncidentForm(props: {
     membership: MembershipModel
   }
@@ -81,7 +81,6 @@ function IncidentForm(props: {
   const [dates, setDates] = useState(initialDates)
   const [isSubmitable, setSubmit] = useState(false)
   const [members, setMembers] = useState(InitialMembers)
-
 
   useEffect(() => {validateDates()}, [dates]) // validate dates if dates is updated
 
@@ -179,6 +178,7 @@ function IncidentForm(props: {
 
 
   const handleDateChange =  ( dateName: string, event: any) => {
+debugger
   setDates(prevState => ({
       ...prevState,
       [dateName]: event.format()
@@ -191,11 +191,13 @@ function IncidentForm(props: {
     let dateErrorMsg: string = ""
     let dateValidity: boolean = false
 
+    //turn comparision into bool for the nested ternary below
     const dateRangeCheck = (new Date(dates.startDate) <= new Date(dates.enddate))
 
     dateErrorMsg = dateRangeCheck ? "" : "End date can't be before start date."
 
-    dateValidity = dateRangeCheck ? false : true  // true if error - end date before start date
+    // true if error - end date before start date
+    dateValidity = dateRangeCheck ? false : true
 
     setErrors( prevState => ({
       ...prevState,
@@ -204,13 +206,22 @@ function IncidentForm(props: {
     }))
   }
 
+  function formatDateToISO(date: object){
+   return moment(date).format('YYYY-MM-DD')
+  }
 
   function handleSubmit(event: any){
     event.preventDefault()
 
     let token = CookiesHelper.getCookie("membership" + "1516")!;
     let url: string
+    let missionActivityId: number = 0 // id for API post
 
+    // if format is date{}, POST doesn't work. turn format intoISO8601
+    let startDate = formatDateToISO(dates.startDate)
+    let enddate = formatDateToISO(dates.enddate)
+
+    //does not validate attendance, which is optional
     const {
       formValidity,
       titleValidity,
@@ -232,22 +243,42 @@ function IncidentForm(props: {
     }))
 
     if(formValidity){ // if no errors (aka true), send to database
+      Api.addIncidentAsync(
+        token,
+        values.title,
+        values.activity,
+        startDate,
+        enddate,
+        ).then(response =>{
+          missionActivityId = response.data.id
 
-    // Api.addIncidentAsync(
-    //   token,
-    //   values.title,
-    //   values.activity,
-    //   dates.startDate,
-    //   dates.enddate
-    //   ).then(response =>{
-
-    //     url = '/1516/missions/' + response.data.id
-
-    //     history.push(url)
-    //   })
-    alert("Submitted Form")
+          url = '/1516/missions/' + missionActivityId
+          history.push(url)
+        })
+      alert(" Form Valid")
     }
-  }
+
+    // members.forEach(member => {
+
+    //   if(member.isAttending){
+    //     Api.addAttendanceAsync(  // or use setAttendingAsync()?
+    //     token,
+    //     460992,
+    //     member.id,
+    //     dates.startDate,
+    //     dates.enddate
+    //     ).then( response => {
+    //         debugger
+    //           // missionActivityId = response.data.id
+    //           // url = '/1516/missions/' + missionActivityId
+    //           // history.push(url)
+    //           alert("Submitted Attending Member")
+    //       })
+    //   }
+    // })
+
+  } // end handle submit
+
 
   function validateForm(formValues: any, event: any)  {
     let formValidity = true  // assume form is good/true unless error below
@@ -273,7 +304,11 @@ function IncidentForm(props: {
       eventErrorMsg = "Please select an event."
     }
 
-    if ((new Date(startDate) > new Date(endDate)) || (new Date(endDate) < new Date(startDate))) {
+    if (
+          (new Date(startDate) > new Date(endDate))
+          ||
+          (new Date(endDate) < new Date(startDate))
+        ){
       // set date error validation true
       dateErrorMsg = "End date can't be before start date."
       dateValidity = true
@@ -349,7 +384,8 @@ return(
       <MuiPickersUtilsProvider utils={MomentUtils}>
         <KeyboardDatePicker
           disableToolbar
-          minDate={new Date()}
+          // minDate={new Date()}
+          minDate={moment()}
           variant="inline"
           label="Start Date"
           name="date"
