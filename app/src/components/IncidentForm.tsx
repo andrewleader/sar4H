@@ -257,40 +257,36 @@ function IncidentForm(props: {
       dateValidity
     }))
 
-    if(formValidity){ // if no errors (aka true), send to database
-      Api.addIncidentAsync(
-        token,
-        values.title,
-        values.activity,
-        startDate,
-        enddate,
-        ).then(response =>{
-          missionActivityId = response.data.id
-
-          url = '/1516/missions/' + missionActivityId
-          history.push(url)
-        })
-      alert(" Form Valid")
-    }
-
-    // members.forEach(member => {
-
-    //   if(member.isAttending){
-    //     Api.addAttendanceAsync(  // or use setAttendingAsync()?
+    // if(formValidity){ // if no errors (aka true), send to database
+    //   Api.addIncidentAsync(
     //     token,
-    //     460992,
-    //     member.id,
-    //     dates.startDate,
-    //     dates.enddate
-    //     ).then( response => {
-    //         debugger
-    //           // missionActivityId = response.data.id
-    //           // url = '/1516/missions/' + missionActivityId
-    //           // history.push(url)
-    //           alert("Submitted Attending Member")
-    //       })
-    //   }
-    // })
+    //     values.title,
+    //     values.activity,
+    //     startDate,
+    //     enddate,
+    //     ).then(response =>{
+    //       missionActivityId = response.data.id
+    //       url = '/1516/missions/' + missionActivityId
+    //       history.push(url)
+    //     })
+    // }
+
+    members.forEach(member => {
+      if(member.isAttending){
+        Api.addAttendanceAsync(  // or use setAttendingAsync()?
+        token,
+        460992,
+        member.id,
+        new Date(startDate),
+        new Date(enddate)
+        ).then(response => {
+            debugger
+              // missionActivityId = response.data.id
+              // url = '/1516/missions/' + missionActivityId
+              // history.push(url)
+          })
+      }
+    })
 
   } // end handle submit
 
