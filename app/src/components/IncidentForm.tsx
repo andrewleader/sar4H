@@ -134,7 +134,10 @@ function IncidentForm(props: {
 
 
   const handleInputChange = (event: any) => {
-    const {name, value} = event.target
+    const {
+      name,
+      value
+    } = event.target
 
     let titleErrorMsg: string
     let titleValidity: boolean
@@ -177,12 +180,14 @@ function IncidentForm(props: {
   }
 
 
-  const handleDateChange =  ( dateName: string, event: any) => {
-debugger
-  setDates(prevState => ({
-      ...prevState,
-      [dateName]: event.format()
-    }))
+  const handleDateChange =  (
+    dateName: string,
+    event: any
+    ) => {
+      setDates(prevState => ({
+          ...prevState,
+          [dateName]: event.format()
+        }))
   }
 
 
@@ -206,9 +211,19 @@ debugger
     }))
   }
 
-  function formatDateToISO(date: object){
-   return moment(date).format('YYYY-MM-DD')
+
+  function formatDateToISO(date: Date){
+    // when a form date isn't changed by user, it is wrong format
+    // this function turns all date{} into strings per API
+
+    if(typeof(date) !== "string"){
+      return date.toISOString()
+    }
+    else {
+      return date
+    }
   }
+
 
   function handleSubmit(event: any){
     event.preventDefault()
