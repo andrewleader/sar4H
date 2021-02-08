@@ -63,13 +63,15 @@ export default class Api {
   }
 
   static async addAttendanceAsync(memberToken: string, activityId: number, memberId: number, activityStartDate?: Date, activityEndDate?: Date) {
-    await Util.fetchAsync<any>(HttpMethod.POST, "/team/attendance", memberToken, {
+// debugger
+    let response = await Util.fetchAsync<any>(HttpMethod.POST, "/team/attendance", memberToken, {
       activity_id: activityId,
       member: memberId,
       status: "attending",
       date: activityStartDate?.toISOString(),
       enddate: activityEndDate?.toISOString(),
     });
+    return response
   }
 
   static async deleteAttendanceAsync(memberToken: string, attendanceId: number) {

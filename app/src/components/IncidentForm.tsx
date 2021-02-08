@@ -61,7 +61,7 @@ const initialErrors = {
 const initialDates = {
   // object names formatted to match API requirements
   startDate: new Date(),
-  enddate: new Date()
+  enddate: new Date(new Date().getTime() + 10000) // D4H requires different times
 }
 
 const InitialMembers = [  // config constant
@@ -214,8 +214,7 @@ function IncidentForm(props: {
 
   function formatDateToISO(date: Date){
     // when a form date isn't changed by user, it is wrong format
-    // this function turns all date{} into strings per API
-
+    // this function turns all date{} into ISO strings per API
     if(typeof(date) !== "string"){
       return date.toISOString()
     }
@@ -224,17 +223,29 @@ function IncidentForm(props: {
     }
   }
 
+  function addSeconds(date: string, secondsToAdd: number){
+    // D4H needs start time and end time differnt.
+    // currently,code doesn't allow selecting of time.
+    // this is a temp workaround to make different times by 10 seconds
+    let updatedDateTime: Date = new Date(new Date(date).getTime() + secondsToAdd)
 
-  function handleSubmit(event: any){
+    return updatedDateTime.toISOString()
+  }
+
+
+   async function handleSubmit(event: any){
     event.preventDefault()
 
     let token = CookiesHelper.getCookie("membership" + "1516")!;
     let url: string
-    let missionActivityId: number = 0 // id for API post
+    let missionActivityId: number = 461333 // id for API post
 
     // if format is date{}, POST doesn't work. turn format intoISO8601
-    let startDate = formatDateToISO(dates.startDate)
-    let enddate = formatDateToISO(dates.enddate)
+    let startDate:string = formatDateToISO(dates.startDate)
+    let end:string = formatDateToISO(dates.enddate)
+    let enddate:string = addSeconds(end, 10)
+
+
 
     //does not validate attendance, which is optional
     const {
@@ -258,7 +269,7 @@ function IncidentForm(props: {
     }))
 
     // if(formValidity){ // if no errors (aka true), send to database
-    //   Api.addIncidentAsync(
+    //   await Api.addIncidentAsync(
     //     token,
     //     values.title,
     //     values.activity,
@@ -266,24 +277,26 @@ function IncidentForm(props: {
     //     enddate,
     //     ).then(response =>{
     //       missionActivityId = response.data.id
-    //       url = '/1516/missions/' + missionActivityId
-    //       history.push(url)
+    //       console.log(missionActivityId, "Mission ID inside add incident")
+    //       // url = '/1516/missions/' + missionActivityId
+    //       // history.push(url)
     //     })
-    // }
+    //   }
+      console.log(missionActivityId, "Mission ID between fetch")
 
     members.forEach(member => {
       if(member.isAttending){
-        Api.addAttendanceAsync(  // or use setAttendingAsync()?
-        token,
-        460992,
-        member.id,
-        new Date(startDate),
-        new Date(enddate)
+        Api.addAttendanceAsync(
+          token,
+          missionActivityId,
+          member.id,
+          new Date(startDate),
+          new Date(enddate),
         ).then(response => {
-            debugger
               // missionActivityId = response.data.id
-              // url = '/1516/missions/' + missionActivityId
-              // history.push(url)
+              console.log(response)
+              url = '/1516/missions/' + missionActivityId
+              history.push(url)
           })
       }
     })
