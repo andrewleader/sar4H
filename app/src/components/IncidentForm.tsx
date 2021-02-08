@@ -108,6 +108,7 @@ function IncidentForm(props: {
   let history = useHistory();
   const classes = useStyles();
 
+
   const handleAttendingChange = (
       memberIndex: number,
       attendanceState: boolean,
@@ -238,9 +239,9 @@ function IncidentForm(props: {
 
     let token = CookiesHelper.getCookie("membership" + "1516")!;
     let url: string
-    let missionActivityId: number = 461333 // id for API post
+    let missionActivityId: number = 0 // id for API post
 
-    // if format is date{}, POST doesn't work. turn format intoISO8601
+    // if format is date{}, POST doesn't work. turn format into ISO8601
     let startDate:string = formatDateToISO(dates.startDate)
     let end:string = formatDateToISO(dates.enddate)
     let enddate:string = addSeconds(end, 10)
@@ -268,22 +269,20 @@ function IncidentForm(props: {
       dateValidity
     }))
 
-    // if(formValidity){ // if no errors (aka true), send to database
-    //   await Api.addIncidentAsync(
-    //     token,
-    //     values.title,
-    //     values.activity,
-    //     startDate,
-    //     enddate,
-    //     ).then(response =>{
-    //       missionActivityId = response.data.id
-    //       console.log(missionActivityId, "Mission ID inside add incident")
-    //       // url = '/1516/missions/' + missionActivityId
-    //       // history.push(url)
-    //     })
-    //   }
-      console.log(missionActivityId, "Mission ID between fetch")
+    // if no errors (aka true), send mission to database
+    if(formValidity){
+      await Api.addIncidentAsync(
+        token,
+        values.title,
+        values.activity,
+        startDate,
+        enddate,
+        ).then(response =>{
+          missionActivityId = response.data.id
+        })
+      }
 
+    // set mission attendance
     members.forEach(member => {
       if(member.isAttending){
         Api.addAttendanceAsync(
@@ -293,13 +292,13 @@ function IncidentForm(props: {
           new Date(startDate),
           new Date(enddate),
         ).then(response => {
-              // missionActivityId = response.data.id
-              console.log(response)
-              url = '/1516/missions/' + missionActivityId
-              history.push(url)
+            console.log(response)
           })
       }
     })
+
+    url = '/1516/missions/' + missionActivityId
+    history.push(url)
 
   } // end handle submit
 
