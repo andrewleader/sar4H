@@ -9,8 +9,6 @@ import {
   Radio,
   Button,
   FormHelperText,
-  FormControl,
-  FormGroup
   } from '@material-ui/core';
 import {
   KeyboardDatePicker,
@@ -22,10 +20,7 @@ import CookiesHelper from "../helpers/cookiesHelper";
 import {useHistory} from "react-router-dom";
 import {SelectMembers} from './SelectMembers'
 import MembershipModel from '../models/membershipModel'
-import {IMemberListItem} from '../api/responses'
-import { isNoSubstitutionTemplateLiteral } from 'typescript';
-// import FormControl from '@material-ui/core/FormControl';
-// import FormGroup from '@material-ui/core/FormGroup';
+
 
 const useStyles = makeStyles(theme => ({
   form: {
@@ -79,7 +74,6 @@ function IncidentForm(props: {
   const [values, setValues] = useState(initialValues)
   const [errors, setErrors] = useState(initialErrors)
   const [dates, setDates] = useState(initialDates)
-  const [isSubmitable, setSubmit] = useState(false)
   const [members, setMembers] = useState(InitialMembers)
 
   useEffect(() => {validateDates()}, [dates]) // validate dates if dates is updated
@@ -103,7 +97,7 @@ function IncidentForm(props: {
 
     loadAsync();
 
-  }, []);
+  }, [props.membership]);
 
   let history = useHistory();
   const classes = useStyles();
@@ -224,6 +218,7 @@ function IncidentForm(props: {
     }
   }
 
+
   function addSeconds(date: string, secondsToAdd: number){
     // D4H needs start time and end time differnt.
     // currently,code doesn't allow selecting of time.
@@ -234,7 +229,7 @@ function IncidentForm(props: {
   }
 
 
-   async function handleSubmit(event: any){
+  async function handleSubmit(event: any){
     event.preventDefault()
 
     let token = CookiesHelper.getCookie("membership" + "1516")!;
@@ -246,7 +241,6 @@ function IncidentForm(props: {
     let end:string = formatDateToISO(dates.enddate)
     let enddate:string = addSeconds(end, 10)
 
-
     //does not validate attendance, which is optional
     const {
       formValidity,
@@ -256,7 +250,7 @@ function IncidentForm(props: {
       eventErrorMsg,
       dateErrorMsg,
       dateValidity,} = await validateForm(values, event)
-
+    
     setErrors( prevState => ({
       ...prevState,
       formValidity,
@@ -279,7 +273,7 @@ function IncidentForm(props: {
         ).then(response =>{
           missionActivityId = response.data.id
         })
-        debugger
+
       // set mission attendance, which is optional
       members.forEach(member => {
         if(member.isAttending){
@@ -299,14 +293,11 @@ function IncidentForm(props: {
       history.push(url)
 
     }
-
-    
-
     
   } // end handle submit
 
 
- async function validateForm(formValues: any, event: any)  {
+  async function validateForm(formValues: any, event: any)  {
     let formValidity = true  // assume form is good/true unless error below
 
     let titleValidity: boolean = false
@@ -334,7 +325,8 @@ function IncidentForm(props: {
           (new Date(startDate) > new Date(endDate))
           ||
           (new Date(endDate) < new Date(startDate))
-        ){
+    ) {
+      
       // set date error validation true
       dateErrorMsg = "End date can't be before start date."
       dateValidity = true
@@ -350,7 +342,6 @@ function IncidentForm(props: {
       dateValidity,
     }
   }
-
 
 
 return(
