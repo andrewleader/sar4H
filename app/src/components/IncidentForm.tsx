@@ -247,7 +247,6 @@ function IncidentForm(props: {
     let enddate:string = addSeconds(end, 10)
 
 
-
     //does not validate attendance, which is optional
     const {
       formValidity,
@@ -256,7 +255,7 @@ function IncidentForm(props: {
       eventValidity,
       eventErrorMsg,
       dateErrorMsg,
-      dateValidity,} = validateForm(values, event)
+      dateValidity,} = await validateForm(values, event)
 
     setErrors( prevState => ({
       ...prevState,
@@ -280,30 +279,34 @@ function IncidentForm(props: {
         ).then(response =>{
           missionActivityId = response.data.id
         })
-      }
+        debugger
+      // set mission attendance, which is optional
+      members.forEach(member => {
+        if(member.isAttending){
+          Api.addAttendanceAsync(
+            token,
+            missionActivityId,
+            member.id,
+            new Date(startDate),
+            new Date(enddate),
+          ).then(response => {
+              console.log(response)
+            })
+        }
+      })
 
-    // set mission attendance
-    members.forEach(member => {
-      if(member.isAttending){
-        Api.addAttendanceAsync(
-          token,
-          missionActivityId,
-          member.id,
-          new Date(startDate),
-          new Date(enddate),
-        ).then(response => {
-            console.log(response)
-          })
-      }
-    })
+      url = '/1516/missions/' + missionActivityId
+      history.push(url)
 
-    url = '/1516/missions/' + missionActivityId
-    history.push(url)
+    }
 
+    
+
+    
   } // end handle submit
 
 
-  function validateForm(formValues: any, event: any)  {
+ async function validateForm(formValues: any, event: any)  {
     let formValidity = true  // assume form is good/true unless error below
 
     let titleValidity: boolean = false
