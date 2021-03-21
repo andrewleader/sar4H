@@ -9,7 +9,16 @@ import {
   Radio,
   Button,
   FormHelperText,
-  } from '@material-ui/core';
+  Collapse,
+  List,
+  ListItem,
+  ListItemText,
+} from '@material-ui/core';
+import {
+  ExpandLess,
+  ExpandMore,
+} from '@material-ui/icons';
+
 import {
   KeyboardDatePicker,
   MuiPickersUtilsProvider
@@ -27,10 +36,12 @@ const useStyles = makeStyles({
     padding: "20px 20px",
     display: "block",
   },
- 
   label: {
     padding: "5px",
-  }
+  },
+  nested: {
+    paddingLeft: "4px",
+  },
 });
 
 const initialValues = {
@@ -70,6 +81,7 @@ function IncidentForm(props: {
   const [errors, setErrors] = useState(initialErrors)
   const [dates, setDates] = useState(initialDates)
   const [members, setMembers] = useState(InitialMembers)
+  const [open, setOpen] = useState(false) // MaterialUI open/close list 
 
   useEffect(() => {validateDates()}, [dates]) // validate dates if dates is updated
 
@@ -340,6 +352,11 @@ function IncidentForm(props: {
   }
 
 
+  const handleListClick = () => {
+    setOpen(!open);
+  };
+
+
 return(
   <div className={classes.form}>
 
@@ -372,26 +389,26 @@ return(
         name="activity"
         onChange={handleInputChange}
       >
-      <FormHelperText
-      error={errors.eventValidity}
-      >
+        <FormHelperText
+        error={errors.eventValidity}
+        >
         {errors.eventErrorMsg}
-      </FormHelperText>
-        <FormControlLabel
-          value="incident"
-          control={<Radio />}
-          label="Incident/Mission"
-        />
-        <FormControlLabel
-          value="exercise"
-          control={<Radio />}
-          label="Exercise/Training"
-        />
-        <FormControlLabel
-          value="event"
-          control={<Radio />}
-          label="Event/Meeting"
-        />
+        </FormHelperText>
+          <FormControlLabel
+            value="incident"
+            control={<Radio />}
+            label="Incident/Mission"
+          />
+          <FormControlLabel
+            value="exercise"
+            control={<Radio />}
+            label="Exercise/Training"
+          />
+          <FormControlLabel
+            value="event"
+            control={<Radio />}
+            label="Event/Meeting"
+          />
       </RadioGroup>
 
       <MuiPickersUtilsProvider utils={MomentUtils}>
@@ -422,24 +439,36 @@ return(
         />
       </MuiPickersUtilsProvider>
 
-      {members ?
-        <SelectMembers
-          members={members}
-          handleAttendingChange={handleAttendingChange}
-        />
-        : "...loading"
-      }
-
-    <div >
-      <Button
-          type="submit"
-          variant="contained"
-          size="large"
-          color="primary"
-      >
-          Submit
-      </Button>
-    </div>
+      <List> 
+        <ListItem button onClick={handleListClick}>
+        <ListItemText primary="Members" />
+          {open ?  <ExpandMore /> : <ExpandLess /> }
+      </ListItem>
+      <Collapse in={open} timeout="auto" unmountOnExit>
+        <List component="div" disablePadding>
+          <ListItem button className={classes.nested}>
+          {members ?
+            <SelectMembers
+              members={members}
+              handleAttendingChange={handleAttendingChange}
+            />
+            : "...loading"
+          }
+          </ListItem>
+        </List>
+      </Collapse>
+    </List>
+      
+      <div >
+        <Button
+            type="submit"
+            variant="contained"
+            size="large"
+            color="primary"
+        >
+            Submit
+        </Button>
+      </div>
     </form>
   </div>
   )
