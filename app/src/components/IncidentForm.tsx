@@ -22,21 +22,16 @@ import {SelectMembers} from './SelectMembers'
 import MembershipModel from '../models/membershipModel'
 
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles({
   form: {
-    padding: "14px",
+    padding: "20px 20px",
     display: "block",
   },
-  card: {
-    marginBottom: "24px"
-  },
-  root: {
-    border: 0,
-    borderRadius: 3,
-    height: 48,
-    padding: '030px',
-  },
-}));
+ 
+  label: {
+    padding: "5px",
+  }
+});
 
 const initialValues = {
   activity: "", // "incident", "exercise", or "event"
@@ -141,32 +136,33 @@ function IncidentForm(props: {
 
     switch(name){
       case 'title':
-        const valueLengthCompare = value.length < 4 && value.length > 0
+        const valueLengthCompare = value.length < 4 && value.length >= 0
 
         titleErrorMsg = valueLengthCompare ? 'Title must be longer then 4 characters' : ""
         titleValidity = valueLengthCompare ? true : false
-
+        
         setErrors({
           ...errors,
           titleErrorMsg,
-          titleValidity
+          titleValidity,
         })
       break
 
       case 'activity':
-        eventValidity = value.length > 0 ? false : true
+        eventValidity = value.length > 0 ? true : false
         eventErrorMsg = ""
 
         setErrors({
           ...errors,
           eventValidity,
-          eventErrorMsg
+          eventErrorMsg,
         })
-        break
+      break
 
       default:
         break
     }
+
 
     setValues({
       ...values,
@@ -345,7 +341,7 @@ function IncidentForm(props: {
 
 
 return(
-  <div className={classes.root}>
+  <div className={classes.form}>
 
   <form
     noValidate
@@ -353,8 +349,8 @@ return(
     onSubmit={handleSubmit}
   >
     <TextField
+      label="Event Name"
       id="standard-basic"
-      label="Event DEM # and Name"
       name="title"
       value={values.title}
       onChange={handleInputChange}
@@ -434,12 +430,12 @@ return(
         : "...loading"
       }
 
-    <div>
+    <div >
       <Button
-        type="submit"
-        variant="contained"
-        size="large"
-        color="primary"
+          type="submit"
+          variant="contained"
+          size="large"
+          color="primary"
       >
           Submit
       </Button>
