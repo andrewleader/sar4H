@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  FormLabel,
   FormControl,
   FormGroup,
 } from '@material-ui/core';
@@ -29,6 +28,3 @@ export const SelectMembers = (props: any) => {
     </div>
   )
 }
-
-
-

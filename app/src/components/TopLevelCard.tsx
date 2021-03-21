@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import { Link, Card, CardActionArea, CardContent, Typography, makeStyles } from '@material-ui/core';
+import { Link, Card, CardActionArea, CardContent, Typography, } from '@material-ui/core';
 
 const TopLevelCard = (props: {
   text: string,
