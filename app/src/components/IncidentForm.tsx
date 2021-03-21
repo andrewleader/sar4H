@@ -439,10 +439,13 @@ return(
         />
       </MuiPickersUtilsProvider>
 
+      <FormLabel component="legend">
+        Who Is Attending?
+      </FormLabel>
       <List> 
         <ListItem button onClick={handleListClick}>
-        <ListItemText primary="Members" />
-          {open ?  <ExpandMore /> : <ExpandLess /> }
+        <ListItemText primary="EMRU Members List" />
+          {open ?  <ExpandLess /> : <ExpandMore /> }
       </ListItem>
       <Collapse in={open} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>

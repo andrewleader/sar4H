@@ -3,7 +3,7 @@ import {
   FormLabel,
   FormControl,
   FormGroup,
- } from '@material-ui/core';
+} from '@material-ui/core';
 import ListUnitMembers from './ListUnitMembers'
 
 export const SelectMembers = (props: any) => {
@@ -11,9 +11,6 @@ export const SelectMembers = (props: any) => {
   return(
     <div>
     <FormControl component="fieldset">
-      <FormLabel component="legend">
-        Who Is Attending?
-      </FormLabel>
         <FormGroup>
           {props.members.map((member: any, i: number) => {
                 return (
