@@ -40,7 +40,7 @@ const useStyles = makeStyles({
     padding: "5px",
   },
   nested: {
-    paddingLeft: "4px",
+    paddingLeft: "34px",
   },
 });
 
