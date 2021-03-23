@@ -33,14 +33,19 @@ import MembershipModel from '../models/membershipModel'
 
 const useStyles = makeStyles({
   form: {
-    padding: "20px 20px",
+    padding: "5px 25px",
     display: "block",
+    maxWidth: 250,
+    minWidth: 230,
   },
   label: {
-    padding: "5px",
+    padding: "12% 0 3% 0 ",
   },
-  nested: {
-    paddingLeft: "34px",
+  nestedItems: {
+    paddingLeft: "7%",
+  },
+  inputFields: {
+    paddingLeft: "6%"
   },
 });
 
@@ -365,8 +370,15 @@ return(
     autoComplete="off"
     onSubmit={handleSubmit}
   >
+    <FormLabel
+      component="legend"
+      required
+      className={classes.label}
+    >
+      Event Name
+    </FormLabel>
     <TextField
-      label="Event Name"
+      // label="Event Name"
       id="standard-basic"
       name="title"
       value={values.title}
@@ -375,12 +387,13 @@ return(
       error={errors.titleValidity}
       helperText={errors.titleErrorMsg}
       autoFocus
-      className={classes.form}
+      className={classes.inputFields}
     />
 
     <FormLabel
       component="legend"
       required
+      className={classes.label}
     >
       Event Type
     </FormLabel>
@@ -388,6 +401,7 @@ return(
         aria-label="EventType"
         name="activity"
         onChange={handleInputChange}
+        className={classes.inputFields}
       >
         <FormHelperText
         error={errors.eventValidity}
@@ -411,58 +425,86 @@ return(
           />
       </RadioGroup>
 
-      <MuiPickersUtilsProvider utils={MomentUtils}>
+      <MuiPickersUtilsProvider
+        utils={MomentUtils}
+      >
+      <FormLabel
+      component="legend"
+      required
+      className={classes.label}
+      >
+        Start Date
+      </FormLabel>
         <KeyboardDatePicker
           disableToolbar
           // minDate={new Date()}
           minDate={moment()}
           variant="inline"
-          label="Start Date"
+          // label="Start Date"
           name="date"
           format="yyyy-MM-DD"
           value={dates.startDate}
           onChange={(value) => handleDateChange("startDate", value)}
-          className={classes.form}
-        />
+          className={classes.inputFields}
+          />
+
+      <FormLabel
+        component="legend"
+        required
+        className={classes.label}
+      >
+        End Date
+      </FormLabel>
         <KeyboardDatePicker
           disableToolbar
           minDate={new Date()}
           variant="inline"
-          label="End Date"
+          // label="End Date"
           name="enddate"
           format="yyyy-MM-DD"
           value={dates.enddate}
           onChange={(value) => handleDateChange("enddate", value)}
           helperText={errors.dateErrorMsg}
           error={errors.dateValidity}
-          className={classes.form}
-        />
+          className={classes.inputFields}
+          />
       </MuiPickersUtilsProvider>
 
-      <FormLabel component="legend">
+      <FormLabel
+        component="legend"
+        className={classes.label}
+      >
         Who Is Attending?
       </FormLabel>
       <List> 
-        <ListItem button onClick={handleListClick}>
-        <ListItemText primary="EMRU Members List" />
-          {open ?  <ExpandLess /> : <ExpandMore /> }
-      </ListItem>
+        <ListItem
+          button
+          onClick={handleListClick}
+          className={classes.inputFields}
+        >
+          <ListItemText 
+            primary="EMRU Members List"
+          />
+              {open ?
+                <ExpandLess /> : <ExpandMore />
+              }
+        </ListItem>
       <Collapse in={open} timeout="auto" unmountOnExit>
-        <List component="div" disablePadding>
-          <ListItem button className={classes.nested}>
-          {members ?
-            <SelectMembers
-              members={members}
-              handleAttendingChange={handleAttendingChange}
-            />
-            : "...loading"
-          }
+        <List component="div" disablePadding >
+          <ListItem button className={classes.nestedItems}>
+            {members ?
+              <SelectMembers
+                members={members}
+                handleAttendingChange={handleAttendingChange}
+              />
+              : "...loading"
+            }
           </ListItem>
         </List>
       </Collapse>
     </List>
       
-      <div >
+      {/* <div > */}
         <Button
             type="submit"
             variant="contained"
@@ -471,7 +513,7 @@ return(
         >
             Submit
         </Button>
-      </div>
+      {/* </div> */}
     </form>
   </div>
   )
