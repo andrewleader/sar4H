@@ -16,6 +16,10 @@ import ViewActivity from './ViewActivity';
 import MembershipController from '../controllers/membershipController';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import NewIncidentContainer from './IncidentContainer';
+import UpcomingMeetings from './UpcomingMeetings';
+import PastMeetings from './PastMeetings';
+import UpcomingTrainings from './UpcomingTrainings';
+import PastTrainings from './PastTrainings';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -49,8 +53,6 @@ const MembershipHome = (props: {
   let { path, url } = useRouteMatch();
   let history = useHistory();
 
-  const [upcomingMeetings, setUpcomingMeetings] = React.useState<ActivityListItemModel[] | undefined>(undefined);
-
   const [activeMissions, setActiveMissions] = React.useState<{
     list?: ActivityListItemModel[];
     href: string;
@@ -74,8 +76,6 @@ const MembershipHome = (props: {
         list: activeMissions,
         href: href
       });
-
-      setUpcomingMeetings(await props.membership.getUpcomingMeetingsAsync());
     }
  
     loadAsync();
@@ -94,15 +94,25 @@ const MembershipHome = (props: {
           <ActiveMissionsCard count={activeMissions.list === undefined ? -1 : activeMissions.list.length} href={activeMissions.href}/>
         </div>
         <div className={classes.card}>
-          <TopLevelCard text="View Past Missions" href={`${url}/missions`}/>
+          <TopLevelCard text="View past missions" href={`${url}/missions`}/>
         </div>
-        <Typography variant="h4" className={classes.sectionHeader} style={{marginTop: '24px'}}>Meetings/trainings</Typography>
+        <Typography variant="h4" className={classes.sectionHeader} style={{marginTop: '24px'}}>Meetings</Typography>
         <div className={classes.card}>
-          <TopLevelCard text="Upcoming Meetings/Trainings" href={`${url}/meetings/upcoming`}/>
+          <TopLevelCard text="Upcoming meetings" href={`${url}/meetings/upcoming`}/>
         </div>
-        <Typography variant="h4" className={classes.sectionHeader} style={{marginTop: '24px'}}>New Incident</Typography>
         <div className={classes.card}>
-          <TopLevelCard text="Add New Incident/Mission" href={`${url}/incident`}/>
+          <TopLevelCard text="Past meetings" href={`${url}/meetings/past`}/>
+        </div>
+        <Typography variant="h4" className={classes.sectionHeader} style={{marginTop: '24px'}}>Trainings</Typography>
+        <div className={classes.card}>
+          <TopLevelCard text="Upcoming trainings" href={`${url}/trainings/upcoming`}/>
+        </div>
+        <div className={classes.card}>
+          <TopLevelCard text="Past trainings" href={`${url}/trainings/past`}/>
+        </div>
+        <Typography variant="h4" className={classes.sectionHeader} style={{marginTop: '24px'}}>New incident</Typography>
+        <div className={classes.card}>
+          <TopLevelCard text="Add new incident/mission" href={`${url}/incident`}/>
         </div>
         {/* We don't seem to use trainings... */}
         {/* <div className={classes.card}>
@@ -171,14 +181,6 @@ const MembershipHome = (props: {
       }} />
   }
 
-  const UpcomingMeetings = () => {
-    if (upcomingMeetings === undefined) {
-      return <p>Loading...</p>
-    }
-
-    return <ActivitiesList activities={upcomingMeetings}/>
-  }
-
   const goBack = () => {
     history.goBack();
   }
@@ -208,8 +210,18 @@ const MembershipHome = (props: {
           <AllMissions membership={props.membership}/>
         </Route>
         <Route path={`${path}/meetings/upcoming`}>
-          <UpcomingMeetings/>
+          <UpcomingMeetings membership={props.membership}/>
         </Route>
+        {/* Past meetings/trainings not working yet, so commenting those out */}
+        {/* <Route path={`${path}/meetings/past`}>
+          <PastMeetings membership={props.membership}/>
+        </Route> */}
+        <Route path={`${path}/trainings/upcoming`}>
+          <UpcomingTrainings membership={props.membership}/>
+        </Route>
+        {/* <Route path={`${path}/trainings/past`}>
+          <PastTrainings membership={props.membership}/>
+        </Route> */}
         <Route path={`${path}/incident`}>
           <NewIncidentContainer membership={props.membership}/>
         </Route>

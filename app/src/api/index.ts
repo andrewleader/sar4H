@@ -88,6 +88,16 @@ export default class Api {
     return await Util.fetchAsync<IIncidentsResponse>(HttpMethod.GET, "/team/events", memberToken, parameters);
   }
 
+  static async getTrainingsAsync(memberToken: string, parameters: {
+    published: number, // 0-1, whether activity has been published
+    limit?: number, // 1-251, number of records to return
+    offset?: number, // >=0, number of records to skip from the start
+    before?: string,
+    after?: string
+  }) {
+    return await Util.fetchAsync<IIncidentsResponse>(HttpMethod.GET, "/team/exercises", memberToken, parameters);
+  }
+
   static async getAccountMembershipsAsync() {
     return await Util.fetchAuthenticatedAsync<any>(HttpMethod.GET, "/account/memberships");
   }

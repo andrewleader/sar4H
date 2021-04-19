@@ -79,11 +79,74 @@ export default class MembershipModel {
     });
     var answer: ActivityListItemModel[] = [];
     result.data.forEach((activity) => {
-      // Ignore missions that don't have a date
-      // if (activity.date) {
         answer.push(this.createActivityListItemModel(activity));
-      // }
     });
+    return answer;
+  }
+
+  async getPastMeetingsAsync() {
+
+    var unpublished = await Api.getEventsAsync(this.token, {
+      published: 0,
+      before: moment().endOf("day").toISOString()
+    });
+
+    var published = await Api.getEventsAsync(this.token, {
+      published: 0,
+      after: moment().subtract(2,'months').toISOString() // 2 months from today
+    });
+
+    var answer: ActivityListItemModel[] = [];
+
+    unpublished.data.forEach((activity) => {
+        answer.push(this.createActivityListItemModel(activity));
+    });
+
+    published.data.forEach((activity) => {
+        answer.push(this.createActivityListItemModel(activity));
+    });
+
+    return answer;
+  }
+
+  async getUpcomingTrainingsAsync() {
+    var result = await Api.getTrainingsAsync(this.token, {
+      published: 0,
+      after: moment().startOf('day').toISOString()
+    });
+    var answer: ActivityListItemModel[] = [];
+    result.data.forEach((activity) => {
+        answer.push(this.createActivityListItemModel(activity));
+    });
+    return answer;
+  }
+
+  async getPastTrainingsAsync() {
+
+    var unpublished = await Api.getTrainingsAsync(this.token, {
+      published: 0,
+      before: moment().endOf("day").toISOString()
+    });
+
+    var published = await Api.getEventsAsync(this.token, {
+      published: 0,
+      after: moment().subtract(2,'months').toISOString() // 2 months from today
+    });
+
+    var answer: ActivityListItemModel[] = [];
+
+    unpublished.data.forEach((activity) => {
+      if (activity.date) {
+        answer.push(this.createActivityListItemModel(activity));
+      }
+    });
+
+    published.data.forEach((activity) => {
+      if (activity.date) {
+        answer.push(this.createActivityListItemModel(activity));
+      }
+    });
+
     return answer;
   }
 
