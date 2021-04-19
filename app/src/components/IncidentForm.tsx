@@ -456,7 +456,7 @@ return(
       </ListItem>
       <Collapse in={open} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
-          <ListItem button className={classes.nested}>
+          <ListItem className={classes.nested}>
           {members ?
             <SelectMembers
               members={members}
