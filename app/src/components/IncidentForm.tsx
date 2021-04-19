@@ -42,6 +42,9 @@ const useStyles = makeStyles({
   nested: {
     paddingLeft: "34px",
   },
+  field: {
+    marginBottom: "20px"
+  }
 });
 
 const initialValues = {
@@ -150,7 +153,7 @@ function IncidentForm(props: {
       case 'title':
         const valueLengthCompare = value.length < 4 && value.length >= 0
 
-        titleErrorMsg = valueLengthCompare ? 'Title must be longer then 4 characters' : ""
+        titleErrorMsg = valueLengthCompare ? 'Title must be longer than 4 characters' : ""
         titleValidity = valueLengthCompare ? true : false
         
         setErrors({
@@ -375,7 +378,8 @@ return(
       error={errors.titleValidity}
       helperText={errors.titleErrorMsg}
       autoFocus
-      className={classes.form}
+      className={classes.field}
+      fullWidth
     />
 
     <FormLabel
@@ -388,6 +392,7 @@ return(
         aria-label="EventType"
         name="activity"
         onChange={handleInputChange}
+        className={classes.field}
       >
         <FormHelperText
         error={errors.eventValidity}
@@ -422,7 +427,8 @@ return(
           format="yyyy-MM-DD"
           value={dates.startDate}
           onChange={(value) => handleDateChange("startDate", value)}
-          className={classes.form}
+          className={classes.field}
+          fullWidth
         />
         <KeyboardDatePicker
           disableToolbar
@@ -435,7 +441,8 @@ return(
           onChange={(value) => handleDateChange("enddate", value)}
           helperText={errors.dateErrorMsg}
           error={errors.dateValidity}
-          className={classes.form}
+          className={classes.field}
+          fullWidth
         />
       </MuiPickersUtilsProvider>
 
@@ -469,7 +476,7 @@ return(
             size="large"
             color="primary"
         >
-            Submit
+            Create event
         </Button>
       </div>
     </form>
