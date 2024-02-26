@@ -37,6 +37,7 @@ export interface IActivityListItem {
   count_attendance: number; // # of attendees, like 4
   description: string;
   activity: string; // "incident", "event", etc
+  tags: string[]; // Custom tags like "Rigging", "Snow", etc
 }
 
 export interface IAttendanceListItem {

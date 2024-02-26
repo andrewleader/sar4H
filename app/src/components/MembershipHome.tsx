@@ -1,8 +1,6 @@
 import * as React from 'react';
-import { useParams, Switch, Route, useRouteMatch, useHistory } from 'react-router-dom';
-import { AppBar, Toolbar, IconButton, Typography, Button, makeStyles } from '@material-ui/core';
-import MenuIcon from '@material-ui/icons/Menu';
-import classes from '*.module.css';
+import { useParams, Route, useNavigate, Routes } from 'react-router-dom';
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import Authorized from './Authorized';
 import MembershipModel from '../models/membershipModel';
 import LatestMissions from './LatestMissions';
@@ -14,50 +12,53 @@ import ActivityListItemModel from '../models/activityListItemModel';
 import ActivitiesList from './ActivitiesList';
 import ViewActivity from './ViewActivity';
 import MembershipController from '../controllers/membershipController';
-import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import NewIncidentContainer from './IncidentContainer';
 import UpcomingMeetings from './UpcomingMeetings';
 import PastMeetings from './PastMeetings';
 import UpcomingTrainings from './UpcomingTrainings';
 import PastTrainings from './PastTrainings';
+import GroupQuals from './GroupQuals';
+import TrainingsReport from './TrainingsReport';
+import { AppBar, Button, IconButton, Toolbar, Typography, styled } from '@mui/material';
 
-const useStyles = makeStyles(theme => ({
-  root: {
-    height: "100%",
-    flexGrow: 1,
-    backgroundColor: "#f5f5f5",
-    display: "flex",
-    flexDirection: "column"
-  },
-  menuButton: {
-    marginRight: theme.spacing(2),
-  },
-  title: {
-    flexGrow: 1,
-  },
-  cardsContainer: {
-    margin: "24px"
-  },
-  card: {
-    marginBottom: "12px"
-  },
-  sectionHeader: {
-    marginBottom: "12px"
-  }
-}));
+const StyledRootContainer = styled('div')({
+  height: "100%",
+  flexGrow: 1,
+  backgroundColor: "#f5f5f5",
+  display: "flex",
+  flexDirection: "column"
+});
+
+const StyledMenuButton = styled(IconButton)({
+  marginRight: 2,
+});
+
+const StyledTitle = styled(Typography)({
+  flexGrow: 1,
+});
+
+const StyledCardsContainer = styled('div')({
+  margin: "24px"
+});
+
+const StyledCard = styled('div')({
+  marginBottom: "12px"
+});
+
+const StyledSectionHeader = styled(Typography)({
+  marginBottom: "12px"
+});
 
 const MembershipHome = (props: {
   membership: MembershipModel
 }) => {
-  const classes = useStyles();
-  let { path, url } = useRouteMatch();
-  let history = useHistory();
+  let navigate = useNavigate();
 
   const [activeMissions, setActiveMissions] = React.useState<{
     list?: ActivityListItemModel[];
     href: string;
   }>({
-    href: `${url}/missions/active`
+    href: `missions/active`
   });
 
   React.useEffect(() => {
@@ -65,11 +66,11 @@ const MembershipHome = (props: {
     async function loadAsync() {
       var activeMissions = await props.membership.getActiveMissionsAsync();
 
-      var href = `${url}/missions`;
+      var href = `$missions`;
       if (activeMissions.length === 1) {
-        href = url + '/missions/' + activeMissions[0].id.toString();
+        href = 'missions/' + activeMissions[0].id.toString();
       } else if (activeMissions.length > 1) {
-        href = `${url}/missions/active`;
+        href = `missions/active`;
       }
 
       setActiveMissions({
@@ -88,37 +89,43 @@ const MembershipHome = (props: {
   const Home = () => {
     
     return (
-      <div className={classes.cardsContainer}>
-        <Typography variant="h4" className={classes.sectionHeader}>Missions</Typography>
-        <div className={classes.card}>
+      <StyledCardsContainer>
+        <StyledSectionHeader variant="h4">Missions</StyledSectionHeader>
+        <StyledCard>
           <ActiveMissionsCard count={activeMissions.list === undefined ? -1 : activeMissions.list.length} href={activeMissions.href}/>
-        </div>
-        <div className={classes.card}>
-          <TopLevelCard text="View past missions" href={`${url}/missions`}/>
-        </div>
-        <Typography variant="h4" className={classes.sectionHeader} style={{marginTop: '24px'}}>Meetings</Typography>
-        <div className={classes.card}>
-          <TopLevelCard text="Upcoming meetings" href={`${url}/meetings/upcoming`}/>
-        </div>
-        <div className={classes.card}>
-          <TopLevelCard text="Past meetings" href={`${url}/meetings/past`}/>
-        </div>
-        <Typography variant="h4" className={classes.sectionHeader} style={{marginTop: '24px'}}>Trainings</Typography>
-        <div className={classes.card}>
-          <TopLevelCard text="Upcoming trainings" href={`${url}/trainings/upcoming`}/>
-        </div>
-        <div className={classes.card}>
-          <TopLevelCard text="Past trainings" href={`${url}/trainings/past`}/>
-        </div>
-        <Typography variant="h4" className={classes.sectionHeader} style={{marginTop: '24px'}}>New incident</Typography>
-        <div className={classes.card}>
-          <TopLevelCard text="Add new incident/mission" href={`${url}/incident`}/>
-        </div>
+        </StyledCard>
+        <StyledCard>
+          <TopLevelCard text="View past missions" href={`missions`}/>
+        </StyledCard>
+        <StyledSectionHeader style={{marginTop: '24px'}}>Meetings</StyledSectionHeader>
+        <StyledCard>
+          <TopLevelCard text="Upcoming meetings" href={`meetings/upcoming`}/>
+        </StyledCard>
+        <StyledCard>
+          <TopLevelCard text="Past meetings" href={`meetings/past`}/>
+        </StyledCard>
+        <StyledSectionHeader style={{marginTop: '24px'}}>Trainings</StyledSectionHeader>
+        <StyledCard>
+          <TopLevelCard text="Upcoming trainings" href={`trainings/upcoming`}/>
+        </StyledCard>
+        <StyledCard>
+          <TopLevelCard text="Past trainings" href={`trainings/past`}/>
+        </StyledCard>
+        <StyledCard>
+          <TopLevelCard text="Trainings report" href={`trainings/report`}/>
+        </StyledCard>
+        <StyledCard>
+          <TopLevelCard text="View group quals" href={`groupquals`}/>
+        </StyledCard>
+        <StyledSectionHeader style={{marginTop: '24px'}}>New incident</StyledSectionHeader>
+        <StyledCard>
+          <TopLevelCard text="Add new incident/mission" href={`incident`}/>
+        </StyledCard>
         {/* We don't seem to use trainings... */}
-        {/* <div className={classes.card}>
+        {/* <StyledCard>
           <TopLevelCard text="Upcoming trainings" href={`${url}/trainings/upcoming`}/>
         </div> */}
-      </div>
+      </StyledCardsContainer>
     );
   }
 
@@ -182,56 +189,44 @@ const MembershipHome = (props: {
   }
 
   const goBack = () => {
-    history.goBack();
+    navigate(-1);
   }
 
   return (
-    <div className={classes.root}>
+    <StyledRootContainer>
       <AppBar position="static">
         <Toolbar>
-          <Route path={`${path}/:subitem`}>
-            <IconButton edge="start" className={classes.menuButton} color="inherit" onClick={goBack}>
-              <ArrowBackIosIcon/>
-            </IconButton>
-          </Route>
-          <Typography variant="h6" className={classes.title}>
+          <Routes>
+          <Route path={`:subitem`} element={
+            <StyledMenuButton edge="start" color="inherit" onClick={goBack}>
+              <ArrowBackIosNewIcon/>
+            </StyledMenuButton>
+          } />
+          </Routes>
+          <StyledTitle variant="h6">
             SAR4H
-          </Typography>
+          </StyledTitle>
           <Button color="inherit" onClick={logOut}>Log out</Button>
         </Toolbar>
       </AppBar>
 
-      <Switch>
-        <Route path={`${path}/missions/active`}>
-          <ActivitiesList activities={activeMissions.list}/>
-        </Route>
-        <Route path={`${path}/missions/:activityId`} children={<ViewActivityHandler/>}/>
-        <Route path={`${path}/missions`}>
-          <AllMissions membership={props.membership}/>
-        </Route>
-        <Route path={`${path}/meetings/upcoming`}>
-          <UpcomingMeetings membership={props.membership}/>
-        </Route>
+      <Routes>
+        <Route path={`missions/active`} element={<ActivitiesList activities={activeMissions.list}/>}/>
+        <Route path={`missions/:activityId`} element={<ViewActivityHandler/>}/>
+        <Route path={`missions`} element={<AllMissions membership={props.membership}/>}/>
+        <Route path={`meetings/upcoming`} element={<UpcomingMeetings membership={props.membership}/>}/>
         {/* Past meetings/trainings not working yet, so commenting those out */}
-        {/* <Route path={`${path}/meetings/past`}>
-          <PastMeetings membership={props.membership}/>
-        </Route> */}
-        <Route path={`${path}/trainings/upcoming`}>
-          <UpcomingTrainings membership={props.membership}/>
-        </Route>
-        {/* <Route path={`${path}/trainings/past`}>
-          <PastTrainings membership={props.membership}/>
-        </Route> */}
-        <Route path={`${path}/incident`}>
-          <NewIncidentContainer membership={props.membership}/>
-        </Route>
-        <Route path={`${path}/meetings/:activityId`} children={<ViewActivityHandler/>}/>
-        <Route exact path={path}>
-          <Home/>
-        </Route>
-      </Switch>
+        {/* <Route path={`${path}/meetings/past`} element={<PastMeetings membership={props.membership}/>}/> */}
+        <Route path={`trainings/upcoming`} element={<UpcomingTrainings membership={props.membership}/>}/>
+        {/* <Route path={`${path}/trainings/past`} element={<PastTrainings membership={props.membership}/>}/> */}
+        <Route path={`incident`} element={<NewIncidentContainer membership={props.membership}/>}/>
+        <Route path={`meetings/:activityId`} element={<ViewActivityHandler/>}/>
+        <Route path={`trainings/report`} element={<TrainingsReport membership={props.membership}/>}/>
+        <Route path={`groupquals`} element={<GroupQuals membership={props.membership}/>}/>
+        <Route path={`/`} element={<Home/>}/>
+      </Routes>
       {/* <LatestMissions membership={props.membership}/> */}
-    </div>
+    </StyledRootContainer>
   );
 }
 

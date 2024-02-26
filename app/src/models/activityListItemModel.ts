@@ -18,6 +18,7 @@ export default class ActivityListItemModel {
   count_attendance: number; // # of attendees, like 4
   description: string;
   type: ActivityType;
+  tags: string[];
 
   constructor (source: IActivityListItem) {
     this.id = source.id;
@@ -44,6 +45,7 @@ export default class ActivityListItemModel {
         this.type = ActivityType.training;
         break;
     }
+    this.tags = source.tags;
   }
 
   getFriendlyDate() {

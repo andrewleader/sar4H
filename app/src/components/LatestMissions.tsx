@@ -5,21 +5,19 @@ import MembershipModel from '../models/membershipModel';
 import { IActivityListItem } from '../api/responses';
 import ListItemMission from './ListItemMission';
 import ActivityListItemModel from '../models/activityListItemModel';
-import { makeStyles } from '@material-ui/core';
+import { styled } from '@mui/material';
 
-const useStyles = makeStyles(theme => ({
-  cardsContainer: {
-    margin: "24px"
-  },
-  card: {
-    marginBottom: "24px"
-  }
-}));
+const StyledCardsContainer = styled('div')({
+  margin: "24px"
+});
+
+const StyledCard = styled('div')({
+  marginBottom: "24px"
+});
 
 const LatestMissions = (props: {
   membership: MembershipModel
 }) => {
-  const classes = useStyles();
   const [missions, setMissions] = React.useState<ActivityListItemModel[] | undefined>(undefined);
   
   React.useEffect(() => {
@@ -40,13 +38,13 @@ const LatestMissions = (props: {
   }
 
   return (
-    <div className={classes.cardsContainer}>
+    <StyledCardsContainer>
       {missions.map((mission) => (
-        <div className={classes.card} key={mission.id}>
+        <StyledCard key={mission.id}>
           <ListItemMission mission={mission}/>
-        </div>
+        </StyledCard>
       ))}
-    </div>
+    </StyledCardsContainer>
   );
 }
 

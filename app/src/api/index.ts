@@ -90,12 +90,35 @@ export default class Api {
 
   static async getTrainingsAsync(memberToken: string, parameters: {
     published: number, // 0-1, whether activity has been published
-    limit?: number, // 1-251, number of records to return
+    limit?: number, // 1-751, number of records to return. Defaults to 250.
     offset?: number, // >=0, number of records to skip from the start
     before?: string,
     after?: string
   }) {
     return await Util.fetchAsync<IIncidentsResponse>(HttpMethod.GET, "/team/exercises", memberToken, parameters);
+  }
+
+  static async getGroupQualsAsync(memberToken: string, parameters: {
+    groupId: number
+  }) {
+
+    var requestInfo:any = {
+      method: "GET"
+    };
+
+      requestInfo.headers = {
+        'Authorization': 'Bearer ' + memberToken
+      };
+
+      var response = await fetch("https://scvsar.team-manager.us.d4h.com/oldexport?category=courses_matrix&format=csv&param%5Bgroup_id%5D=11673", requestInfo);
+
+      if (response.ok) {
+        return await response.text();
+      } else {
+        return response.statusText;
+      }
+
+    return await Util.fetchAsync<any>(HttpMethod.GET, "/team/qualifications/22564", memberToken);
   }
 
   static async getAccountMembershipsAsync() {

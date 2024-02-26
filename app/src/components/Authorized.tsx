@@ -4,7 +4,7 @@ import * as Responses from '../api/responses';
 import CookiesHelper from '../helpers/cookiesHelper';
 
 interface AuthorizedProps {
-
+  children: React.ReactNode;
 }
 
 interface AuthorizedState {
@@ -22,7 +22,7 @@ export default class Authorized extends React.Component<AuthorizedProps, Authori
 
   render() {
     if (this.state.token !== null) {
-      return this.props.children;
+      return this.props.children;// Says "children" doesn't exist
     }
 
     return (

@@ -5,17 +5,19 @@ import ListItemMission from './ListItemMission';
 import ActivityListItemModel from '../models/activityListItemModel';
 import ActivitiesList from './ActivitiesList';
 
-
-const PastTrainings = (props: {
+const TrainingsReport = (props: {
   membership: MembershipModel
 }) => {
 
   const [pastTrainings, setPastTrainings] = React.useState<ActivityListItemModel[] | undefined>(undefined);
+  const [availableTags, setAvailableTags] = React.useState<string[]>([]);
 
   React.useEffect(() => {
 
     async function loadAsync() {
-      // setPastTrainings(await props.membership.getPastTrainingsAsync());
+      var resp = await props.membership.getPastTrainingsAsync();
+      setPastTrainings(resp.trainings);
+      setAvailableTags(resp.tags);
     }
 
     loadAsync();
@@ -26,7 +28,11 @@ const PastTrainings = (props: {
     return <p>Loading...</p>
   }
 
-  return <ActivitiesList activities={pastTrainings}/>
+  return (<div>
+    <div>{JSON.stringify(availableTags)}</div>
+    <div></div>
+    <ActivitiesList activities={pastTrainings}/>
+  </div>)
 }
 
-export default PastTrainings;
+export default TrainingsReport;
