@@ -41,13 +41,25 @@ export interface IActivityListItem {
 }
 
 export interface IAttendanceListItem {
-  id: number,
+  id: number, // The attendance ID
   member: IMemberListItem,
-  status: string // "attending", "requested", or "absent"
+  status: string, // "attending", "requested", or "absent"
+  activity: {
+    id: number,
+    type: string, // Exercise, event, etc
+    ref: string, // Custom ref
+    title: string, // "First Aid, CPR, & AED"
+    date: string, // 2023-09-01T01:30:00.000Z
+    enddate: string // 2023-09-01T04:30:00.000Z
+  },
+  duration: number, // Duration of the attendance, in minutes (like 180)
+  date: string,
+  enddate: string,
+  role: string | null
 }
 
 export interface IMemberList{
-  data: IMemberListItem[]
+  data: IMember[]
 }
 
 export interface IMemberListItem {
@@ -55,5 +67,29 @@ export interface IMemberListItem {
   name: string
 }
 
+export interface IMember {
+  id: number,
+  name: string,
+  ref: string, // Where we store their DEM number
+  email: string,
+  address: string, // Home address
+  homephone: string,
+  mobilephone: string,
+  workphone: string,
+  position: string // Things like "President", "Field Team Leader", etc
+}
 
+export interface IGroup {
+  id: number,
+  title: string, // Title of group, like "IT Committee"
+  bundle: string, // Custom bundle of group, like "Others" or "Primary"
+  animal: number, // Boolean, 0 or 1
+  members: number[] // Array of member IDs of the group
+}
 
+export interface IGroupListItem {
+  id: number,
+  title: string, // Title of group, like "IT Committee"
+  bundle: string, // Custom bundle of group, like "Others" or "Primary"
+  animal: number, // Boolean, 0 or 1
+}

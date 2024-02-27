@@ -1,4 +1,4 @@
-import { IActivityListItem } from "../api/responses";
+import { IActivityListItem, IAttendanceListItem } from "../api/responses";
 import moment from 'moment';
 
 export enum ActivityType {
@@ -19,6 +19,7 @@ export default class ActivityListItemModel {
   description: string;
   type: ActivityType;
   tags: string[];
+  attendances?: IAttendanceListItem[];
 
   constructor (source: IActivityListItem) {
     this.id = source.id;

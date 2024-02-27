@@ -76,7 +76,7 @@ function IncidentForm(props: {
       })
       let teamMembers:any = []
 
-      result.data.forEach(
+      result.forEach(
         member => teamMembers.push({
           name: member.name,
           id: member.id

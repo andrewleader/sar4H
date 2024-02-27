@@ -75,7 +75,13 @@ export default class Util {
     if (method === HttpMethod.GET && data) {
       Object.keys(data).forEach(key => {
         if (data[key] !== undefined)
-          url.searchParams.append(key, data[key])
+          if (Array.isArray(data[key])) {
+            data[key].forEach((multiValueKeyValue:any) => {
+              url.searchParams.append(key, multiValueKeyValue);
+            });
+          } else {
+            url.searchParams.append(key, data[key]);
+          }
       });
     }
 

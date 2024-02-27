@@ -20,7 +20,7 @@ export default class Api {
     group_id: number, // unit id number
     include_details: boolean //include or not extra member details
   }){
-    return await Util.fetchAsync<IMemberList>(HttpMethod.GET, `/team/members`, memberToken, parameters);
+    return (await Util.fetchAsync<IMemberList>(HttpMethod.GET, `/team/members`, memberToken, parameters)).data;
   }
 
 
@@ -62,6 +62,15 @@ export default class Api {
     return response.data as Responses.IAttendanceListItem[];
   }
 
+  static async getAttendancesForMultipleActivitiesAsync(memberToken: string, activityIds: number[]) {
+    var response = await Util.fetchAsync<any>(HttpMethod.GET, "/team/attendance", memberToken, {
+      status: "attending",
+      activity_id: activityIds
+    });
+
+    return response.data as Responses.IAttendanceListItem[];
+  }
+
   static async addAttendanceAsync(memberToken: string, activityId: number, memberId: number, activityStartDate?: Date, activityEndDate?: Date) {
 // debugger
     let response = await Util.fetchAsync<any>(HttpMethod.POST, "/team/attendance", memberToken, {
@@ -93,9 +102,18 @@ export default class Api {
     limit?: number, // 1-751, number of records to return. Defaults to 250.
     offset?: number, // >=0, number of records to skip from the start
     before?: string,
-    after?: string
+    after?: string,
+    sort?: string, // Specify the field to sort by, with optional direction. Ex: "title:asc" or "title:desc"
   }) {
     return await Util.fetchAsync<IIncidentsResponse>(HttpMethod.GET, "/team/exercises", memberToken, parameters);
+  }
+
+  static async getGroupsAsync(memberToken: string) {
+    return (await Util.fetchAsync<any>(HttpMethod.GET, "/team/groups", memberToken)).data as Responses.IGroupListItem[];
+  }
+
+  static async getGroupAsync(memberToken: string, groupId: number) {
+    return (await Util.fetchAsync<any>(HttpMethod.GET, "/team/groups/" + groupId, memberToken)).data as Responses.IGroup;
   }
 
   static async getGroupQualsAsync(memberToken: string, parameters: {

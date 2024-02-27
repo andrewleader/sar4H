@@ -1,6 +1,6 @@
 import moment from "moment";
 import Api from "../api";
-import { IActivityListItem, IAttendanceListItem } from "../api/responses";
+import { IActivityListItem, IAttendanceListItem, IGroup } from "../api/responses";
 import CookiesHelper from "../helpers/cookiesHelper";
 import ActivityListItemModel from "./activityListItemModel";
 
@@ -109,6 +109,10 @@ export default class MembershipModel {
     return answer;
   }
 
+  async getGroupsAsync() {
+    return await Api.getGroupsAsync(this.token);
+  }
+
   async getGroupQualsAsync() {
     return await Api.getGroupQualsAsync(this.token, {
       groupId: 11673
@@ -152,12 +156,22 @@ export default class MembershipModel {
     return trainingsFiltered;
   }
 
+  async bulkLoadAttendances(activities:ActivityListItemModel[]) {
+    const needed:number[] = activities.filter(i => i.attendances === undefined).map(i => i.id);
+    if (needed.length > 0)
+    {
+      var attendances = await Api.getAttendancesForMultipleActivitiesAsync(this.token, needed);
+      activities.filter(i => i.attendances === undefined).forEach(a => {
+        a.attendances = attendances.filter(i => i.activity.id === a.id);
+      });
+    }
+  }
+
   async getPastTrainingsAsync() {
 
     var trainingsResponse = await Api.getTrainingsAsync(this.token, {
       published: 1,
-      before: moment().endOf("day").toISOString(),
-      after: moment().subtract(12,'months').toISOString(), // 12 months from today
+      sort: "date:desc",
       limit: 751
     });
 

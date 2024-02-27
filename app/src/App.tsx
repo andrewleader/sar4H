@@ -20,6 +20,8 @@ import Util from './api/util';
 import CookiesHelper from './helpers/cookiesHelper';
 import MembershipModel from './models/membershipModel';
 import { AppBar, Button, IconButton, Toolbar, Typography, styled } from '@mui/material';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 
 const StyledRoot = styled('div')({
   height: "100%",
@@ -71,9 +73,11 @@ const App = () => {
   ])
 
   return (
-    <Authorized>
-      <RouterProvider router={router}/>
-    </Authorized>
+    <LocalizationProvider dateAdapter={AdapterMoment}>
+      <Authorized>
+        <RouterProvider router={router}/>
+      </Authorized>
+    </LocalizationProvider>
   );
 }
 
