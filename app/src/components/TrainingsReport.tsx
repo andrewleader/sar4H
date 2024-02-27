@@ -40,6 +40,7 @@ const TrainingsReport = (props: {
   const [runningReport, setRunningReport] = React.useState<boolean>(false);
   const [startDate, setStartDate] = React.useState<Moment>(lastMarchFirst);
   const [endDate, setEndDate] = React.useState<Moment>(currentDate.startOf('day'));
+  const [minimumHoursPerTag, setMinimumHoursPerTag] = React.useState<Map<string, number>>(new Map<string, number>())
 
   React.useEffect(() => {
 
@@ -186,6 +187,19 @@ const TrainingsReport = (props: {
         onChange={(event: any, newValue: string[]) => {
           setSelectedTags(newValue);
         }}/>
+        <div>
+          {selectedTags.map(tag => (
+            <TextField
+              label={"Minimum " + tag + " hours"}
+              type="number"
+              value={minimumHoursPerTag.get(tag) ?? 0}
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                let copy = new Map<string, number>(minimumHoursPerTag);
+                copy.set(tag, parseInt(event.target.value) ?? 0);
+                setMinimumHoursPerTag(copy);
+              }}/>
+          ))}
+        </div>
         {hasUnloadedAttendances && <Button
           variant="contained"
           color="primary"
