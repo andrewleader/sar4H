@@ -8,6 +8,7 @@ import { Autocomplete, Button, TextField } from '@mui/material';
 import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
 import moment, { Moment } from "moment";
 import { DatePicker } from '@mui/x-date-pickers';
+import { useSearchParams } from 'react-router-dom';
 
 const TrainingsReport = (props: {
   membership: MembershipModel
@@ -31,16 +32,56 @@ const TrainingsReport = (props: {
   const lastMarchFirst = getLastMarchFirst(currentDate);
 
   const [availableGroups, setAvailableGroups] = React.useState<IGroupListItem[] | undefined>();
-  const [selectedGroup, setSelectedGroup] = React.useState<IGroupListItem | undefined>();
   const [groupMembers, setGroupMembers] = React.useState<IMember[] | undefined>();
   const [attendances, setAttendances] = React.useState<string | undefined>();
   const [pastTrainings, setPastTrainings] = React.useState<ActivityListItemModel[] | undefined>(undefined);
   const [availableTags, setAvailableTags] = React.useState<string[]>([]);
-  const [selectedTags, setSelectedTags] = React.useState<string[]>([]);
   const [runningReport, setRunningReport] = React.useState<boolean>(false);
-  const [startDate, setStartDate] = React.useState<Moment>(lastMarchFirst);
-  const [endDate, setEndDate] = React.useState<Moment>(currentDate.startOf('day'));
-  const [minimumHoursPerTag, setMinimumHoursPerTag] = React.useState<Map<string, number>>(new Map<string, number>())
+  const [minimumHoursPerTag, setMinimumHoursPerTag] = React.useState<Map<string, number>>(new Map<string, number>());
+
+  // Things the user selects
+  let [searchParams, setSearchParams] = useSearchParams();
+  const groupId = searchParams.get('groupId');
+  const startDate = searchParams.get('startDate');
+  const endDate = searchParams.get('endDate');
+  const tags = searchParams.get('tags');
+
+  let selectedGroup = availableGroups?.find(i => i.id.toString() === groupId);
+  let selectedStartDate = startDate ? moment(startDate) : lastMarchFirst;
+  let selectedEndDate = endDate ? moment(endDate) : currentDate.startOf('day');
+  let selectedTags = (tags && tags.length > 0) ? tags.split(',') : [];
+
+  const updateUrl = () => {
+    setSearchParams({
+      groupId: selectedGroup?.id?.toString() ?? "",
+      startDate: selectedStartDate.toISOString(),
+      endDate: selectedEndDate.toISOString(),
+      tags: selectedTags.join(',')
+    }, {
+      replace: true
+    });
+  }
+
+  const setSelectedGroup = (value?:IGroupListItem) => {
+    selectedGroup = value;
+    updateUrl();
+  }
+
+  const setStartDate = (value:Moment) => {
+    selectedStartDate = value;
+    updateUrl();
+  }
+
+  const setEndDate = (value:Moment) => {
+    selectedEndDate = value;
+    updateUrl();
+  }
+
+  const setSelectedTags = (value:string[]) => {
+    selectedTags = value;
+    updateUrl();
+  }
+
 
   React.useEffect(() => {
 
@@ -97,7 +138,7 @@ const TrainingsReport = (props: {
   let hasUnloadedAttendances = filteredTrainings.filter(i => i.attendances === undefined).length > 0;
 
   if (groupMembers === undefined) {
-    body = <p>Select a group</p>
+    body = <p>Select a group.</p>
   } else {
     body = <p>TODO</p>;
 
@@ -166,12 +207,12 @@ const TrainingsReport = (props: {
         }}/>
       <DatePicker
         label="Start date"
-        value={startDate}
-        onChange={(newValue) => setStartDate(newValue ?? lastMarchFirst)}/>
+        value={selectedStartDate}
+        onChange={(newValue) => setStartDate(newValue ? moment(newValue) : lastMarchFirst)}/>
       <DatePicker
         label="End date"
-        value={endDate}
-        onChange={(newValue) => setEndDate(newValue ?? currentDate.startOf('day'))}/>
+        value={selectedEndDate}
+        onChange={(newValue) => setEndDate(newValue ? moment(newValue) : currentDate.startOf('day'))}/>
       <Autocomplete
         multiple
         options={availableTags}
