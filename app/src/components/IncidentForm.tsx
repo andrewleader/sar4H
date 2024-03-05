@@ -1,23 +1,5 @@
 import React, {useState, useEffect} from 'react';
 import Api from '../api';
-import {
-  makeStyles,
-  TextField,
-  FormLabel,
-  FormControlLabel,
-  RadioGroup,
-  Radio,
-  Button,
-  FormHelperText,
-  Collapse,
-  List,
-  ListItem,
-  ListItemText,
-} from '@material-ui/core';
-import {
-  ExpandLess,
-  ExpandMore,
-} from '@material-ui/icons';
 
 import {
   KeyboardDatePicker,
@@ -26,26 +8,24 @@ import {
 import MomentUtils from '@date-io/moment';
 import moment from "moment";
 import CookiesHelper from "../helpers/cookiesHelper";
-import {useHistory} from "react-router-dom";
 import {SelectMembers} from './SelectMembers'
 import MembershipModel from '../models/membershipModel'
+import { Button, Collapse, FormControlLabel, FormHelperText, FormLabel, List, ListItem, ListItemText, Radio, RadioGroup, TextField, styled } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import ExpandMore from '@mui/icons-material/ExpandMore';
+import ExpandLess from '@mui/icons-material/ExpandLess';
 
 
-const useStyles = makeStyles({
-  form: {
-    padding: "20px 20px",
-    display: "block",
-  },
-  label: {
-    padding: "5px",
-  },
-  nested: {
-    paddingLeft: "34px",
-  },
-  field: {
-    marginBottom: "20px"
-  }
+const StyledForm = styled('form')({
+  padding: "20px 20px",
+  display: "block",
 });
+
+const StyledNested = styled(ListItem)({
+  paddingLeft: "34px",
+});
+
+const fieldBottomMargin = "20px";
 
 const initialValues = {
   activity: "", // "incident", "exercise", or "event"
@@ -96,7 +76,7 @@ function IncidentForm(props: {
       })
       let teamMembers:any = []
 
-      result.data.forEach(
+      result.forEach(
         member => teamMembers.push({
           name: member.name,
           id: member.id
@@ -109,8 +89,7 @@ function IncidentForm(props: {
 
   }, [props.membership]);
 
-  let history = useHistory();
-  const classes = useStyles();
+  let navigate = useNavigate();
 
 
   const handleAttendingChange = (
@@ -300,8 +279,8 @@ function IncidentForm(props: {
         }
       })
 
-      url = '/1516/missions/' + missionActivityId
-      history.push(url)
+      url = '/1516/missions/' + missionActivityId;
+      navigate(url);
 
     }
     
@@ -361,7 +340,7 @@ function IncidentForm(props: {
 
 
 return(
-  <div className={classes.form}>
+  <StyledForm>
 
   <form
     noValidate
@@ -378,7 +357,9 @@ return(
       error={errors.titleValidity}
       helperText={errors.titleErrorMsg}
       autoFocus
-      className={classes.field}
+      style={{
+        marginBottom: fieldBottomMargin
+      }}
       fullWidth
     />
 
@@ -392,7 +373,9 @@ return(
         aria-label="EventType"
         name="activity"
         onChange={handleInputChange}
-        className={classes.field}
+        style={{
+          marginBottom: fieldBottomMargin
+        }}
       >
         <FormHelperText
         error={errors.eventValidity}
@@ -416,7 +399,7 @@ return(
           />
       </RadioGroup>
 
-      <MuiPickersUtilsProvider utils={MomentUtils}>
+      {/* <MuiPickersUtilsProvider utils={MomentUtils}>
         <KeyboardDatePicker
           disableToolbar
           // minDate={new Date()}
@@ -444,7 +427,7 @@ return(
           className={classes.field}
           fullWidth
         />
-      </MuiPickersUtilsProvider>
+      </MuiPickersUtilsProvider> */}
 
       <FormLabel component="legend">
         Who Is Attending?
@@ -456,7 +439,7 @@ return(
       </ListItem>
       <Collapse in={open} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
-          <ListItem className={classes.nested}>
+          <StyledNested>
           {members ?
             <SelectMembers
               members={members}
@@ -464,7 +447,7 @@ return(
             />
             : "...loading"
           }
-          </ListItem>
+          </StyledNested>
         </List>
       </Collapse>
     </List>
@@ -480,7 +463,7 @@ return(
         </Button>
       </div>
     </form>
-  </div>
+  </StyledForm>
   )
 }
 export default IncidentForm

@@ -1,6 +1,6 @@
 import moment from "moment";
 import Api from "../api";
-import { IActivityListItem, IAttendanceListItem } from "../api/responses";
+import { IActivityListItem, IAttendanceListItem, IGroup } from "../api/responses";
 import CookiesHelper from "../helpers/cookiesHelper";
 import ActivityListItemModel from "./activityListItemModel";
 
@@ -109,6 +109,16 @@ export default class MembershipModel {
     return answer;
   }
 
+  async getGroupsAsync() {
+    return await Api.getGroupsAsync(this.token);
+  }
+
+  async getGroupQualsAsync() {
+    return await Api.getGroupQualsAsync(this.token, {
+      groupId: 11673
+    });
+  }
+
   async getUpcomingTrainingsAsync() {
     var result = await Api.getTrainingsAsync(this.token, {
       published: 0,
@@ -121,33 +131,61 @@ export default class MembershipModel {
     return answer;
   }
 
+  async getTrainingsReportAsync(tags: string[]) {
+    var trainingsResponse = await Api.getTrainingsAsync(this.token, {
+      published: 1,
+      before: moment().endOf("day").toISOString(),
+      after: moment().subtract(12,'months').toISOString(), // 12 months from today
+      limit: 751
+    });
+
+    // Get all the available tags
+    const allTags: string[] = Array.from(
+      new Set(
+          trainingsResponse.data.reduce((aggregatedTags:string[], currentItem) => aggregatedTags.concat(currentItem.tags), [])
+      )
+    );
+
+    return {
+      tags: allTags,
+      trainings: trainingsResponse.data.map(i => new ActivityListItemModel(i))
+    };
+
+    var trainingsFiltered = trainingsResponse.data.filter(i => i.tags.some(t => tags.includes(t)));
+
+    return trainingsFiltered;
+  }
+
+  async bulkLoadAttendances(activities:ActivityListItemModel[]) {
+    const needed:number[] = activities.filter(i => i.attendances === undefined).map(i => i.id);
+    if (needed.length > 0)
+    {
+      var attendances = await Api.getAttendancesForMultipleActivitiesAsync(this.token, needed);
+      activities.filter(i => i.attendances === undefined).forEach(a => {
+        a.attendances = attendances.filter(i => i.activity.id === a.id);
+      });
+    }
+  }
+
   async getPastTrainingsAsync() {
 
-    var unpublished = await Api.getTrainingsAsync(this.token, {
-      published: 0,
-      before: moment().endOf("day").toISOString()
+    var trainingsResponse = await Api.getTrainingsAsync(this.token, {
+      published: 1,
+      sort: "date:desc",
+      limit: 751
     });
 
-    var published = await Api.getEventsAsync(this.token, {
-      published: 0,
-      after: moment().subtract(2,'months').toISOString() // 2 months from today
-    });
+    // Get all the available tags
+    const allTags: string[] = Array.from(
+      new Set(
+          trainingsResponse.data.reduce((aggregatedTags:string[], currentItem) => aggregatedTags.concat(currentItem.tags), [])
+      )
+    );
 
-    var answer: ActivityListItemModel[] = [];
-
-    unpublished.data.forEach((activity) => {
-      if (activity.date) {
-        answer.push(this.createActivityListItemModel(activity));
-      }
-    });
-
-    published.data.forEach((activity) => {
-      if (activity.date) {
-        answer.push(this.createActivityListItemModel(activity));
-      }
-    });
-
-    return answer;
+    return {
+      tags: allTags,
+      trainings: trainingsResponse.data.map(i => new ActivityListItemModel(i))
+    };
   }
 
   private createActivityListItemModel(activity: IActivityListItem) {

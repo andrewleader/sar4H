@@ -1,25 +1,11 @@
+import { Card, CardActionArea, CardContent, Link, Typography } from '@mui/material';
 import * as React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import { Link, Card, CardActionArea, CardContent, Typography, makeStyles } from '@material-ui/core';
-
-const useStyles = makeStyles(theme => ({
-  textContainer: {
-    display: "flex"
-  },
-  menuButton: {
-    marginRight: theme.spacing(2),
-  },
-  title: {
-    flexGrow: 1,
-  },
-}));
 
 const ActiveMissionsCard = (props: {
   count: number,
   href: string
 }) => {
-
-  const classes = useStyles();
 
   return (
     <Link underline="none" to={props.href} component={RouterLink}>

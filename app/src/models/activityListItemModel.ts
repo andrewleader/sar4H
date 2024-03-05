@@ -1,4 +1,4 @@
-import { IActivityListItem } from "../api/responses";
+import { IActivityListItem, IAttendanceListItem } from "../api/responses";
 import moment from 'moment';
 
 export enum ActivityType {
@@ -18,6 +18,8 @@ export default class ActivityListItemModel {
   count_attendance: number; // # of attendees, like 4
   description: string;
   type: ActivityType;
+  tags: string[];
+  attendances?: IAttendanceListItem[];
 
   constructor (source: IActivityListItem) {
     this.id = source.id;
@@ -44,6 +46,7 @@ export default class ActivityListItemModel {
         this.type = ActivityType.training;
         break;
     }
+    this.tags = source.tags;
   }
 
   getFriendlyDate() {

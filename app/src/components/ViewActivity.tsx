@@ -1,34 +1,29 @@
 import * as React from 'react';
-import { Link as RouterLink, useRouteMatch } from 'react-router-dom';
 import { IActivityListItem, IMemberListItem } from '../api/responses';
-import { Link, Card, CardActionArea, CardContent, Typography, FormLabel, FormControlLabel, Switch } from '@material-ui/core';
 import ActivityListItemModel, { ActivityType } from '../models/activityListItemModel';
-import { makeStyles } from '@material-ui/core';
-import MembershipModel from '../models/membershipModel';
-import MembershipController from '../controllers/membershipController';
+import { FormControlLabel, FormLabel, Switch, Typography, styled } from '@mui/material';
 
-const useStyles = makeStyles(theme => ({
-  root: {
-    padding: "24px",
-    background: "white",
-    // height: "100%",
-    boxSizing: "border-box",
-    overflowY: "auto",
-  },
-  date: {
-    marginBottom: "24px"
-  },
-  description: {
-    marginBottom: "24px",
-    whiteSpace: "pre-line"
-  },
-  respondingSwitch: {
-    marginBottom: "24px"
-  },
-  card: {
-    marginBottom: "24px"
-  }
-}));
+// Define styles using the styled utility function
+const StyledRoot = styled('div')({
+  padding: "24px",
+  background: "white",
+  // height: "100%",
+  boxSizing: "border-box",
+  overflowY: "auto",
+});
+
+const StyledDate = styled(Typography)({
+  marginBottom: "24px",
+});
+
+const StyledDescription = styled(Typography)({
+  marginBottom: "24px",
+  whiteSpace: "pre-line",
+});
+
+const StyledRespondingSwitch = styled(FormControlLabel)({
+  marginBottom: "24px",
+});
 
 const ViewActivity = (props: {
   activity: ActivityListItemModel | undefined,
@@ -42,8 +37,6 @@ const ViewActivity = (props: {
 }) => {
   const isMission = props.activity?.isMission();
 
-  const classes = useStyles();
-
   const handleRespondingChange = async (event:any) => {
     // setUpdatingResponding(true);
     if (event.target.checked) {
@@ -54,24 +47,23 @@ const ViewActivity = (props: {
   }
 
   return (
-    <div className={classes.root}>
+    <StyledRoot>
       <Typography variant="h5">
         {props.activity?.title || "Loading..."}
       </Typography>
-      <Typography color="textSecondary" className={classes.date}>
+      <StyledDate color="textSecondary">
         {props.activity?.getFriendlyDate()}
-      </Typography>
+      </StyledDate>
 
       <FormLabel component="legend">Are you {isMission ? 'responding' : 'attending'}?</FormLabel>
-      <FormControlLabel
+      <StyledRespondingSwitch
           control={<Switch checked={props.isAttending} onChange={handleRespondingChange} value="responding" disabled={props.isLoadingIsAttending} />}
           label={props.isAttending ? (isMission ? 'Responding' : 'Attending') : (isMission ? 'Not responding' : 'Not attending')}
-          className={classes.respondingSwitch}
         />
       
-      <Typography className={classes.description}>
+      <StyledDescription>
         {props.activity?.description}
-      </Typography>
+      </StyledDescription>
 
       <Typography variant="h6">
         {isMission ? 'Responders' : 'Attendees'}
@@ -85,7 +77,7 @@ const ViewActivity = (props: {
         <p>Loading...</p>
       )}
       
-    </div>
+    </StyledRoot>
   );
 }
 

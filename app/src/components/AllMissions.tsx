@@ -3,27 +3,24 @@ import MembershipModel from '../models/membershipModel';
 import { IActivityListItem } from '../api/responses';
 import ListItemMission from './ListItemMission';
 import ActivityListItemModel from '../models/activityListItemModel';
-import { useParams, Switch, Route, useRouteMatch } from 'react-router-dom';
+import { useParams, Routes, Route } from 'react-router-dom';
 import ViewActivity from './ViewActivity';
-import { makeStyles } from '@material-ui/core';
 import moment from "moment";
+import { styled } from '@mui/material';
 
-const useStyles = makeStyles(theme => ({
-  cardsContainer: {
-    margin: "24px"
-  },
-  card: {
-    marginBottom: "24px"
-  }
-}));
+const StyledCardsContainer = styled('div')({
+  margin: "24px"
+});
+
+const StyledCard = styled('div')({
+  marginBottom: "24px"
+});
 
 const AllMissions = (props: {
   membership: MembershipModel
 }) => {
 
-  const classes = useStyles();
   const [missions, setMissions] = React.useState<ActivityListItemModel[] | undefined>(undefined);
-  let { path, url } = useRouteMatch();
 
   React.useEffect(() => {
 
@@ -77,19 +74,17 @@ const AllMissions = (props: {
   }
 
   return (
-    <Switch>
-      <Route path={`${path}/:missionId`} children={<ViewMissionHandler/>}/>
-      <Route path={path}>
-        <div className={classes.cardsContainer}>
+    <Routes>
+      <Route path={`$:missionId`} element={<ViewMissionHandler/>}/>
+      <Route path="/" element={<StyledCardsContainer>
           {missions.map((mission) => (
-            <div className={classes.card} key={mission.id}>
+            <StyledCard key={mission.id}>
               <ListItemMission mission={mission}/>
 
-            </div>
+            </StyledCard>
           ))}
-        </div>
-      </Route>
-    </Switch>
+        </StyledCardsContainer>}/>
+    </Routes>
   );
 }
 

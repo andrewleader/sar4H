@@ -1,8 +1,5 @@
+import { FormControlLabel, Switch } from '@mui/material';
 import React from 'react';
-import {
-  FormControlLabel,
-  Switch
-  } from '@material-ui/core'
 
 
 const ListUnitMembers = (props: any) => {

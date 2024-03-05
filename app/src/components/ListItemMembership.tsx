@@ -1,6 +1,6 @@
+import { Card, CardActionArea, CardContent, Link, Typography } from '@mui/material';
 import * as React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import { Card, CardContent, Typography, Link, CardActionArea } from '@material-ui/core';
 
 const ListItemMembership = (props:{ name: string, id: number }) => {
   return (

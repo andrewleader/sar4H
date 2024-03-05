@@ -1,30 +1,28 @@
 import * as React from 'react';
-import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
 import Api from '../api';
 import * as Responses from '../api/responses';
-import { createStyles, Theme, withStyles, WithStyles } from '@material-ui/core/styles';
+import { Button, TextField, Typography, styled } from '@mui/material';
 
-const styles = (theme: Theme) => createStyles({
-  root: {
-    padding: "24px",
-    maxWidth: "500px",
-    marginLeft: "auto",
-    marginRight: "auto"
-  },
-  title: {
-    textAlign: "center"
-  },
-  error: {
-    color: "red"
-  },
-  logInButton: {
-    width: "100%"
-  }
+const StyledRoot = styled('div')({
+  padding: "24px",
+  maxWidth: "500px",
+  marginLeft: "auto",
+  marginRight: "auto"
 });
 
-export interface LogInProps extends WithStyles<typeof styles> {
+const StyledTitle = styled(Typography)({
+  textAlign: "center"
+});
+
+const StyledError = styled('p')({
+  color: "red"
+});
+
+const StyledLogInButton = styled(Button)({
+  width: "100%"
+});
+
+export interface LogInProps {
   onSuccess: (response: Responses.IAuthenticateResponse) => void;
 }
 
@@ -45,13 +43,11 @@ class LogIn extends React.Component<LogInProps, LogInState> {
   };
 
   render() {
-    const { classes } = this.props;
-
     return (
-      <div className={classes.root}>
-        <Typography variant="h2" className={classes.title}>
+      <StyledRoot>
+        <StyledTitle variant="h2">
           SAR4H
-        </Typography>
+        </StyledTitle>
         <TextField
           id="username"
           label="Username"
@@ -71,16 +67,15 @@ class LogIn extends React.Component<LogInProps, LogInState> {
           onChange={(e) => this.setState({ password: e.target.value })}
         />
 
-        <p className={classes.error}>{this.state.error}</p>
-        <Button
-          className={classes.logInButton}
+        <StyledError>{this.state.error}</StyledError>
+        <StyledLogInButton
           variant="contained"
           color="primary"
           disabled={this.state.signingIn}
           onClick={this.logIn}>
             Log In
-        </Button>
-      </div>
+        </StyledLogInButton>
+      </StyledRoot>
     );
   }
 
@@ -126,4 +121,4 @@ class LogIn extends React.Component<LogInProps, LogInState> {
   }
 }
 
-export default withStyles(styles)(LogIn);
+export default LogIn;
